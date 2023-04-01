@@ -17,6 +17,7 @@ using System.Windows.Media.Animation;
 using System.Reflection;
 using MaterialDesignThemes.Wpf.Converters;
 using MaterialDesignThemes.Wpf;
+using System.Runtime.CompilerServices;
 
 namespace ClientsApp
 {
@@ -30,26 +31,13 @@ namespace ClientsApp
             InitializeComponent();
             MenuOpenBtn.Click += Button_Click_1;
             MenuCloseBtn.Click += btnclose_Click;
-            textBlocks.Add(TextBlockReferences);
-            textBlocks.Add(TextBlockMessages);
-            textBlocks.Add(TextBlockEmail);
-            textBlocks.Add(TextBlockAccount);
 
-            selectedBtns.Add(true);
-            selectedBtns.Add(false);
-            selectedBtns.Add(false);
-            selectedBtns.Add(false);
+            InitElements();
 
-            packIcons.Add(ReferencesIcon);
-            packIcons.Add(MessagesIcon);
-            packIcons.Add(EmailIcon);
-            packIcons.Add(AccountIcon);
-
-            buttons.Add(ReferencesBtn);
-            buttons.Add(MessagesBtn);
-
-            SelectBtn(0, ReferencesBtn);
+            SelectBtn("References");
         }
+
+        private Dictionary<string, List<object>> buttonsReferences = new Dictionary<string, List<object>>();
 
         private List<bool> selectedBtns = new List<bool>();
         private List<TextBlock> textBlocks = new List<TextBlock>();
@@ -58,52 +46,90 @@ namespace ClientsApp
 
         private static Color PRIMARY_COLOR = Color.FromArgb(255, 33, 150, 243);
 
+        private void InitElements()
+        {
 
-        private void SetSelectedColor(object sender)
+            buttonsReferences.Add("References", new List<object>()
+            {   TextBlockReferences,
+                ReferencesIcon,
+                ReferencesBtn,
+                true
+            });
+
+            buttonsReferences.Add("Messages", new List<object>()
+            {  TextBlockMessages,
+                MessagesIcon,
+                MessagesBtn,
+                false
+            });
+
+            buttonsReferences.Add("Email", new List<object>()
+            {  TextBlockEmail,
+                EmailIcon,
+                EmailBtn,
+                false
+            });
+
+            buttonsReferences.Add("Account", new List<object>()
+            {  TextBlockAccount,
+                AccountIcon,
+                AccountBtn,
+                false
+            });
+        }
+
+        private void SetSelectedColor(string key)
         {
             //(sender as Button).Foreground = new SolidColorBrush(Colors.LightGray);
-            (sender as Button).Background = new SolidColorBrush(PRIMARY_COLOR);
-            (sender as Button).Background.Opacity = .7;
+            (buttonsReferences[key][2] as Button)!.Background = new SolidColorBrush(PRIMARY_COLOR);
+            (buttonsReferences[key][2] as Button)!.Background.Opacity = .7;
         }
 
-        private void SetUnselectedColor(object sender)
+        private void SetUnselectedColor(string key)
         {
-            (sender as Button).Foreground = new SolidColorBrush(PRIMARY_COLOR);
-            (sender as Button).Background = null;
+            (buttonsReferences[key][2] as Button)!.Foreground = new SolidColorBrush(PRIMARY_COLOR);
+            (buttonsReferences[key][2] as Button)!.Background = null;
         }
 
-        private void UnselectBtn(int index, object sender)
+        private void UnselectBtn(string key)
         {
-            SetUnselectedColor(sender);
-            textBlocks[index].Foreground = new SolidColorBrush(PRIMARY_COLOR);
-            packIcons[index].Foreground = new SolidColorBrush(PRIMARY_COLOR);
-            selectedBtns[index] = false;
+            (buttonsReferences[key][0] as TextBlock)!.Foreground = new SolidColorBrush(PRIMARY_COLOR);
+            (buttonsReferences[key][1] as PackIcon)!.Foreground = new SolidColorBrush(PRIMARY_COLOR);
+            buttonsReferences[key][3] = false;
+            SetUnselectedColor(key);
         }
 
-        private void SelectBtn(int index, object sender)
+        private void SelectBtn(string key)
         {
-            SetSelectedColor(sender);
-            textBlocks[index].Foreground = new SolidColorBrush(Colors.White);
-            packIcons[index].Foreground = new SolidColorBrush(Colors.White);
-            selectedBtns[index] = true;
+            (buttonsReferences[key][0] as TextBlock)!.Foreground = new SolidColorBrush(Colors.White);
+            (buttonsReferences[key][1] as PackIcon)!.Foreground = new SolidColorBrush(Colors.White);
+            buttonsReferences[key][3] = true;
+
+            SetSelectedColor(key);
         }
 
-        private void CheckSelectionBtn(int index, object sender)
+        private void CheckSelectionBtn(string key)
         {
-            if (selectedBtns[index])
-                UnselectBtn(index, sender);
+            if ((bool)buttonsReferences[key][3])
+                UnselectBtn(key);
             else
-                SelectBtn(index, sender);
+                SelectBtn(key);
 
         }
 
         private void UncheckAllBtns()
         {
-            selectedBtns.ForEach(item => item = true);
-            buttons.ForEach(item => UnselectBtn(buttons.IndexOf(item), item));
+            //selectedBtns.ForEach(item => item = true);
+            foreach (KeyValuePair<string, List<object>> entry in buttonsReferences)
+            {
+                buttonsReferences[entry.Key][3] = true;
+                UnselectBtn(entry.Key);
+            }              
+            
+           // buttons.ForEach(item => UnselectBtn(buttons.IndexOf(item), item));
         }
 
-        
+
 
         private void button_Click(object sender, RoutedEventArgs e)
         {
@@ -120,16 +146,33 @@ namespace ClientsApp
 
         }
 
+        /* --------------
+         * MENU BUTTONS
+         * --------------
+         */
+
         private void ReferencesBtn_Click(object sender, RoutedEventArgs e)
         {
             UncheckAllBtns();
-            CheckSelectionBtn(0, sender);
+            CheckSelectionBtn("References");
         }
 
         private void MessagesBtn_Click(object sender, RoutedEventArgs e)
         {
             UncheckAllBtns();
-            CheckSelectionBtn(1, sender);
+            CheckSelectionBtn("Messages");
+        }
+
+        private void EmailBtn_Click(object sender, RoutedEventArgs e)
+        {
+            UncheckAllBtns();
+            CheckSelectionBtn("Email");
+        }
+
+        private void AccountBtn_Click(object sender, RoutedEventArgs e)
+        {
+            UncheckAllBtns();
+            CheckSelectionBtn("Account");
         }
 
         private void MenuCloseBtn_Click(object sender, RoutedEventArgs e)
@@ -146,6 +189,11 @@ namespace ClientsApp
             sb.Begin(LeftMenu);
             MenuOpenBtn.Visibility = Visibility.Hidden;
             MenuCloseBtn.Visibility = Visibility.Visible;
+        }
+
+        private void MenuReferencesBtn_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

@@ -14,16 +14,17 @@
         FontFamily="{DynamicResource MaterialDesignFont}"
         mc:Ignorable="d"
         Title="MainWindow"
-        Height="800"
+        Height="900"
         Width="1200"
         WindowState="Maximized">
 
     <Window.Resources>
 
+        <Color x:Key="PrimaryColor">#2196f3</Color>
         <Storyboard x:Key="OpenMenu">
             <ThicknessAnimation Storyboard.TargetProperty="Margin"
-                                From="-300,0,0,50"
-                                To="0,0,0,50"
+                                From="-300,0,0,150"
+                                To="0,0,0,150"
                                 DecelerationRatio="0.5"
                                 Duration="0:0:0.5" />
         </Storyboard>
@@ -31,8 +32,8 @@
 
         <Storyboard x:Key="CloseMenu">
             <ThicknessAnimation Storyboard.TargetProperty="Margin"
-                                From="0,0,0,50"
-                                To="-300,0,0,50"
+                                From="0,0,0,150"
+                                To="-300,0,0,150"
                                 DecelerationRatio="0.5"
                                 Duration="0:0:0.5" />
         </Storyboard>
@@ -42,7 +43,7 @@
                          Opacity="0" />
     </Window.Resources>
 
-    <Grid Margin="0,0,0,-6">
+    <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="13*" />
             <ColumnDefinition Width="27*" />
@@ -53,7 +54,7 @@
                      Name="LeftMenu"
                      Orientation="Horizontal"
                      HorizontalAlignment="Left"
-                     Margin='-300,0,0,50'>
+                     Margin='-300,0,0,150'>
             <materialDesign:Card Width="300">
                 <Grid>
                     <Grid.RowDefinitions>
@@ -81,7 +82,8 @@
                                     CornerRadius="120">
                                 <Ellipse>
                                     <Ellipse.Fill>
-                                        <ImageBrush ImageSource="C:\Users\User\Desktop\Всякое\Файлы\Снимок экрана 2021-12-14 202255.png" />
+                                        <ImageBrush Stretch="UniformToFill"
+                                                    ImageSource="C:\Users\User\Desktop\Всякое\Файлы\Снимок экрана 2021-12-14 202255.png" />
                                     </Ellipse.Fill>
                                 </Ellipse>
                             </Border>
@@ -125,11 +127,43 @@
                             </Border>
                         </Border> -->
 
+                        <!-- ACCOUNT INFO BLOCK -->
+
+                        <StackPanel HorizontalAlignment="Center">
+                            <WrapPanel>
+                                <WrapPanel.Resources>
+                                    <Style TargetType="{x:Type TextBlock}">
+                                        <Setter Property="Padding"
+                                                Value="0,10" />
+                                    </Style>
+                                </WrapPanel.Resources>
+                                <TextBlock Style="{DynamicResource MaterialDesignHeadline6TextBlock}"
+                                           Text="Name"
+                                           Padding="0,10" />
+                                <TextBlock Style="{DynamicResource MaterialDesignHeadline6TextBlock}"
+                                           Text="Surname"
+                                           Padding="5,10" />
+                            </WrapPanel>
+
+                            <TextBlock Style="{DynamicResource MaterialDesignHeadline6TextBlock}"
+                                       Text="Role"
+                                       HorizontalAlignment="Center"
+                                       Padding="0" />
+
+
+                        </StackPanel>
+
+                        <!-- ### ACCOUNT INFO BLOCK ###  -->
+
+                        <!-- DIVIDER -->
+
                         <Rectangle Fill="#74D8FF"
                                    Height="5"
                                    RadiusX="2"
                                    RadiusY="2"
                                    Margin="10" />
+
+                        <!-- ### DIVIDER ### -->
 
                         <Button Name="ReferencesBtn"
                                 Click="ReferencesBtn_Click"
@@ -138,7 +172,7 @@
                                 Style="{StaticResource MaterialDesignFlatButton}"
                                 ToolTip="References"
                                 HorizontalAlignment="Stretch"
-                                Margin="{StaticResource MenuSpacing}"
+                                Margin="0,5"
                                 Height="50"
                                 VerticalAlignment="Top">
                             <StackPanel HorizontalAlignment="Left"
@@ -186,6 +220,8 @@
                         </Button>
 
                         <Button materialDesign:ButtonAssist.CornerRadius="10"
+                                Click="EmailBtn_Click"
+                                Name="EmailBtn"
                                 IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
                                 Style="{StaticResource MaterialDesignFlatButton}"
                                 ToolTip="Email"
@@ -211,6 +247,8 @@
                         </Button>
 
                         <Button materialDesign:ButtonAssist.CornerRadius="10"
+                                Click="AccountBtn_Click"
+                                Name="AccountBtn"
                                 IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
                                 Style="{StaticResource MaterialDesignFlatButton}"
                                 ToolTip="Messages"
@@ -235,16 +273,38 @@
                             </StackPanel>
                         </Button>
 
-                    </StackPanel>
-                    
-                    <!-- LOGOUT BUTTON -->
+                        <!-- LOWER DIVIDER -->
 
-                    <Button Background="#25232a"
-                            Grid.Row="1"
+                        <Rectangle Fill="#74D8FF"
+                                   Height="5"
+                                   RadiusX="2"
+                                   RadiusY="2"
+                                   Margin="10,20,10,10" />
+
+                        <!-- ### LOWER DIVIDER ### -->
+
+                        <StackPanel HorizontalAlignment="Center"
+                                    VerticalAlignment="Center">
+                            <TextBlock Style="{DynamicResource MaterialDesignHeadline6TextBlock}"
+                                       Text="Programm version"
+                                       Margin="0,10" />
+                            <TextBlock Style="{DynamicResource MaterialDesignHeadline6TextBlock}"
+                                       HorizontalAlignment="Center"
+                                       Text="B.3"
+                                       Margin="0,0" />
+                        </StackPanel>
+
+                    </StackPanel>
+
+
+
+                    <!-- LOGOUT BUTTON -->
+                    <Button Background="{StaticResource MaterialDesignDarkBackground}"
                             materialDesign:ButtonAssist.CornerRadius="15, 15, 0, 0"
                             IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
                             Style="{StaticResource MaterialDesignFlatSecondaryButton}"
                             ToolTip="Close"
+                            Grid.Row="1"
                             Height="50"
                             HorizontalAlignment="Stretch"
                             VerticalAlignment="Stretch">
@@ -263,6 +323,8 @@
                                                      Margin="0,-28,0,0" />
                         </StackPanel>
                     </Button>
+
+
 
                     <!-- LOGOUT BUTTON -->
 
@@ -298,7 +360,27 @@
                                                  Height="35"
                                                  Kind="ArrowLeft" />
                     </Button>
+
                 </Grid>
+                    <Button Name="MenuReferencesBtn"
+                            Click="MenuReferencesBtn_Click"
+                            materialDesign:ButtonAssist.CornerRadius="10"
+                            IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
+                            Style="{StaticResource MaterialDesignFlatButton}"
+                            ToolTip="References"
+                            HorizontalAlignment="Stretch"
+                            Margin="0,270"
+                            Height="60"
+                            VerticalAlignment="Top">
+                    <StackPanel HorizontalAlignment="Left"
+                                VerticalAlignment="Top">
+                        <materialDesign:PackIcon Width="38"
+                                                     Height="35"
+                                                     Name="MenuReferencesIcon"
+                                                     Kind="LibraryBookmarkOutline"
+                                                     Margin="-5,0,0,0" />
+                        </StackPanel>
+                    </Button>
             </StackPanel>
         </StackPanel>
 

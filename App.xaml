@@ -8,43 +8,62 @@
         <ResourceDictionary>
             <!-- MATERIAL DESIGN -->
             <ResourceDictionary.MergedDictionaries>
-                <materialDesign:BundledTheme BaseTheme="Light" PrimaryColor="Blue" SecondaryColor="Red" />
+                <materialDesign:BundledTheme BaseTheme="Dark"
+                                             PrimaryColor="Blue"
+                                             SecondaryColor="Red"/>
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <!-- MATERIAL DESIGN -->
 
-            <Canvas x:Key="Addbutton2" Height="46" Width="177">
-                <Path Fill="#1A73E8" Data="M0 10C0 4.47715 4.47715 0 10 0H167C172.523 0 177 4.47715 177 10V36C177 41.5228 172.523 46 167 46H10C4.47715 46 0 41.5228 0 36V10Z"/>
+            <Canvas x:Key="Addbutton2"
+                    Height="46"
+                    Width="177">
+                <Path Fill="#1A73E8"
+                      Data="M0 10C0 4.47715 4.47715 0 10 0H167C172.523 0 177 4.47715 177 10V36C177 41.5228 172.523 46 167 46H10C4.47715 46 0 41.5228 0 36V10Z" />
 
-                <Path Fill="#EBEBEB" Data="M34.2244 24.8179H25.5202V33.9646H22.6189V24.8179H13.9147V21.769H22.6189V12.6223H25.5202V21.769H34.2244V24.8179Z"/>
+                <Path Fill="#EBEBEB"
+                      Data="M34.2244 24.8179H25.5202V33.9646H22.6189V24.8179H13.9147V21.769H22.6189V12.6223H25.5202V21.769H34.2244V24.8179Z" />
             </Canvas>
 
-            <Thickness x:Key="MenuSpacing">0,40,0,0 </Thickness>
+            <Thickness x:Key="MenuSpacing">0,30,0,0</Thickness>
 
-            <Color x:Key="fff"></Color>
+            <SolidColorBrush x:Key="PrimaryColorCustom"
+                             Color="#2196f3"
+                             Opacity=".5"/>
 
-
-            <Style x:Key="AddButton" TargetType="Button" >
-                <Setter Property="Background" Value="#1A73E8"/>
-                <Setter Property="Foreground" Value="White"/>
-                <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
-                <Setter Property="Width" Value="150"/>
-                <Setter Property="Height" Value="35"/>
-                <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Style x:Key="AddButton"
+                   TargetType="Button">
+                <Setter Property="Background"
+                        Value="#1A73E8" />
+                <Setter Property="Foreground"
+                        Value="White" />
+                <Setter Property="FocusVisualStyle"
+                        Value="{x:Null}" />
+                <Setter Property="Width"
+                        Value="150" />
+                <Setter Property="Height"
+                        Value="35" />
+                <Setter Property="HorizontalAlignment"
+                        Value="Left" />
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="Button">
-                            <Border Background="{TemplateBinding Background}" CornerRadius="10">
-                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <Border Background="{TemplateBinding Background}"
+                                    CornerRadius="10">
+                                <ContentPresenter HorizontalAlignment="Center"
+                                                  VerticalAlignment="Center" />
                             </Border>
                         </ControlTemplate>
                     </Setter.Value>
                 </Setter>
 
                 <Style.Triggers>
-                    <Trigger Property="IsMouseOver" Value="True">
-                        <Setter Property="Background" Value="#1356ad"/>
-                        <Setter Property="Foreground" Value="White"/>
+                    <Trigger Property="IsMouseOver"
+                             Value="True">
+                        <Setter Property="Background"
+                                Value="#1356ad" />
+                        <Setter Property="Foreground"
+                                Value="White" />
                     </Trigger>
                 </Style.Triggers>
 
