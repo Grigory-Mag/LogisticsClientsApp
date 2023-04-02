@@ -3,12 +3,12 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:local="clr-namespace:ClientsApp"
-             StartupUri="MainWindow.xaml">
+             StartupUri="StartWindow.xaml">
     <Application.Resources>
         <ResourceDictionary>
             <!-- MATERIAL DESIGN -->
             <ResourceDictionary.MergedDictionaries>
-                <materialDesign:BundledTheme BaseTheme="Dark"
+                <materialDesign:BundledTheme BaseTheme="Light"
                                              PrimaryColor="Blue"
                                              SecondaryColor="Red"/>
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
@@ -27,9 +27,11 @@
 
             <Thickness x:Key="MenuSpacing">0,30,0,0</Thickness>
 
-            <SolidColorBrush x:Key="PrimaryColorCustom"
+            <SolidColorBrush x:Key="PrimaryCustomOpacityColor"
                              Color="#2196f3"
                              Opacity=".5"/>
+            <SolidColorBrush x:Key="PrimaryCustomColor"
+                             Color="#2196f3" />
 
             <Style x:Key="AddButton"
                    TargetType="Button">

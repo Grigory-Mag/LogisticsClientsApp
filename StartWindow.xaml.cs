@@ -1,4 +1,6 @@
-﻿using ApiService;
+﻿using ClientsApp;
+using LogisticsClientsApp.Pages;
+using MaterialDesignThemes.Wpf;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,23 +12,43 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Windows.Media.Animation;
-using System.Reflection;
-using MaterialDesignThemes.Wpf.Converters;
-using MaterialDesignThemes.Wpf;
-using System.Runtime.CompilerServices;
-using LogisticsClientsApp.Pages;
+using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
 
-namespace ClientsApp
+namespace LogisticsClientsApp
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Логика взаимодействия для StartWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class StartWindow : Window
     {
+        public StartWindow()
+        {
+            InitializeComponent();
+            MainFrameK.Navigate(new TablePage());
+
+            MenuOpenBtn.Click += Button_Click_1;
+            MenuCloseBtn.Click += btnclose_Click;
+
+            //LeftMenu.Visibility = Visibility.Hidden;
+
+            InitElements();
+
+            SelectBtn("References");
+
+        }
+
+        private void DarkModeToggle_Checked(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void MainFrameK_Navigated(object sender, System.Windows.Navigation.NavigationEventArgs e)
+        {
+            
+        }
+
         class TestObject
         {
             public string phone { get; set; }
@@ -37,26 +59,6 @@ namespace ClientsApp
                 this.phone = phone;
                 this.number = number;
             }
-        }
-
-        public MainWindow()
-        {
-            InitializeComponent();
-            MainFrame.NavigationService.Navigate(new TablePage());
-
-            MenuOpenBtn.Click += Button_Click_1;
-            MenuCloseBtn.Click += btnclose_Click;
-
-            InitElements();
-            List<TestObject> phones = new List<TestObject>()
-        {
-            new TestObject("123211", 1),
-            new TestObject("Clowns", 2),
-            new TestObject("abb1234", 3)
-        };
-            phonesGrid.ItemsSource = phones;
-
-            SelectBtn("References");
         }
 
         private Dictionary<string, List<object>> buttonsReferences = new Dictionary<string, List<object>>();
@@ -72,40 +74,40 @@ namespace ClientsApp
         {
 
             buttonsReferences.Add("References", new List<object>()
-        {   TextBlockReferences,
-            ReferencesIcon,
-            ReferencesBtn,
-            true,
-            MenuReferencesBtn,
-            MenuReferencesIcon
-        });
+            {   TextBlockReferences,
+                ReferencesIcon,
+                ReferencesBtn,
+                true,
+                MenuReferencesBtn,
+                MenuReferencesIcon
+            });
 
             buttonsReferences.Add("Messages", new List<object>()
-        {  TextBlockMessages,
-            MessagesIcon,
-            MessagesBtn,
-            false,
-            MenuMessagesBtn,
-            MenuMessagesIcon
-        });
+            {  TextBlockMessages,
+                MessagesIcon,
+                MessagesBtn,
+                false,
+                MenuMessagesBtn,
+                MenuMessagesIcon
+            });
 
             buttonsReferences.Add("Email", new List<object>()
-        {  TextBlockEmail,
-            EmailIcon,
-            EmailBtn,
-            false,
-            MenuEmailBtn,
-            MenuEmailIcon
-        });
+            {  TextBlockEmail,
+                EmailIcon,
+                EmailBtn,
+                false,
+                MenuEmailBtn,
+                MenuEmailIcon
+            });
 
             buttonsReferences.Add("Account", new List<object>()
-        {  TextBlockAccount,
-            AccountIcon,
-            AccountBtn,
-            false,
-            MenuAccountBtn,
-            MenuAccountIcon
-        });
+            {  TextBlockAccount,
+                AccountIcon,
+                AccountBtn,
+                false,
+                MenuAccountBtn,
+                MenuAccountIcon
+            });
         }
 
         private void SetSelectedColor(string key)
@@ -188,10 +190,12 @@ namespace ClientsApp
          * MENU BUTTONS
          * --------------
          */
+
         private void ReferencesBtn_Click(object sender, RoutedEventArgs e)
         {
             UncheckAllBtns();
             CheckSelectionBtn("References");
+            Sanyok.IsSubmenuOpen = true;
         }
 
         private void MessagesBtn_Click(object sender, RoutedEventArgs e)
@@ -240,4 +244,5 @@ namespace ClientsApp
 
         }
     }
+
 }
