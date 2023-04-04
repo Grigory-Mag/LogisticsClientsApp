@@ -13,7 +13,7 @@
         TextOptions.TextRenderingMode="Auto"
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
-        Height="750"
+        Height="800"
         Width="1000"
         Title="StartWindow">
     <Window.Resources>
@@ -47,6 +47,9 @@
 
         <Frame Grid.Column="1"
                Grid.ZIndex = "2"
+               Margin="80,20,80,0"
+               HorizontalAlignment="Stretch"
+               VerticalAlignment="Stretch"
                Name="MainFrameK"
                Navigated="MainFrameK_Navigated" />
 
@@ -315,7 +318,7 @@
                             <TextBlock Text="Logout"
                                        Typography.Capitals="Normal"
                                        FontSize="24"
-                                       
+                                       Name="TextBlockLogout"
                                        FontStyle="Normal"
                                        HorizontalAlignment="Left"
                                        Margin="30,0,0,0"

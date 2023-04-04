@@ -1,4 +1,5 @@
 ﻿using ClientsApp;
+using LogisticsClientsApp.Localizations;
 using LogisticsClientsApp.Pages;
 using MaterialDesignThemes.Wpf;
 using System;
@@ -34,6 +35,9 @@ namespace LogisticsClientsApp
             //LeftMenu.Visibility = Visibility.Hidden;
 
             InitElements();
+
+            Locale locale = new Locale("ru");
+            locale.SetLocale(this);
 
             SelectBtn("References");
 

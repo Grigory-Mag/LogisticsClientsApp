@@ -19,6 +19,12 @@ using ApiService;
 using Grpc.Core;
 using Grpc.Net.Client;
 using Microsoft.Xaml.Behaviors.Core;
+using System.Resources;
+using LogisticsClientsApp.Localizations.Data;
+using LogisticsClientsApp.Localizations;
+using System.DirectoryServices.ActiveDirectory;
+using System.Runtime.InteropServices;
+using System.Reflection;
 
 namespace LogisticsClientsApp.Pages
 {
@@ -27,40 +33,31 @@ namespace LogisticsClientsApp.Pages
     /// </summary>
     public partial class TablePage : Page
     {
-        class TestObject
-        {
-            public string phone { get; set; }
-            public int number { get; set; }
 
-            public TestObject(string phone, int number)
-            {
-                this.phone = phone;
-                this.number = number;
-            }
-        }
         public PaletteHelper palette;
         ITheme theme = new PaletteHelper().GetTheme();
 
         public TablePage()
         {
             InitializeComponent();
+            Locale locale = new Locale("ru");
+            locale.SetLocale(this);
 
             palette = new PaletteHelper();
-            List<TestObject> phones = new List<TestObject>()
-            {
-                new TestObject("123211", 1),
-                new TestObject("Clowns", 2),
-                new TestObject("abb1234", 3)
-            };
-            phonesGrid.ItemsSource = phones;
 
-            //var DataProvider = new DataProvider();
-            //CargoObject result = DataProvider.getTestData().Result;
             SetData();
-            //List<CargoObject> objects = new List<CargoObject>();
-            //objects.Add(cargo);
-            //phonesGrid.ItemsSource = objects;
+            test();
+        }
 
+        public string IdHeader = "1231";
+        public Binding binding = new Binding();
+        private void test()
+        {
+            IdHeader = RU.SearchField;
+            binding.ElementName = "Hint";
+            binding.Path = new PropertyPath("Text");
+            HintAssist.SetHint(testBix, IdHeader);
+            //DataContext dc = new List<string>() {"abba1234", "cock", "clowns" };
         }
         public async Task<int> SetData()
         {
@@ -122,6 +119,7 @@ namespace LogisticsClientsApp.Pages
             theme.SetBaseTheme(Theme.Light);
             palette.SetTheme(theme);
         }
+
     }
 
 }

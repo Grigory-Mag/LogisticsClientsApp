@@ -12,8 +12,8 @@
       Background="{DynamicResource MaterialDesignPaper}"
       FontFamily="{DynamicResource MaterialDesignFont}"
       xmlns:local="clr-namespace:LogisticsClientsApp.Pages"
-      Height="900"
-      Width="1200"
+      Height="Auto"
+      Width="Auto"
       mc:Ignorable="d"
       Title="TablePage">
     <Page.Resources>
@@ -40,39 +40,167 @@
                          Opacity="0" />
     </Page.Resources>
 
-    <Grid HorizontalAlignment="Stretch">
+    <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="1*" />
-            <RowDefinition Height="1*" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
 
-        <Grid Grid.Column="1"
-              Grid.Row="0"
-              HorizontalAlignment="Center">
+        <Grid Grid.Column="0"
+              Grid.Row="0">
             <Grid.RowDefinitions>
-                <RowDefinition Height="5*" />
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="Auto" />
                 <RowDefinition Height="5*" />
             </Grid.RowDefinitions>
-            <StackPanel>
-                <materialDesign:Card Padding="32"
-                                     Grid.Column="2"
-                                     Margin="16">
-                    <TextBlock Style="{DynamicResource MaterialDesignHeadline6TextBlock}">My First Material Design App</TextBlock>
-                </materialDesign:Card>
+            <StackPanel Grid.Row="1">
+                <Grid Margin="0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="5*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <!-- SEARCH FIELD -->
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*" />
+                        </Grid.ColumnDefinitions>
+
+
+                        <StackPanel Orientation="Horizontal"
+                                    Grid.Column="0"
+                                    HorizontalAlignment="Center">
+                            <ComboBox x:Name="SearchFilter"
+                                      FontSize="18"
+                                      MinWidth="200"
+                                      Width="Auto"
+                                      materialDesign:HintAssist.Hint="Parameters"
+                                      IsEnabled="{Binding Path=IsChecked, ElementName=FilledComboBoxEnabledCheckBox}"
+                                      Style="{StaticResource MaterialDesignOutlinedComboBox}">
+                            </ComboBox>
+
+                            <materialDesign:PackIcon Width="50"
+                                                     Height="50"
+                                                     HorizontalAlignment="Left"
+                                                     Foreground="#7c767e"
+                                                     Grid.Column="1"
+                                                     Kind="Search" />
+                            <TextBox MaxWidth="400"
+                                     MaxHeight="100"
+                                     MaxLength="30"
+                                     MaxLines="1"
+                                     Width="400"
+                                     Grid.Column="0"
+                                     Name="testBix"
+                                     VerticalAlignment="Top"
+                                     HorizontalAlignment="Center"
+                                     FontSize="20"
+                                     materialDesign:HintAssist.Hint="Search"
+                                     AcceptsReturn="True"
+                                     IsEnabled="{Binding Path=IsChecked, ElementName=MaterialDesignOutlinedTextBoxEnabledComboBox}"
+                                     Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                                     TextWrapping="Wrap"
+                                     VerticalScrollBarVisibility="Auto">
+                            </TextBox>
+
+                        </StackPanel>
+
+
+                    </Grid>
+
+                    <!-- ### SEARCH FIELD ### -->
+
+                    <StackPanel Orientation="Horizontal"
+                                HorizontalAlignment="Right"
+                                Grid.Column="1">
+
+                        <Button HorizontalAlignment="Right"
+                                Width="45"
+                                Height="45"
+                                Grid.Column="1"
+                                Style="{StaticResource MaterialDesignFlatButton}">
+                            <StackPanel Margin="-15,-5">
+                                <materialDesign:PackIcon Kind="Settings"
+                                                         Width="45"
+                                                         Height="45" />
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+
+
+
+
+
+                </Grid>
+
+
+
+                <!-- DIVIDER -->
+
+                <Rectangle Fill="#74D8FF"
+                           Height="5"
+                           RadiusX="2"
+                           RadiusY="2"
+                           Margin="0,20,0,20" />
+
+                <!-- ### DIVIDER ### -->
+
+                <Grid Margin="0,0,0,20">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Orientation="Horizontal"
+                                Grid.Column="0"
+                                Margin="0,0,0,20">
+                        <ToggleButton Name="ToggleDarkMode"
+                                      Checked="ToggleDarkMode_Checked"
+                                      Grid.Row="1"
+                                      Unchecked="ToggleDarkMode_Unchecked" />
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1"
+                                HorizontalAlignment="Right">
+                        <Button Width="Auto"
+                                FontSize="18"
+                                IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
+                                Style="{StaticResource MaterialDesignRaisedButton}"
+                                materialDesign:ColorZoneAssist.Mode="SecondaryDark"
+                                Foreground="White"
+                                ToolTip=""
+                                Click="Button_Click_1">
+                            <StackPanel>
+                                <TextBlock Text="add new record"
+                                           Typography.Capitals="SmallCaps"
+                                           Name="AddRecordBtn"
+                                           Margin="10,0,0,0"
+                                           FontSize="18"
+                                           FontStyle="Normal" />
+                                <materialDesign:PackIcon Kind="Plus"
+                                                         Height="20"
+                                                         Width="20"
+                                                         Margin="-10,-20,0,0" />
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+
+                </Grid>
+
+
+
+                <!-- DATA GRID -->
 
                 <DataGrid x:Name="phonesGrid"
-                          Width="Auto"
-                          FontSize="16"
-                          Background="RoyalBlue"
+                          MaxHeight="700"
+                          FontSize="18"
                           ItemsSource="{Binding Source=objects}"
                           AutoGenerateColumns="False">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="Id"
-                                            Width="Auto"
+                        <DataGridTextColumn Width="Auto"
+                                            Header="Id"
                                             Binding="{Binding Id}" />
                         <DataGridTextColumn Header="Type"
                                             Width="Auto"
@@ -92,67 +220,56 @@
                         <DataGridTextColumn Header="Price"
                                             Width="Auto"
                                             Binding="{Binding Price}" />
-                        <DataGridCheckBoxColumn Header="Test" />
+                        <DataGridTemplateColumn>
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel>
+                                        <Button Width="40"
+                                                Height="40">
+                                            <StackPanel Width="Auto"
+                                                        Height="Auto"
+                                                        Margin="-22,-5,-20,0">
+                                                <ContentControl ContentTemplate="{StaticResource OpenButton}"
+                                                                Width="40"
+                                                                Height="40" />
+                                            </StackPanel>
+                                        </Button>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
+                        <DataGridTemplateColumn Header="Artyomka">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel>
+                                        <Button Width="40"
+                                                Height="40"
+                                                Style="{StaticResource MaterialDesignFlatSecondaryLightBgButton}"
+                                                Background="{StaticResource AccentCustomColor}"
+                                                SnapsToDevicePixels="True">
+                                            <StackPanel Width="Auto"
+                                                        Height="Auto"
+                                                        Margin="-22,-5,-20,0">
+                                                <ContentControl ContentTemplate="{StaticResource DeleteButton}"
+                                                                Width="40"
+                                                                Height="40" />
+                                            </StackPanel>
+                                        </Button>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
                     </DataGrid.Columns>
 
 
                 </DataGrid>
 
+                <!-- ### DATA GRID ### -->
 
             </StackPanel>
         </Grid>
-
-
-        <Button x:Name="button"
-                Style="{StaticResource AddButton}"
-                FontFamily="{DynamicResource MaterialDesignFont}"
-                Margin="220,359,0,0"
-                VerticalAlignment="Top"
-                Click="button_Click"
-                Height="55"
-                Width="180"
-                Grid.ColumnSpan="2">
-            <TextBlock Text="Add new record"
-                       FontSize="18"
-                       FontStyle="Normal" />
-        </Button>
-
-
-        <ToggleButton Name="ToggleDarkMode"
-                      Checked="ToggleDarkMode_Checked"
-                      Unchecked="ToggleDarkMode_Unchecked" />
-
-        <Button Width="180"
-                IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
-                Style="{StaticResource MaterialDesignRaisedDarkButton}"
-                materialDesign:ColorZoneAssist.Mode="SecondaryDark"
-                ToolTip="Resource name: MaterialDesignRaisedLightDarkButton"
-                Margin="200,479,160,279"
-                Click="Button_Click_1"
-                Grid.Column="1">
-            <StackPanel>
-                <TextBlock Text="add new record"
-                           Typography.Capitals="SmallCaps"
-                           FontSize="18"
-                           FontStyle="Normal" />
-                <materialDesign:PackIcon Kind="Plus"
-                                         Margin="-20,-18,0,0" />
-            </StackPanel>
-        </Button>
-
-        <StackPanel Grid.Row="1">
-            <Button Width="Auto"
-                    Height="Auto"
-                    HorizontalAlignment="Center"
-                    Content="DARK"
-                    IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
-                    Style="{StaticResource MaterialDesignOutlinedButton}"
-                    ToolTip="MaterialDesignOutlinedButton" />
-        </StackPanel>
-
-
-
-
 
     </Grid>
 </Page>
