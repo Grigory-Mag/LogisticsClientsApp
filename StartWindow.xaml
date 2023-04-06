@@ -14,8 +14,9 @@
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
         Height="800"
-        Width="1000"
-        Title="StartWindow">
+        Width="1050"
+        Title="Моя логистика"
+        Icon="/truck.png">
     <Window.Resources>
         <Color x:Key="PrimaryColor">#2196f3</Color>
         <Storyboard x:Key="OpenMenu">
@@ -47,7 +48,7 @@
 
         <Frame Grid.Column="1"
                Grid.ZIndex = "2"
-               Margin="80,20,80,0"
+               Margin="80,40,80,20"
                HorizontalAlignment="Stretch"
                VerticalAlignment="Stretch"
                Name="MainFrameK"
