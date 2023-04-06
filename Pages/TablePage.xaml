@@ -40,43 +40,35 @@
                          Opacity="0" />
     </Page.Resources>
 
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="1*" />
-        </Grid.ColumnDefinitions>
+    <Grid Grid.RowSpan="2">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="1*" />
         </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0">
+            <Grid Margin="0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="5*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
 
-
-        <Grid Grid.Column="0"
-              Grid.Row="0">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="1*" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="5*" />
-            </Grid.RowDefinitions>
-            <StackPanel Grid.Row="1">
-                <Grid Margin="0,0">
+                <!-- SEARCH FIELD -->
+                <Grid Grid.Column="0">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="5*" />
                         <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="1*" />
                     </Grid.ColumnDefinitions>
-
-                    <!-- SEARCH FIELD -->
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="1*" />
-                        </Grid.ColumnDefinitions>
 
 
                         <StackPanel Orientation="Horizontal"
-                                    Grid.Column="0"
-                                    HorizontalAlignment="Center">
+                                    HorizontalAlignment="Center"
+                                    Grid.Column="1">
+
                             <ComboBox x:Name="SearchFilter"
                                       FontSize="18"
                                       MinWidth="200"
                                       Width="Auto"
+                                      Margin="0,0,40,0"
                                       materialDesign:HintAssist.Hint="Parameters"
                                       IsEnabled="{Binding Path=IsChecked, ElementName=FilledComboBoxEnabledCheckBox}"
                                       Style="{StaticResource MaterialDesignOutlinedComboBox}">
@@ -92,7 +84,7 @@
                                      MaxHeight="100"
                                      MaxLength="30"
                                      MaxLines="1"
-                                     Width="400"
+                                     Width="300"
                                      Grid.Column="0"
                                      Name="testBix"
                                      VerticalAlignment="Top"
@@ -108,168 +100,380 @@
 
                         </StackPanel>
 
-
-                    </Grid>
-
-                    <!-- ### SEARCH FIELD ### -->
-
-                    <StackPanel Orientation="Horizontal"
-                                HorizontalAlignment="Right"
-                                Grid.Column="1">
-
-                        <Button HorizontalAlignment="Right"
-                                Width="45"
-                                Height="45"
-                                Grid.Column="1"
-                                Style="{StaticResource MaterialDesignFlatButton}">
-                            <StackPanel Margin="-15,-5">
-                                <materialDesign:PackIcon Kind="Settings"
-                                                         Width="45"
-                                                         Height="45" />
-                            </StackPanel>
-                        </Button>
-                    </StackPanel>
-
-
-
-
-
                 </Grid>
 
+                <!-- ### SEARCH FIELD ### -->
 
+                <StackPanel Orientation="Horizontal"
+                            HorizontalAlignment="Right"
+                            Grid.Column="1">
 
-                <!-- DIVIDER -->
+                    <Button HorizontalAlignment="Right"
+                            Width="45"
+                            Height="45"
+                            Grid.Column="1"
+                            Style="{StaticResource MaterialDesignFlatButton}">
+                        <StackPanel Margin="-15,-5">
+                            <materialDesign:PackIcon Kind="Settings"
+                                                     Width="45"
+                                                     Height="45" />
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+
+            </Grid>
+
+            <!-- DIVIDER -->
+
+            <StackPanel>
+
+                <TextBlock Text="table"
+                           Name="TextBlockTableName"
+                           Typography.Capitals="SmallCaps"
+                           Foreground="{StaticResource PrimaryCustomColor}"
+                           FontSize="24"
+                           Margin="0,15"
+                           VerticalAlignment="Center"
+                           Grid.Column="0" />
+
 
                 <Rectangle Fill="#74D8FF"
                            Height="5"
                            RadiusX="2"
                            RadiusY="2"
-                           Margin="0,20,0,20" />
-
-                <!-- ### DIVIDER ### -->
-
-                <Grid Margin="0,0,0,20">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <StackPanel Orientation="Horizontal"
-                                Grid.Column="0"
-                                Margin="0,0,0,20">
-                        <ToggleButton Name="ToggleDarkMode"
-                                      Checked="ToggleDarkMode_Checked"
-                                      Grid.Row="1"
-                                      Unchecked="ToggleDarkMode_Unchecked" />
-                    </StackPanel>
-
-                    <StackPanel Grid.Column="1"
-                                HorizontalAlignment="Right">
-                        <Button Width="Auto"
-                                FontSize="18"
-                                IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
-                                Style="{StaticResource MaterialDesignRaisedButton}"
-                                materialDesign:ColorZoneAssist.Mode="SecondaryDark"
-                                Foreground="White"
-                                ToolTip=""
-                                Click="Button_Click_1">
-                            <StackPanel>
-                                <TextBlock Text="add new record"
-                                           Typography.Capitals="SmallCaps"
-                                           Name="AddRecordBtn"
-                                           Margin="10,0,0,0"
-                                           FontSize="18"
-                                           FontStyle="Normal" />
-                                <materialDesign:PackIcon Kind="Plus"
-                                                         Height="20"
-                                                         Width="20"
-                                                         Margin="-10,-20,0,0" />
-                            </StackPanel>
-                        </Button>
-                    </StackPanel>
-
-                </Grid>
-
-
-
-                <!-- DATA GRID -->
-
-                <DataGrid x:Name="phonesGrid"
-                          MaxHeight="700"
-                          FontSize="18"
-                          ItemsSource="{Binding Source=objects}"
-                          AutoGenerateColumns="False">
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Width="Auto"
-                                            Header="Id"
-                                            Binding="{Binding Id}" />
-                        <DataGridTextColumn Header="Type"
-                                            Width="Auto"
-                                            Binding="{Binding Type}" />
-                        <DataGridTextColumn Header="Constraints"
-                                            Width="Auto"
-                                            Binding="{Binding Constraints}" />
-                        <DataGridTextColumn Header="Weight"
-                                            Width="Auto"
-                                            Binding="{Binding Weight}" />
-                        <DataGridTextColumn Header="Volume"
-                                            Width="Auto"
-                                            Binding="{Binding Volume}" />
-                        <DataGridTextColumn Header="Name"
-                                            Width="Auto"
-                                            Binding="{Binding Name}" />
-                        <DataGridTextColumn Header="Price"
-                                            Width="Auto"
-                                            Binding="{Binding Price}" />
-                        <DataGridTemplateColumn>
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <StackPanel>
-                                        <Button Width="40"
-                                                Height="40">
-                                            <StackPanel Width="Auto"
-                                                        Height="Auto"
-                                                        Margin="-22,-5,-20,0">
-                                                <ContentControl ContentTemplate="{StaticResource OpenButton}"
-                                                                Width="40"
-                                                                Height="40" />
-                                            </StackPanel>
-                                        </Button>
-                                    </StackPanel>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-
-                        <DataGridTemplateColumn Header="Artyomka">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <StackPanel>
-                                        <Button Width="40"
-                                                Height="40"
-                                                Style="{StaticResource MaterialDesignFlatSecondaryLightBgButton}"
-                                                Background="{StaticResource AccentCustomColor}"
-                                                SnapsToDevicePixels="True">
-                                            <StackPanel Width="Auto"
-                                                        Height="Auto"
-                                                        Margin="-22,-5,-20,0">
-                                                <ContentControl ContentTemplate="{StaticResource DeleteButton}"
-                                                                Width="40"
-                                                                Height="40" />
-                                            </StackPanel>
-                                        </Button>
-                                    </StackPanel>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-
-                    </DataGrid.Columns>
-
-
-                </DataGrid>
-
-                <!-- ### DATA GRID ### -->
-
+                           Margin="0,20,0,40" />
             </StackPanel>
-        </Grid>
 
+
+            <!-- ### DIVIDER ### -->
+
+            <Grid Margin="0,0,0,20">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal"
+                            Grid.Column="0"
+                            Margin="0,0,0,20">
+                    <ToggleButton Name="ToggleDarkMode"
+                                  Checked="ToggleDarkMode_Checked"
+                                  Grid.Row="1"
+                                  Unchecked="ToggleDarkMode_Unchecked" />
+                </StackPanel>
+
+                <StackPanel Grid.Column="1"
+                            HorizontalAlignment="Right">
+                    <Button Width="Auto"
+                            FontSize="18"
+                            IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
+                            Style="{StaticResource MaterialDesignRaisedButton}"
+                            materialDesign:ColorZoneAssist.Mode="SecondaryDark"
+                            Foreground="White"
+                            ToolTip=""
+                            Click="Button_Click_1">
+                        <StackPanel>
+                            <TextBlock Text="add new record"
+                                       Typography.Capitals="SmallCaps"
+                                       Name="AddRecordBtn"
+                                       Margin="10,0,0,0"
+                                       FontSize="18"
+                                       FontStyle="Normal" />
+                            <materialDesign:PackIcon Kind="Plus"
+                                                     Height="20"
+                                                     Width="20"
+                                                     Margin="-10,-20,0,0" />
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+
+            </Grid>
+
+
+
+            <!-- DATA GRID -->
+            <materialDesign:Card 
+                HorizontalAlignment="Center"
+                VerticalAlignment="Stretch">
+                <StackPanel>
+                    <DataGrid x:Name="phonesGrid"
+                              Grid.Row="3"
+                              MaxHeight="700"
+                              FontSize="18"
+                              ItemsSource="{Binding Source=objects}"
+                              AutoGenerateColumns="False">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Width="Auto"
+                                                Header="Id"
+                                                Binding="{Binding Id}" />
+                            <DataGridTextColumn Header="Type"
+                                                Width="Auto"
+                                                Binding="{Binding Type}" />
+                            <DataGridTextColumn Header="Constraints"
+                                                Width="Auto"
+                                                Binding="{Binding Constraints}" />
+                            <DataGridTextColumn Header="Weight"
+                                                Width="Auto"
+                                                Binding="{Binding Weight}" />
+                            <DataGridTextColumn Header="Volume"
+                                                Width="Auto"
+                                                Binding="{Binding Volume}" />
+                            <DataGridTextColumn Header="Name"
+                                                Width="Auto"
+                                                Binding="{Binding Name}" />
+                            <DataGridTextColumn Header="Price"
+                                                Width="Auto"
+                                                Binding="{Binding Price}" />
+                            <DataGridTemplateColumn>
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel>
+                                            <Button Width="40"
+                                                    Height="40">
+                                                <StackPanel Width="Auto"
+                                                            Height="Auto"
+                                                            Margin="-22,-5,-20,0">
+                                                    <ContentControl ContentTemplate="{StaticResource OpenButton}"
+                                                                    Width="40"
+                                                                    Height="40" />
+                                                </StackPanel>
+                                            </Button>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+
+                            <DataGridTemplateColumn Header="Artyomka">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel>
+                                            <Button Width="40"
+                                                    Height="40"
+                                                    Style="{StaticResource MaterialDesignFlatSecondaryLightBgButton}"
+                                                    Background="{StaticResource AccentCustomColor}"
+                                                    SnapsToDevicePixels="True">
+                                                <StackPanel Width="Auto"
+                                                            Height="Auto"
+                                                            Margin="-22,-5,-20,0">
+                                                    <ContentControl ContentTemplate="{StaticResource DeleteButton}"
+                                                                    Width="40"
+                                                                    Height="40" />
+                                                </StackPanel>
+                                            </Button>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+
+                        </DataGrid.Columns>
+
+
+                    </DataGrid>
+
+                    <TextBlock Text="1 - 10 of 20"
+                               FontSize="18"
+                               VerticalAlignment="Bottom"
+                               HorizontalAlignment="Right"
+                               Margin="0,10,80,0" />
+
+                    <StackPanel Orientation="Horizontal"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Bottom"
+                                Margin="0,20,70,0"
+                                Grid.Row="1">
+
+                        <Button Width="40"
+                                Click="PrevTablePageButton_Click"
+                                Name="PrevTablePageButton"
+                                Height="40"
+                                Margin="0,0,20,0"
+                                Style="{StaticResource ChevronButton}">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Rectangle Fill="Transparent"
+                                           Height="40"
+                                           Grid.Row="0"
+                                           Width="40" />
+                                <materialDesign:PackIcon Kind="ChevronLeft"
+                                                         Grid.Row="0"
+                                                         Width="40"
+                                                         Height="40" />
+                            </Grid>
+                        </Button>
+
+                        <Button Width="40"
+                                Click="NextTablePageButton_Click"
+                                Name="NextTablePageButton"
+                                Height="40"
+                                Style="{StaticResource ChevronButton}">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Rectangle Fill="Transparent"
+                                           Height="40"
+                                           Grid.Row="0"
+                                           Width="40" />
+                                <materialDesign:PackIcon Kind="ChevronRight"
+                                                         Grid.Row="0"
+                                                         Width="40"
+                                                         Height="40" />
+                            </Grid>
+                        </Button>
+
+                    </StackPanel>
+                </StackPanel>
+                
+            </materialDesign:Card>
+            
+
+            <!-- ### DATA GRID ### -->
+
+
+
+        </StackPanel>
+
+
+
+        <!--  <StackPanel Orientation="Horizontal"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Bottom"
+                    Margin="-50,0,0,0"
+                    Grid.Row="1">
+            <Button Width="40"
+                    Click="PrevTablePageButton_Click"
+                    Name="PrevTablePageButton"
+                    Height="40"
+                    Style="{StaticResource ChevronButton}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Rectangle Fill="Transparent"
+                               Height="40"
+                               Grid.Row="0"
+                               Width="40" />
+                    <materialDesign:PackIcon Kind="ChevronLeft"
+                                             Grid.Row="0"
+                                             Width="40"
+                                             Height="40" />
+                </Grid>
+            </Button>
+            <StackPanel Orientation="Horizontal">
+                <Rectangle Fill="#74D8FF"
+                           Height="35"
+                           Width="2"
+                           RadiusX=".8"
+                           RadiusY=".8"
+                           Margin="0,0,10,0" />
+                <Button FontSize="18"
+                        Name="ButtonPageNum1"
+                        Width="40"
+                        Height="40"
+                        Style="{StaticResource MaterialDesignFlatMidBgButton}"
+                        materialDesign:ButtonAssist.CornerRadius="8"
+                        Margin="0,0,10,0"
+                        Foreground="White">
+                    <TextBlock Text="1"
+                               Name="ButtonTextNum1"
+                               HorizontalAlignment="Center" />
+                </Button>
+                <Button FontSize="18"
+                        Name="ButtonPageNum2"
+                        Width="40"
+                        Height="40"
+                        Style="{StaticResource MaterialDesignFlatButton}"
+                        materialDesign:ButtonAssist.CornerRadius="8"
+                        Foreground="{StaticResource PrimaryCustomColor}"
+                        Margin="0,0,10,0">
+                    <TextBlock Text="2"
+                               Name="ButtonTextNum2"
+                               HorizontalAlignment="Center" />
+                </Button>
+                <Button FontSize="18"
+                        Name="ButtonPageNum3"
+                        Width="40"
+                        Height="40"
+                        Style="{StaticResource MaterialDesignFlatButton}"
+                        materialDesign:ButtonAssist.CornerRadius="8"
+                        Margin="0,0,10,0"
+                        Foreground="{StaticResource PrimaryCustomColor}">
+                    <TextBlock Text="3"
+                               Name="ButtonTextNum3"
+                               HorizontalAlignment="Center" />
+                </Button>
+                <TextBlock Text="..."
+                           FontSize="22"
+                           Name="MorePagesTextBlock"
+                           Margin="0,5,10,0"
+                           Style="{StaticResource MaterialDesignBody1TextBlock}" />
+                <Button FontSize="18"
+                        Name="ButtonPageNum4"
+                        Width="40"
+                        Height="40"
+                        Style="{StaticResource MaterialDesignFlatButton}"
+                        materialDesign:ButtonAssist.CornerRadius="8"
+                        Margin="0,0,10,0"
+                        Foreground="{StaticResource PrimaryCustomColor}">
+                    <TextBlock Text="4"
+                               Name="ButtonTextNum4"
+                               HorizontalAlignment="Center" />
+                </Button>
+                <Button FontSize="18"
+                        Name="ButtonPageNum5"
+                        Width="40"
+                        Height="40"
+                        Style="{StaticResource MaterialDesignFlatButton}"
+                        materialDesign:ButtonAssist.CornerRadius="8"
+                        Margin="0,0,10,0"
+                        Foreground="{StaticResource PrimaryCustomColor}">
+                    <TextBlock Text="5"
+                               Name="ButtonTextNum5"
+                               HorizontalAlignment="Center" />
+                </Button>
+                <Button FontSize="18"
+                        Name="ButtonPageNum6"
+                        Width="40"
+                        Height="40"
+                        Style="{StaticResource MaterialDesignFlatButton}"
+                        materialDesign:ButtonAssist.CornerRadius="8"
+                        Margin="0,0,10,0"
+                        Foreground="{StaticResource PrimaryCustomColor}">
+                    <TextBlock Text="6"
+                               Name="ButtonTextNum6"
+                               HorizontalAlignment="Center" />
+                </Button>
+                <Rectangle Fill="#74D8FF"
+                           Height="35"
+                           Width="2"
+                           RadiusX=".8"
+                           RadiusY=".8"
+                           Margin="0,0,0,0" />
+            </StackPanel>
+
+            <Button Width="40"
+                    Click="NextTablePageButton_Click"
+                    Name="NextTablePageButton"
+                    Height="40"
+                    Style="{StaticResource ChevronButton}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Rectangle Fill="Transparent"
+                               Height="40"
+                               Grid.Row="0"
+                               Width="40" />
+                    <materialDesign:PackIcon Kind="ChevronRight"
+                                             Grid.Row="0"
+                                             Width="40"
+                                             Height="40" />
+                </Grid>
+            </Button>
+
+
+        </StackPanel>-->
     </Grid>
+
 </Page>

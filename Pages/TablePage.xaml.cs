@@ -57,7 +57,6 @@ namespace LogisticsClientsApp.Pages
             binding.ElementName = "Hint";
             binding.Path = new PropertyPath("Text");
             HintAssist.SetHint(testBix, IdHeader);
-            //DataContext dc = new List<string>() {"abba1234", "cock", "clowns" };
         }
         public async Task<int> SetData()
         {
@@ -71,7 +70,7 @@ namespace LogisticsClientsApp.Pages
 
         public async Task<CargoObject> GetTestData()
         {
-            UserService.UserServiceClient client = new UserService.UserServiceClient(GrpcChannel.ForAddress("http://localhost:5088"));
+            UserService.UserServiceClient client = new UserService.UserServiceClient(GrpcChannel.ForAddress("http://loclahost:8008"));
             try
             {
                 var item = await client.GetCargoAsync(new GetOrDeleteCargoRequest { Id = 1 });
@@ -120,6 +119,20 @@ namespace LogisticsClientsApp.Pages
             palette.SetTheme(theme);
         }
 
+        private void ChangePage()
+        {
+
+        }
+
+        private void PrevTablePageButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void NextTablePageButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 
 }
