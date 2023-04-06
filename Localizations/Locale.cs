@@ -14,6 +14,7 @@ namespace LogisticsClientsApp.Localizations
 {
     class Locale
     {
+        int test = 0;
         private class TablesLocale
         {
             static List<string> cargoTableHeaders = new List<string>() { "Номер", "Тип", "Ограничения", "Масса", "Объём", "Наименование", "Цена" };
