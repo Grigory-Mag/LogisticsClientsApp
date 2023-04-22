@@ -25,6 +25,10 @@ using LogisticsClientsApp.Localizations;
 using System.DirectoryServices.ActiveDirectory;
 using System.Runtime.InteropServices;
 using System.Reflection;
+using LogisticsClientsApp.Pages.Tables;
+using System.Globalization;
+using LogisticsClientsApp.Validations;
+using LogisticsClientsApp.Pages.Modal;
 
 namespace LogisticsClientsApp.Pages
 {
@@ -35,21 +39,51 @@ namespace LogisticsClientsApp.Pages
     {
 
         public PaletteHelper palette;
+        public Page selectedPage { get; set; }
+        Locale locale;
+        public CargoTablePage cargoTablePageInstance;
         ITheme theme = new PaletteHelper().GetTheme();
+        StartWindow startWindow;
 
         public TablePage()
         {
             InitializeComponent();
-            Locale locale = new Locale("ru");
-            locale.SetLocale(this);
 
-            palette = new PaletteHelper();
-
-            SetData();
-            test();
+            //SetData();
+            //test();
         }
 
-        public string IdHeader = "1231";
+
+
+        private void Page_Loaded(object sender, RoutedEventArgs e)
+        {
+            startWindow = (StartWindow)Window.GetWindow(this);
+            cargoTablePageInstance = new CargoTablePage();
+
+            startWindow.ClearFrameHistory();
+            startWindow.MainGrid.Background = new SolidColorBrush(Colors.Transparent);
+            //DataGridFrame.Navigate(cargoTablePageInstance);
+
+            startWindow.LeftMenu.Visibility = Visibility.Visible;
+            startWindow.MenuOpenBtn.Visibility = Visibility.Visible;
+
+
+            palette = new PaletteHelper();
+            PageInitialize();
+
+        }
+
+        public async Task<bool> PageInitialize()
+        {
+            test();
+            //await SetData();
+            var a = DataGridFrame.Content;
+            locale = new Locale(startWindow.selectedLocale);
+            ChangeSelectedTable(new CargoTablePage());
+            return true;
+        }
+
+        public string IdHeader;
         public Binding binding = new Binding();
         private void test()
         {
@@ -63,17 +97,16 @@ namespace LogisticsClientsApp.Pages
             CargoObject cargo = await GetTestData();
             List<CargoObject> objects = new List<CargoObject>();
             objects.Add(cargo);
-            phonesGrid.ItemsSource = objects;
+            cargoTablePageInstance.dataGrid.ItemsSource = objects;
 
             return 1;
         }
 
         public async Task<CargoObject> GetTestData()
-        {
-            UserService.UserServiceClient client = new UserService.UserServiceClient(GrpcChannel.ForAddress("http://loclahost:8008"));
+        {          
             try
             {
-                var item = await client.GetCargoAsync(new GetOrDeleteCargoRequest { Id = 1 });
+                var item = await startWindow.client.GetCargoAsync(new GetOrDeleteCargoRequest { Id = 1 }, startWindow.headers);
                 return await Task.FromResult(item);
             }
             catch (RpcException ex)
@@ -119,11 +152,6 @@ namespace LogisticsClientsApp.Pages
             palette.SetTheme(theme);
         }
 
-        private void ChangePage()
-        {
-
-        }
-
         private void PrevTablePageButton_Click(object sender, RoutedEventArgs e)
         {
 
@@ -132,6 +160,74 @@ namespace LogisticsClientsApp.Pages
         private void NextTablePageButton_Click(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        public class NumericValidationRule : ValidationRule
+        {
+            public Type ValidationType { get; set; }
+            public override ValidationResult Validate(object value, CultureInfo cultureInfo)
+            {
+                string strValue = Convert.ToString(value);
+
+                if (string.IsNullOrEmpty(strValue))
+                    return new ValidationResult(false, $"Value cannot be coverted to string.");
+                bool canConvert = false;
+                switch (ValidationType.Name)
+                {
+                    
+                    case "Boolean":
+                        bool boolVal = false;
+                        canConvert = bool.TryParse(strValue, out boolVal);
+                        return canConvert ? new ValidationResult(true, null) : new ValidationResult(false, $"Input should be type of boolean");
+                    case "Int32":
+                        int intVal = 0;
+                        canConvert = int.TryParse(strValue, out intVal);
+                        return canConvert ? new ValidationResult(true, null) : new ValidationResult(false, $"Input should be type of Int32");
+                    case "Double":
+                        double doubleVal = 0;
+                        canConvert = double.TryParse(strValue, out doubleVal);
+                        return canConvert ? new ValidationResult(true, null) : new ValidationResult(false, $"Input should be type of Double");
+                    case "Int64":
+                        long longVal = 0;
+                        canConvert = long.TryParse(strValue, out longVal);
+                        return canConvert ? new ValidationResult(true, null) : new ValidationResult(false, $"Input should be type of Int64");
+                    default:
+                        throw new InvalidCastException($"{ValidationType.Name} is not supported");
+                }
+            }
+        }
+
+        private void NameTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            
+        }
+
+        public void ChangeSelectedTable(Page page)
+        {
+            DataGridFrame.Navigate(page);
+            selectedPage = page;
+            locale.SetLocale(this);
+        }
+
+        public void ShowModalPage()
+        {
+            switch (DataGridFrame.Content)
+            {
+                case CargoTablePage:
+                    CargoTablePageModal cargoTablePage = new CargoTablePageModal();
+                    ModalPageFrame.Content = cargoTablePage;
+                    var modalPage = DataGridFrame.Content as CargoTablePage;
+                    cargoTablePage.UpdateDisplayedData(modalPage.dataGrid.SelectedItem as CargoObject);
+
+                    Storyboard? sb = cargoTablePage.Resources["OpenModal"] as Storyboard;
+                    sb!.Begin(ModalPageFrame);
+                    break;
+                case CargoTypesPage:
+                    locale.SetLocale(this);
+                    break;
+            }
+            MainPanel.Opacity = .5;
+            MainPanel.IsEnabled = false;            
         }
     }
 

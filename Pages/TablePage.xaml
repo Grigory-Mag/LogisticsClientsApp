@@ -12,8 +12,11 @@
       Background="{DynamicResource MaterialDesignPaper}"
       FontFamily="{DynamicResource MaterialDesignFont}"
       xmlns:local="clr-namespace:LogisticsClientsApp.Pages"
+      xmlns:domain1="clr-namespace:LogisticsClientsApp.Validations"
+      xmlns:modal="clr-namespace:LogisticsClientsApp.Pages.Modal"
       Height="Auto"
       Width="Auto"
+      Loaded="Page_Loaded"
       mc:Ignorable="d"
       Title="TablePage">
     <Page.Resources>
@@ -40,12 +43,14 @@
                          Opacity="0" />
     </Page.Resources>
 
-    <Grid Grid.RowSpan="2">
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="1*" />
         </Grid.RowDefinitions>
-        <StackPanel Grid.Row="0">
+
+        <StackPanel Grid.Row="0"
+                    Name="MainPanel">
             <Grid Margin="0,0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="5*" />
@@ -60,45 +65,45 @@
                     </Grid.ColumnDefinitions>
 
 
-                        <StackPanel Orientation="Horizontal"
-                                    HorizontalAlignment="Center"
-                                    Grid.Column="1">
+                    <StackPanel Orientation="Horizontal"
+                                HorizontalAlignment="Center"
+                                Grid.Column="1">
 
-                            <ComboBox x:Name="SearchFilter"
-                                      FontSize="18"
-                                      MinWidth="200"
-                                      Width="Auto"
-                                      Margin="0,0,40,0"
-                                      materialDesign:HintAssist.Hint="Parameters"
-                                      IsEnabled="{Binding Path=IsChecked, ElementName=FilledComboBoxEnabledCheckBox}"
-                                      Style="{StaticResource MaterialDesignOutlinedComboBox}">
-                            </ComboBox>
+                        <ComboBox x:Name="SearchFilter"
+                                  FontSize="18"
+                                  MinWidth="200"
+                                  Width="Auto"
+                                  Margin="0,0,40,0"
+                                  materialDesign:HintAssist.Hint="Parameters"
+                                  IsEnabled="{Binding Path=IsChecked, ElementName=FilledComboBoxEnabledCheckBox}"
+                                  Style="{StaticResource MaterialDesignOutlinedComboBox}">
+                        </ComboBox>
 
-                            <materialDesign:PackIcon Width="50"
-                                                     Height="50"
-                                                     HorizontalAlignment="Left"
-                                                     Foreground="#7c767e"
-                                                     Grid.Column="1"
-                                                     Kind="Search" />
-                            <TextBox MaxWidth="400"
-                                     MaxHeight="100"
-                                     MaxLength="30"
-                                     MaxLines="1"
-                                     Width="300"
-                                     Grid.Column="0"
-                                     Name="testBix"
-                                     VerticalAlignment="Top"
-                                     HorizontalAlignment="Center"
-                                     FontSize="20"
-                                     materialDesign:HintAssist.Hint="Search"
-                                     AcceptsReturn="True"
-                                     IsEnabled="{Binding Path=IsChecked, ElementName=MaterialDesignOutlinedTextBoxEnabledComboBox}"
-                                     Style="{StaticResource MaterialDesignOutlinedTextBox}"
-                                     TextWrapping="Wrap"
-                                     VerticalScrollBarVisibility="Auto">
-                            </TextBox>
+                        <materialDesign:PackIcon Width="50"
+                                                 Height="50"
+                                                 HorizontalAlignment="Left"
+                                                 Foreground="#7c767e"
+                                                 Grid.Column="1"
+                                                 Kind="Search" />
+                        <TextBox MaxWidth="400"
+                                 MaxHeight="100"
+                                 MaxLength="30"
+                                 MaxLines="1"
+                                 Width="300"
+                                 Grid.Column="0"
+                                 Name="testBix"
+                                 VerticalAlignment="Top"
+                                 HorizontalAlignment="Center"
+                                 FontSize="20"
+                                 materialDesign:HintAssist.Hint="Search"
+                                 AcceptsReturn="True"
+                                 IsEnabled="{Binding Path=IsChecked, ElementName=MaterialDesignOutlinedTextBoxEnabledComboBox}"
+                                 Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                                 TextWrapping="Wrap"
+                                 VerticalScrollBarVisibility="Auto">
+                        </TextBox>
 
-                        </StackPanel>
+                    </StackPanel>
 
                 </Grid>
 
@@ -112,7 +117,7 @@
                             Width="45"
                             Height="45"
                             Grid.Column="1"
-                            Style="{StaticResource MaterialDesignFlatButton}">
+                            Style="{StaticResource MaterialDesignIconButton}">
                         <StackPanel Margin="-15,-5">
                             <materialDesign:PackIcon Kind="Settings"
                                                      Width="45"
@@ -130,6 +135,7 @@
                 <TextBlock Text="table"
                            Name="TextBlockTableName"
                            Typography.Capitals="SmallCaps"
+                           FontWeight="SemiBold"
                            Foreground="{StaticResource PrimaryCustomColor}"
                            FontSize="24"
                            Margin="0,15"
@@ -143,7 +149,6 @@
                            RadiusY="2"
                            Margin="0,20,0,40" />
             </StackPanel>
-
 
             <!-- ### DIVIDER ### -->
 
@@ -175,6 +180,7 @@
                             <TextBlock Text="add new record"
                                        Typography.Capitals="SmallCaps"
                                        Name="AddRecordBtn"
+                                       TextWrapping="Wrap"
                                        Margin="10,0,0,0"
                                        FontSize="18"
                                        FontStyle="Normal" />
@@ -188,153 +194,21 @@
 
             </Grid>
 
-
-
             <!-- DATA GRID -->
-            <materialDesign:Card 
-                HorizontalAlignment="Center"
-                VerticalAlignment="Stretch">
-                <StackPanel>
-                    <DataGrid x:Name="phonesGrid"
-                              Grid.Row="3"
-                              MaxHeight="700"
-                              FontSize="18"
-                              ItemsSource="{Binding Source=objects}"
-                              AutoGenerateColumns="False">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Width="Auto"
-                                                Header="Id"
-                                                Binding="{Binding Id}" />
-                            <DataGridTextColumn Header="Type"
-                                                Width="Auto"
-                                                Binding="{Binding Type}" />
-                            <DataGridTextColumn Header="Constraints"
-                                                Width="Auto"
-                                                Binding="{Binding Constraints}" />
-                            <DataGridTextColumn Header="Weight"
-                                                Width="Auto"
-                                                Binding="{Binding Weight}" />
-                            <DataGridTextColumn Header="Volume"
-                                                Width="Auto"
-                                                Binding="{Binding Volume}" />
-                            <DataGridTextColumn Header="Name"
-                                                Width="Auto"
-                                                Binding="{Binding Name}" />
-                            <DataGridTextColumn Header="Price"
-                                                Width="Auto"
-                                                Binding="{Binding Price}" />
-                            <DataGridTemplateColumn>
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <StackPanel>
-                                            <Button Width="40"
-                                                    Height="40">
-                                                <StackPanel Width="Auto"
-                                                            Height="Auto"
-                                                            Margin="-22,-5,-20,0">
-                                                    <ContentControl ContentTemplate="{StaticResource OpenButton}"
-                                                                    Width="40"
-                                                                    Height="40" />
-                                                </StackPanel>
-                                            </Button>
-                                        </StackPanel>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
 
-                            <DataGridTemplateColumn Header="Artyomka">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <StackPanel>
-                                            <Button Width="40"
-                                                    Height="40"
-                                                    Style="{StaticResource MaterialDesignFlatSecondaryLightBgButton}"
-                                                    Background="{StaticResource AccentCustomColor}"
-                                                    SnapsToDevicePixels="True">
-                                                <StackPanel Width="Auto"
-                                                            Height="Auto"
-                                                            Margin="-22,-5,-20,0">
-                                                    <ContentControl ContentTemplate="{StaticResource DeleteButton}"
-                                                                    Width="40"
-                                                                    Height="40" />
-                                                </StackPanel>
-                                            </Button>
-                                        </StackPanel>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
+            <Frame Name="DataGridFrame" />
 
-                        </DataGrid.Columns>
-
-
-                    </DataGrid>
-
-                    <TextBlock Text="1 - 10 of 20"
-                               FontSize="18"
-                               VerticalAlignment="Bottom"
-                               HorizontalAlignment="Right"
-                               Margin="0,10,80,0" />
-
-                    <StackPanel Orientation="Horizontal"
-                                HorizontalAlignment="Right"
-                                VerticalAlignment="Bottom"
-                                Margin="0,20,70,0"
-                                Grid.Row="1">
-
-                        <Button Width="40"
-                                Click="PrevTablePageButton_Click"
-                                Name="PrevTablePageButton"
-                                Height="40"
-                                Margin="0,0,20,0"
-                                Style="{StaticResource ChevronButton}">
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                </Grid.RowDefinitions>
-                                <Rectangle Fill="Transparent"
-                                           Height="40"
-                                           Grid.Row="0"
-                                           Width="40" />
-                                <materialDesign:PackIcon Kind="ChevronLeft"
-                                                         Grid.Row="0"
-                                                         Width="40"
-                                                         Height="40" />
-                            </Grid>
-                        </Button>
-
-                        <Button Width="40"
-                                Click="NextTablePageButton_Click"
-                                Name="NextTablePageButton"
-                                Height="40"
-                                Style="{StaticResource ChevronButton}">
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                </Grid.RowDefinitions>
-                                <Rectangle Fill="Transparent"
-                                           Height="40"
-                                           Grid.Row="0"
-                                           Width="40" />
-                                <materialDesign:PackIcon Kind="ChevronRight"
-                                                         Grid.Row="0"
-                                                         Width="40"
-                                                         Height="40" />
-                            </Grid>
-                        </Button>
-
-                    </StackPanel>
-                </StackPanel>
-                
-            </materialDesign:Card>
-            
 
             <!-- ### DATA GRID ### -->
 
-
-
         </StackPanel>
 
-
+        <!-- MODAL PAGE -->
+        <Frame x:Name="ModalPageFrame"
+               Width="500"
+               Height="500"
+               Margin="0,-1600,0,0" />
+        <!-- ### MODAL PAGE ### -->
 
         <!--  <StackPanel Orientation="Horizontal"
                     HorizontalAlignment="Center"

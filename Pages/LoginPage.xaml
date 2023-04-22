@@ -1,0 +1,191 @@
+﻿<Page x:Class="LogisticsClientsApp.Pages.LoginPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:local="clr-namespace:LogisticsClientsApp.Pages"
+      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+      TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+      TextElement.FontWeight="Regular"
+      TextElement.FontSize="13"
+      TextOptions.TextFormattingMode="Ideal"
+      TextOptions.TextRenderingMode="Auto"
+      Background="Transparent"
+      FontFamily="{DynamicResource MaterialDesignFont}"
+      Height="Auto"
+      Width="Auto"
+      mc:Ignorable="d"
+      Title="LoginPage">
+    <Grid HorizontalAlignment="Center"
+          VerticalAlignment="Center">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <materialDesign:Card Grid.Row="0"
+                             Width="500"
+                             UniformCornerRadius="25"
+                             materialDesign:ElevationAssist.Elevation="Dp16"
+                             HorizontalAlignment="Stretch"
+                             VerticalAlignment="Stretch">
+            <Grid Margin="50,20,50,20">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="150*" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+
+                <StackPanel Grid.Row="0"
+                            Margin="0,0,0,80">
+                    <TextBlock FontSize="22"
+                               TextAlignment="Left"
+                               Margin="0,0,0,10"
+                               Name="WelcomeBackTextBlock"
+                               Text="Welcome back!"
+                               FontWeight="Bold"
+                               Foreground="{Binding RelativeSource={RelativeSource AncestorType={x:Type FrameworkElement}}, Path=(TextElement.Foreground)}" />
+                    <TextBlock Text="Please login to your account"
+                               Name="LoginTextBlock"
+                               MaxWidth="280"
+                               Height="Auto"
+                               TextWrapping="Wrap"
+                               HorizontalAlignment="Left"
+                               Foreground="{Binding RelativeSource={RelativeSource AncestorType={x:Type FrameworkElement}}, Path=(TextElement.Foreground)}"
+                               FontSize="18" />
+                </StackPanel>
+
+                <Canvas Margin="250,-70,0,0"
+                        Name="CanvasItem"
+                        MouseEnter="Canvas_MouseEnter">
+                    <Path Fill="#2196F3"
+                          Data="M116.262 118.16L62.2182 154.162L51.5705 112.516L116.262 118.16Z" />
+                    <Path Fill="#2196F3"
+                          Data="M116.616 116.931L51.907 111.498L69.4778 72.2683L116.616 116.931Z" />
+                    <Path Fill="#D9D9D9"
+                          Data="M109.283 123.66L70.7271 163.351L63.8726 155.28L109.283 123.66Z" />
+                    <Path Fill="#D9D9D9"
+                          Data="M109.817 109.248L70.4104 70.4018L78.5313 63.6067L109.817 109.248Z" />
+                    <Path Fill="#D9D9D9"
+                          Data="M125.967 110.307L164.441 70.5371L171.312 78.5939L125.967 110.307Z" />
+                    <Path Fill="#D9D9D9"
+                          Data="M122.828 124.887L163.511 164.367L155.459 171.244L122.828 124.887Z" />
+                    <Path Fill="#2196F3"
+                          Data="M118.159 117.505L172.202 81.5038L182.85 123.149L118.159 117.505Z" />
+                    <Path Fill="#2196F3"
+                          Data="M117.804 118.734L182.513 124.168L164.943 163.397L117.804 118.734Z" />
+                    <Path Fill="#7BC5FF"
+                          Data="M141.014 112.534C137.892 110.402 139.198 105.528 142.968 105.242L153.713 104.429C156.462 104.221 158.592 106.79 157.879 109.453L156.033 116.343C155.319 119.006 152.19 120.165 149.913 118.611L141.014 112.534Z" />
+                    <Path Fill="#7BC5FF"
+                          Data="M165.168 116.46C161.395 116.715 159.408 112.076 162.195 109.521L167.808 104.375C169.84 102.512 173.103 103.214 174.188 105.748L176.173 110.381C177.258 112.915 175.516 115.762 172.766 115.947L165.168 116.46Z" />
+                    <Path Fill="#7BC5FF"
+                          Data="M159.127 102.797C156.396 103.559 154.229 100.456 155.886 98.1546L161.472 90.3957C162.68 88.7179 165.183 88.736 166.366 90.4311L169.989 95.6201C171.172 97.3152 170.327 99.6713 168.336 100.227L159.127 102.797Z" />
+                    <Path Fill="#2196F3"
+                          Data="M117.701 118.544L153.703 172.588L112.058 183.236L117.701 118.544Z" />
+                    <Path Fill="#2196F3"
+                          Data="M116.473 118.19L111.039 182.899L71.8095 165.328L116.473 118.19Z" />
+                    <Path Fill="#2196F3"
+                          Data="M116.511 116.731L80.5098 62.6872L122.155 52.0395L116.511 116.731Z" />
+                    <Path Fill="#2196F3"
+                          Data="M117.74 117.085L123.173 52.376L162.403 69.9468L117.74 117.085Z" />
+                    <Path Fill="#7BC5FF"
+                          Data="M95.0078 122.357C98.1304 124.49 96.8244 129.364 93.0539 129.649L82.3088 130.462C79.5602 130.67 77.4299 128.101 78.1433 125.438L79.9894 118.549C80.7029 115.886 83.8325 114.726 86.1089 116.281L95.0078 122.357Z" />
+                    <Path Fill="#7BC5FF"
+                          Data="M70.8543 118.431C74.627 118.177 76.6139 122.815 73.8268 125.371L68.214 130.517C66.1823 132.38 62.9194 131.677 61.834 129.144L59.8492 124.51C58.7638 121.976 60.5064 119.13 63.2567 118.944L70.8543 118.431Z" />
+                    <Path Fill="#7BC5FF"
+                          Data="M76.8951 132.095C79.6267 131.332 81.7932 134.435 80.1362 136.737L74.5505 144.496C73.3426 146.174 70.8394 146.155 69.6559 144.46L66.0332 139.271C64.8497 137.576 65.6953 135.22 67.6866 134.664L76.8951 132.095Z" />
+                    <Path Fill="#7BC5FF"
+                          Data="M111.534 93.0078C109.402 96.1305 104.528 94.8244 104.242 91.054L103.429 80.3089C103.221 77.5602 105.79 75.4299 108.453 76.1433L115.343 77.9895C118.006 78.7029 119.165 81.8325 117.611 84.1089L111.534 93.0078Z" />
+                    <Path Fill="#7BC5FF"
+                          Data="M115.46 68.8544C115.715 72.627 111.076 74.614 108.521 71.8269L103.375 66.2141C101.512 64.1823 102.214 60.9195 104.748 59.834L109.381 57.8492C111.915 56.7638 114.762 58.5065 114.947 61.2567L115.46 68.8544Z" />
+                    <Path Fill="#7BC5FF"
+                          Data="M101.797 74.8951C102.559 77.6266 99.4561 79.7931 97.1546 78.1362L89.3957 72.5504C87.7179 71.3425 87.736 68.8394 89.4311 67.6559L94.6201 64.0332C96.3152 62.8497 98.6713 63.6953 99.227 65.6866L101.797 74.8951Z" />
+                    <Path Fill="#7BC5FF"
+                          Data="M123.357 143.17C125.49 140.047 130.364 141.353 130.649 145.124L131.462 155.869C131.67 158.618 129.101 160.748 126.438 160.035L119.549 158.188C116.886 157.475 115.726 154.345 117.281 152.069L123.357 143.17Z" />
+                    <Path Fill="#7BC5FF"
+                          Data="M119.431 167.324C119.177 163.551 123.815 161.564 126.371 164.351L131.517 169.964C133.38 171.996 132.677 175.258 130.144 176.344L125.51 178.329C122.976 179.414 120.13 177.671 119.944 174.921L119.431 167.324Z" />
+                    <Path Fill="#7BC5FF"
+                          Data="M133.095 161.283C132.332 158.551 135.435 156.385 137.737 158.042L145.496 163.627C147.174 164.835 147.155 167.338 145.46 168.522L140.271 172.145C138.576 173.328 136.22 172.482 135.664 170.491L133.095 161.283Z" />
+                </Canvas>
+
+                <StackPanel Orientation="Horizontal"
+                            Name="ErrorStackPanel"
+                            Grid.Row="1"
+                            HorizontalAlignment="Center">
+                    <materialDesign:PackIcon Kind="Warning"
+                                             Foreground="{StaticResource AccentCustomColor}"
+                                             Width="70"
+                                             Height="70"
+                                             Margin="0,0,30,0" />
+                    <TextBlock FontSize="20"
+                               Name="ErrorTextBlock"
+                               FontWeight="Bold"
+                               Foreground="{StaticResource AccentCustomColor}"
+                               MaxWidth="280"
+                               HorizontalAlignment="Center"
+                               TextWrapping="Wrap"
+                               Text="invalid login or password. please, verify your data"
+                               Typography.Capitals="SmallCaps"
+                               Margin="0,0,0,20" />
+                </StackPanel>
+
+
+
+                <TextBox Width="400"
+                         Grid.Row="2"
+                         Height="60"
+                         Name="LoginTextBox"
+                         TextChanged="LoginTextBox_TextChanged"
+                         FontSize="18"
+                         Margin="0,10,0,30"
+                         materialDesign:HintAssist.HelperTextFontSize="14"
+                         materialDesign:TextFieldAssist.TextFieldCornerRadius="10"
+                         materialDesign:HintAssist.Hint="Login"
+                         IsEnabled="{Binding Path=IsChecked, ElementName=MaterialDesignOutlinedTextBoxEnabledComboBox}"
+                         Style="{StaticResource MaterialDesignOutlinedTextBox}" />
+                <PasswordBox Width="400"
+                             Grid.Row="3"
+                             Height="60"
+                             PasswordChanged="PasswordTextBox_PasswordChanged"
+                             Name="PasswordTextBox"
+                             materialDesign:TextFieldAssist.TextFieldCornerRadius="10"
+                             FontSize="18"
+                             materialDesign:HintAssist.Hint="Password"
+                             IsEnabled="{Binding Path=IsChecked, ElementName=MaterialDesignOutlinedTextBoxEnabledComboBox}"
+                             Style="{StaticResource MaterialDesignOutlinedRevealPasswordBox}" />
+                <ComboBox Grid.Row="4"
+                          x:Name="RoleComboBox"
+                          Width="200"
+                          Margin="0,30,0,0"
+                          FontSize="18"
+                          materialDesign:HintAssist.Hint="Role"
+                          IsEnabled="{Binding Path=IsChecked, ElementName=FilledComboBoxEnabledCheckBox}"
+                          Style="{StaticResource MaterialDesignFilledComboBox}">
+                </ComboBox>
+                <TextBlock FontSize="18"
+                           Margin="0,30,0,0"
+                           Grid.Row="5"
+                           TextAlignment="Left"
+                           Foreground="{Binding RelativeSource={RelativeSource AncestorType={x:Type FrameworkElement}}, Path=(TextElement.Foreground)}">
+                                <Run Text="" />
+                </TextBlock>
+                <Button Grid.Row="5"
+                        x:Name="LoginButton"
+                        Click="LoginButton_Click"
+                        Height="40"
+                        Content="login"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Margin="0,30,0,30"
+                        FontSize="22"
+                        Typography.Capitals="SmallCaps"
+                        Style="{StaticResource MaterialDesignRaisedButton}"
+                        Foreground="White"
+                        Cursor="Hand" />
+            </Grid>
+
+        </materialDesign:Card>
+    </Grid>
+</Page>
