@@ -79,11 +79,119 @@ namespace LogisticsClientsApp.Localizations.Data {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Грузы.
+        /// </summary>
+        internal static string Cargo {
+            get {
+                return ResourceManager.GetString("Cargo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Ограничения грузов.
+        /// </summary>
+        internal static string Cargo_Constraints {
+            get {
+                return ResourceManager.GetString("Cargo_Constraints", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Типы грузов.
+        /// </summary>
+        internal static string Cargo_Types {
+            get {
+                return ResourceManager.GetString("Cargo_Types", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Название.
+        /// </summary>
+        internal static string CargoName {
+            get {
+                return ResourceManager.GetString("CargoName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Цена.
+        /// </summary>
+        internal static string CargoPrice {
+            get {
+                return ResourceManager.GetString("CargoPrice", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Объём.
+        /// </summary>
+        internal static string CargoVolume {
+            get {
+                return ResourceManager.GetString("CargoVolume", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Вес.
+        /// </summary>
+        internal static string CargoWeight {
+            get {
+                return ResourceManager.GetString("CargoWeight", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Ограничения.
+        /// </summary>
+        internal static string Constraints {
+            get {
+                return ResourceManager.GetString("Constraints", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Заказчики.
+        /// </summary>
+        internal static string Customers {
+            get {
+                return ResourceManager.GetString("Customers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Водительские лицензии.
+        /// </summary>
+        internal static string Driver_Licence {
+            get {
+                return ResourceManager.GetString("Driver_Licence", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Водители.
+        /// </summary>
+        internal static string Drivers {
+            get {
+                return ResourceManager.GetString("Drivers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Почта.
         /// </summary>
         internal static string EamilBtn {
             get {
                 return ResourceManager.GetString("EamilBtn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на неверный логин или пароль. пожалуйста, проверьте введённые данные.
+        /// </summary>
+        internal static string ErrorTextBlock {
+            get {
+                return ResourceManager.GetString("ErrorTextBlock", resourceCulture);
             }
         }
         
@@ -97,11 +205,47 @@ namespace LogisticsClientsApp.Localizations.Data {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Пожалуйста, войдите в Ваш аккаунт.
+        /// </summary>
+        internal static string LoginAccountPlease {
+            get {
+                return ResourceManager.GetString("LoginAccountPlease", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на войти.
+        /// </summary>
+        internal static string LoginButtonText {
+            get {
+                return ResourceManager.GetString("LoginButtonText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Логин.
+        /// </summary>
+        internal static string LoginHint {
+            get {
+                return ResourceManager.GetString("LoginHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Выход.
         /// </summary>
         internal static string LogoutBtn {
             get {
                 return ResourceManager.GetString("LogoutBtn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на основные данные.
+        /// </summary>
+        internal static string MainDataTextBlock {
+            get {
+                return ResourceManager.GetString("MainDataTextBlock", resourceCulture);
             }
         }
         
@@ -115,6 +259,33 @@ namespace LogisticsClientsApp.Localizations.Data {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Заказы.
+        /// </summary>
+        internal static string Orders {
+            get {
+                return ResourceManager.GetString("Orders", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Владельцы.
+        /// </summary>
+        internal static string Ownerships {
+            get {
+                return ResourceManager.GetString("Ownerships", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Пароль.
+        /// </summary>
+        internal static string PasswordHint {
+            get {
+                return ResourceManager.GetString("PasswordHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Справочники.
         /// </summary>
         internal static string ReferencesBtn {
@@ -124,11 +295,119 @@ namespace LogisticsClientsApp.Localizations.Data {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Заявки.
+        /// </summary>
+        internal static string Requests {
+            get {
+                return ResourceManager.GetString("Requests", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Реквизиты.
+        /// </summary>
+        internal static string Requisites {
+            get {
+                return ResourceManager.GetString("Requisites", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Администратор.
+        /// </summary>
+        internal static string RoleAdmin {
+            get {
+                return ResourceManager.GetString("RoleAdmin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Роль.
+        /// </summary>
+        internal static string RoleComboBoxHint {
+            get {
+                return ResourceManager.GetString("RoleComboBoxHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Логист.
+        /// </summary>
+        internal static string RoleLogistic {
+            get {
+                return ResourceManager.GetString("RoleLogistic", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Поиск.
         /// </summary>
         internal static string SearchField {
             get {
                 return ResourceManager.GetString("SearchField", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на связанные данные.
+        /// </summary>
+        internal static string SecondaryDataTextBlock {
+            get {
+                return ResourceManager.GetString("SecondaryDataTextBlock", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Перевозчики.
+        /// </summary>
+        internal static string Transporters {
+            get {
+                return ResourceManager.GetString("Transporters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Пользователи.
+        /// </summary>
+        internal static string Users {
+            get {
+                return ResourceManager.GetString("Users", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Виды транспорта.
+        /// </summary>
+        internal static string Vehicle_Types {
+            get {
+                return ResourceManager.GetString("Vehicle_Types", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Транспорт.
+        /// </summary>
+        internal static string Vehicles {
+            get {
+                return ResourceManager.GetString("Vehicles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Транспорт перевозчиков.
+        /// </summary>
+        internal static string Vehicles_Transporters {
+            get {
+                return ResourceManager.GetString("Vehicles_Transporters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на С возвращением!.
+        /// </summary>
+        internal static string WelcomeBack {
+            get {
+                return ResourceManager.GetString("WelcomeBack", resourceCulture);
             }
         }
     }

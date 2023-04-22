@@ -123,22 +123,115 @@
   <data name="AddRecordBtn" xml:space="preserve">
     <value>добавить запись</value>
   </data>
+  <data name="Cargo" xml:space="preserve">
+    <value>Грузы</value>
+  </data>
+  <data name="CargoName" xml:space="preserve">
+    <value>Название</value>
+  </data>
+  <data name="CargoPrice" xml:space="preserve">
+    <value>Цена</value>
+  </data>
+  <data name="CargoVolume" xml:space="preserve">
+    <value>Объём</value>
+  </data>
+  <data name="CargoWeight" xml:space="preserve">
+    <value>Вес</value>
+  </data>
+  <data name="Cargo_Constraints" xml:space="preserve">
+    <value>Ограничения грузов</value>
+  </data>
+  <data name="Cargo_Types" xml:space="preserve">
+    <value>Типы грузов</value>
+  </data>
+  <data name="Constraints" xml:space="preserve">
+    <value>Ограничения</value>
+  </data>
+  <data name="Customers" xml:space="preserve">
+    <value>Заказчики</value>
+  </data>
+  <data name="Drivers" xml:space="preserve">
+    <value>Водители</value>
+  </data>
+  <data name="Driver_Licence" xml:space="preserve">
+    <value>Водительские лицензии</value>
+  </data>
   <data name="EamilBtn" xml:space="preserve">
     <value>Почта</value>
+  </data>
+  <data name="ErrorTextBlock" xml:space="preserve">
+    <value>неверный логин или пароль. пожалуйста, проверьте введённые данные</value>
   </data>
   <data name="FilterSearch" xml:space="preserve">
     <value>Параметр поиска</value>
   </data>
+  <data name="LoginAccountPlease" xml:space="preserve">
+    <value>Пожалуйста, войдите в Ваш аккаунт</value>
+  </data>
+  <data name="LoginButtonText" xml:space="preserve">
+    <value>войти</value>
+  </data>
+  <data name="LoginHint" xml:space="preserve">
+    <value>Логин</value>
+  </data>
   <data name="LogoutBtn" xml:space="preserve">
     <value>Выход</value>
+  </data>
+  <data name="MainDataTextBlock" xml:space="preserve">
+    <value>основные данные</value>
   </data>
   <data name="MessagesBtn" xml:space="preserve">
     <value>Сообщения</value>
   </data>
+  <data name="Orders" xml:space="preserve">
+    <value>Заказы</value>
+  </data>
+  <data name="Ownerships" xml:space="preserve">
+    <value>Владельцы</value>
+  </data>
+  <data name="PasswordHint" xml:space="preserve">
+    <value>Пароль</value>
+  </data>
   <data name="ReferencesBtn" xml:space="preserve">
     <value>Справочники</value>
   </data>
+  <data name="Requests" xml:space="preserve">
+    <value>Заявки</value>
+  </data>
+  <data name="Requisites" xml:space="preserve">
+    <value>Реквизиты</value>
+  </data>
+  <data name="RoleAdmin" xml:space="preserve">
+    <value>Администратор</value>
+  </data>
+  <data name="RoleComboBoxHint" xml:space="preserve">
+    <value>Роль</value>
+  </data>
+  <data name="RoleLogistic" xml:space="preserve">
+    <value>Логист</value>
+  </data>
   <data name="SearchField" xml:space="preserve">
     <value>Поиск</value>
+  </data>
+  <data name="SecondaryDataTextBlock" xml:space="preserve">
+    <value>связанные данные</value>
+  </data>
+  <data name="Transporters" xml:space="preserve">
+    <value>Перевозчики</value>
+  </data>
+  <data name="Users" xml:space="preserve">
+    <value>Пользователи</value>
+  </data>
+  <data name="Vehicles" xml:space="preserve">
+    <value>Транспорт</value>
+  </data>
+  <data name="Vehicles_Transporters" xml:space="preserve">
+    <value>Транспорт перевозчиков</value>
+  </data>
+  <data name="Vehicle_Types" xml:space="preserve">
+    <value>Виды транспорта</value>
+  </data>
+  <data name="WelcomeBack" xml:space="preserve">
+    <value>С возвращением!</value>
   </data>
 </root>
