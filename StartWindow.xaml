@@ -16,7 +16,7 @@
         Height="800"
         Width="1050"
         Title="Моя логистика"
-        Icon="/truck.png">
+        Icon="Resources/Images/truck.png">
     <Window.Resources>
         <Color x:Key="PrimaryColor">#2196f3</Color>
         <Storyboard x:Key="OpenMenu">
@@ -40,7 +40,7 @@
                          Color="#00b0f0"
                          Opacity="0" />
     </Window.Resources>
-    <Grid>
+    <Grid x:Name="MainGrid">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="3*" />
@@ -49,6 +49,7 @@
         <Frame Grid.Column="1"
                Grid.ZIndex = "2"
                Margin="80,40,80,20"
+               NavigationUIVisibility="Hidden"
                HorizontalAlignment="Stretch"
                VerticalAlignment="Stretch"
                Name="MainFrameK"
@@ -56,7 +57,7 @@
 
         <!-- SIDE MENU -->
         <StackPanel  Grid.ZIndex="0"
-                     Name="LeftMenu"
+                     x:Name="LeftMenu"
                      Orientation="Horizontal"
                      HorizontalAlignment="Left"
                      Grid.Column="0"
@@ -67,8 +68,6 @@
                         <RowDefinition Height="*" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
-
-
 
                     <StackPanel>
 
@@ -309,6 +308,8 @@
                             IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
                             Style="{StaticResource MaterialDesignFlatSecondaryButton}"
                             ToolTip="Close"
+                            Foreground="{StaticResource AccentCustomColor}"
+                            Click="LogoutButton_Click"
                             Grid.Row="1"
                             Height="50"
                             HorizontalAlignment="Stretch"
@@ -379,14 +380,7 @@
                     <Menu Margin="0,-25"
                           Width="0"
                           Height="0">
-                        <MenuItem Name="Sanyok">
-                            <MenuItem Header="New"></MenuItem>
-                            <MenuItem Header="Open"></MenuItem>
-                            <MenuItem Header="Save"></MenuItem>
-                            <MenuItem Header="SaveAs..."></MenuItem>
-                            <Separator></Separator>
-                            <MenuItem Header="Exit"></MenuItem>
-                        </MenuItem>
+                        <MenuItem Name="ReferencesMenu" Click="ReferencesMenu_Click" />
                     </Menu>
                     <Button Name="MenuReferencesBtn"
                             Click="ReferencesBtn_Click"

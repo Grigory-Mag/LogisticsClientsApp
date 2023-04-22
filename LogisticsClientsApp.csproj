@@ -9,6 +9,7 @@
   
   <ItemGroup>
     <None Remove="abobus.png" />
+    <None Remove="Resources\Images\loginBackground.jpg" />
     <None Remove="truck.png" />
   </ItemGroup>
 
@@ -21,6 +22,7 @@
     </PackageReference>
     <PackageReference Include="MaterialDesignColors" Version="2.1.2" />
     <PackageReference Include="MaterialDesignThemes" Version="4.8.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.28.1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -28,8 +30,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="abobus.png" />
-    <Resource Include="truck.png" />
+    <Content Include="Resources\Images\loginBackground.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Images\truck.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
@@ -38,6 +44,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>RU.resx</DependentUpon>
     </Compile>
+    <Compile Update="Properties.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Properties.settings</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
@@ -45,6 +56,16 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>RU.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Resources\Magical.mp4">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Properties.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Properties.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
 
 </Project>

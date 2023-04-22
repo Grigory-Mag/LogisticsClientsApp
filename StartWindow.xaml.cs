@@ -1,9 +1,14 @@
-﻿using ClientsApp;
+﻿using ApiService;
+using Grpc.Core;
+using Grpc.Net.Client;
 using LogisticsClientsApp.Localizations;
 using LogisticsClientsApp.Pages;
+using LogisticsClientsApp.Pages.Tables;
 using MaterialDesignThemes.Wpf;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,22 +29,59 @@ namespace LogisticsClientsApp
     /// </summary>
     public partial class StartWindow : Window
     {
+        public LoginPage LoginPage;
+        public string selectedLocale = "ru";
+        public Dictionary<string, List<string>> tables = new Dictionary<string, List<string>>();
+        public UserService.UserServiceClient client;
+        public Metadata headers = new Metadata();
+        public List<string> tablesList = new List<string>();
+
+        private UserService.UserServiceClient loginClient = new UserService.UserServiceClient(GrpcChannel.ForAddress(Properties.Default.Address.ToString()));
+        private Dictionary<string, List<object>> buttonsReferences = new Dictionary<string, List<object>>();
+        private List<bool> selectedBtns = new List<bool>();
+        private List<TextBlock> textBlocks = new List<TextBlock>();
+        private List<PackIcon> packIcons = new List<PackIcon>();
+        private List<Button> buttons = new List<Button>();
+
+        private static Color PRIMARY_COLOR = Color.FromArgb(255, 33, 150, 243);
+
         public StartWindow()
         {
             InitializeComponent();
-            MainFrameK.Navigate(new TablePage());
 
+            LoginPage = new LoginPage(this);
+            ChangePage(LoginPage);
+
+
+            Uri path = new Uri(Directory.GetCurrentDirectory() + @"\Resources\Images\loginBackground.jpg");
+            MainGrid.Background = new ImageBrush(new BitmapImage(path));
             MenuOpenBtn.Click += Button_Click_1;
             MenuCloseBtn.Click += btnclose_Click;
-
-            //LeftMenu.Visibility = Visibility.Hidden;
-
-            InitElements();
 
             Locale locale = new Locale("ru");
             locale.SetLocale(this);
 
+            InitElements();
+
             SelectBtn("References");
+
+        }
+
+        public void ChangePage(Page page)
+        {
+            MainFrameK.Navigate(page);
+        }
+
+        public void ClearFrameHistory()
+        {
+            MainFrameK.NavigationService.RemoveBackEntry();
+            var data = MainFrameK.NavigationService;
+
+            //while (MainFrameK.NavigationService.RemoveBackEntry() != null) ;
+        }
+
+        public void ToggleSideMenu(bool isToggle)
+        {
 
         }
 
@@ -50,32 +92,20 @@ namespace LogisticsClientsApp
 
         private void MainFrameK_Navigated(object sender, System.Windows.Navigation.NavigationEventArgs e)
         {
-            
+
         }
-
-        class TestObject
-        {
-            public string phone { get; set; }
-            public int number { get; set; }
-
-            public TestObject(string phone, int number)
-            {
-                this.phone = phone;
-                this.number = number;
-            }
-        }
-
-        private Dictionary<string, List<object>> buttonsReferences = new Dictionary<string, List<object>>();
-
-        private List<bool> selectedBtns = new List<bool>();
-        private List<TextBlock> textBlocks = new List<TextBlock>();
-        private List<PackIcon> packIcons = new List<PackIcon>();
-        private List<Button> buttons = new List<Button>();
-
-        private static Color PRIMARY_COLOR = Color.FromArgb(255, 33, 150, 243);
 
         private void InitElements()
         {
+            foreach (var item in tables)
+            {
+                MenuItem menuItem = new MenuItem();
+                menuItem.Click += ReferencesMenu_SubMenu_Click;
+                if (item.Value != null)
+                    menuItem.ItemsSource = item.Value;
+                menuItem.Header = item.Key;
+                ReferencesMenu.Items.Add(menuItem);
+            }
 
             buttonsReferences.Add("References", new List<object>()
             {   TextBlockReferences,
@@ -199,7 +229,7 @@ namespace LogisticsClientsApp
         {
             UncheckAllBtns();
             CheckSelectionBtn("References");
-            Sanyok.IsSubmenuOpen = true;
+            ReferencesMenu.IsSubmenuOpen = true;
         }
 
         private void MessagesBtn_Click(object sender, RoutedEventArgs e)
@@ -247,6 +277,108 @@ namespace LogisticsClientsApp
         {
 
         }
+
+        public void ShowSideMenu()
+        {
+            MenuOpenBtn.Visibility = Visibility.Visible;
+            MenuCloseBtn.Visibility = Visibility.Hidden;
+            LoginPage.ErrorStackPanel.Visibility = Visibility.Hidden;
+
+            foreach (KeyValuePair<string, List<object>> entry in buttonsReferences)
+                (buttonsReferences[entry.Key][4] as Button)!.Visibility = Visibility.Visible;
+        }
+
+        public void HideSideMenu()
+        {
+            Storyboard sb = Resources["CloseMenu"] as Storyboard;
+            sb.Begin(LeftMenu);
+            MenuCloseBtn.Visibility = Visibility.Hidden;
+            MenuOpenBtn.Visibility = Visibility.Hidden;
+
+            LeftMenu.Visibility = Visibility.Hidden;
+            LoginPage.ErrorStackPanel.Visibility = Visibility.Hidden;
+
+            foreach (KeyValuePair<string, List<object>> entry in buttonsReferences)
+                (buttonsReferences[entry.Key][4] as Button)!.Visibility = Visibility.Hidden;
+        }
+
+        private void LogoutButton_Click(object sender, RoutedEventArgs e)
+        {
+            Uri path = new Uri(Directory.GetCurrentDirectory() + @"\Resources\Images\loginBackground.jpg");
+            MainGrid.Background = new ImageBrush(new BitmapImage(path));
+            HideSideMenu();
+            ChangePage(LoginPage);
+        }
+
+        public async Task<string> Login(string login, string password)
+        {
+            var loginObject = new LoginObject { Login = login, Password = password };
+            var item = await loginClient.LoginUserAsync(new LoginRequest { Data = loginObject });
+            if (item.Token != "Invalid data")
+            {
+                client = new UserService.UserServiceClient(GrpcChannel.ForAddress(Properties.Default.Address.ToString()));
+                headers.Add("Authorization", $"Bearer {item.Token}");
+            }
+
+            return await Task.FromResult(item.Token);
+        }
+
+        private void ReferencesMenu_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = (sender as MenuItem);
+            var a = menuItem.Items;
+        }
+
+        private void ReferencesMenu_SubMenu_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = (sender as MenuItem);
+            var mainMenu = menuItem.Header;
+
+            MenuItem obMenuItem = e.OriginalSource as MenuItem;
+            var subMenu = obMenuItem.Header;
+
+            var page = MainFrameK.Content as TablePage;
+            var keys = tables.Keys.ToList();
+
+            for (int i = 0; i < tablesList.Count(); i++)
+            {
+                if (subMenu.ToString() == tablesList[i])
+                {
+                    switch (i)
+                    {
+                        case 0:
+                            page.ChangeSelectedTable(new CargoTablePage());
+                            MessageBox.Show("Changed");
+                            break;
+                        case 1:
+                            page.ChangeSelectedTable(new CargoTypesPage());
+                            break;
+                        case 2:
+                            break;
+                        case 3:
+                            break;
+                        case 4:
+                            break;
+                        case 5:
+                            break;
+                        case 6:
+                            break;
+                        case 7:
+                            break;
+                        case 8:
+                            break;
+                        case 9:
+                            break;
+                        case 10:
+                            break;
+                        case 11:
+                            break;
+                    }
+                }
+            }
+
+        }
+
     }
 
 }

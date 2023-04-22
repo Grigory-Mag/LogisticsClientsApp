@@ -42,7 +42,7 @@ namespace ClientsApp
         public MainWindow()
         {
             InitializeComponent();
-            MainFrame.NavigationService.Navigate(new TablePage());
+            //MainFrame.NavigationService.Navigate(new TablePage());
 
             MenuOpenBtn.Click += Button_Click_1;
             MenuCloseBtn.Click += btnclose_Click;
