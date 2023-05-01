@@ -5,6 +5,7 @@
     <TargetFramework>net6.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
+    <ApplicationIcon>Resources\Images\truck.ico</ApplicationIcon>
   </PropertyGroup>
   
   <ItemGroup>
@@ -33,7 +34,7 @@
     <Content Include="Resources\Images\loginBackground.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\Images\truck.png">
+    <Content Include="Resources\Images\truck.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

@@ -128,6 +128,20 @@
 
             </Grid>
 
+            <StackPanel Orientation="Horizontal"
+                        Margin="0,20,0,0"
+                        HorizontalAlignment="Center">
+                <Button Foreground="White"
+                        FontSize="18"
+                        Style="{StaticResource MaterialDesignRaisedButton}">
+                    <TextBlock TextAlignment="Center">
+                        <Run Text="Расширенный"/>
+                        <LineBreak />
+                        <Run Text="поиск" />
+                    </TextBlock>
+                </Button>
+            </StackPanel>
+
             <!-- DIVIDER -->
 
             <StackPanel>
@@ -169,13 +183,14 @@
                 <StackPanel Grid.Column="1"
                             HorizontalAlignment="Right">
                     <Button Width="Auto"
+                            Name="AddButton"
                             FontSize="18"
                             IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
                             Style="{StaticResource MaterialDesignRaisedButton}"
                             materialDesign:ColorZoneAssist.Mode="SecondaryDark"
                             Foreground="White"
                             ToolTip=""
-                            Click="Button_Click_1">
+                            Click="AddButton_Click">
                         <StackPanel>
                             <TextBlock Text="add new record"
                                        Typography.Capitals="SmallCaps"
@@ -206,7 +221,7 @@
         <!-- MODAL PAGE -->
         <Frame x:Name="ModalPageFrame"
                Width="500"
-               Height="500"
+               Height="600"
                Margin="0,-1600,0,0" />
         <!-- ### MODAL PAGE ### -->
 

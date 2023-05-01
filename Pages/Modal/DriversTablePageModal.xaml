@@ -1,8 +1,8 @@
-﻿<UserControl x:Class="LogisticsClientsApp.Pages.Modal.CargoTablePageModal"
+﻿<UserControl x:Class="LogisticsClientsApp.Pages.Modal.DriversTablePageModal"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:LogisticsClientsApp.Pages.Modal"
              mc:Ignorable="d"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
@@ -14,7 +14,7 @@
              FontSize="20"
              Background="Transparent"
              FontFamily="{DynamicResource MaterialDesignFont}"
-             Height="600"
+             Height="500"
              Width="500"
              Name="ModalPageControl"
              Loaded="ModalPageControl_Loaded">
@@ -47,7 +47,7 @@
                     <ColumnDefinition Width="1*" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <TextBlock Text="грузы"
+                <TextBlock Text="водитель"
                            Grid.Row="0"
                            Grid.ColumnSpan="2"
                            Grid.Column="0"
@@ -94,50 +94,43 @@
                                    Typography.Capitals="SmallCaps"
                                    HorizontalAlignment="Center"
                                    Foreground="#94989e"
-                                   Margin="0,-20,0,10"/>
+                                   Margin="0,-20,0,10" />
                         <Rectangle Fill="#74D8FF"
                                    VerticalAlignment="Stretch"
-                                   Opacity=".7"
+                                   Opacity=".9"
                                    Height="5"
                                    RadiusX="2"
                                    RadiusY="2"
                                    Margin="0,0,5,0" />
-                        <StackPanel
-                            Margin="0,0,10,0">
-                            <TextBox materialDesign:HintAssist.Hint="Weight"
-                                     Name="WeightTextBox"
-                                     Style="{StaticResource MaterialDesignFloatingHintTextBox}"
-                                     Margin="0,0,0,30" />
-                            <TextBox materialDesign:HintAssist.Hint="Volume"
-                                     Name="VolumeTextBox"
-                                     Style="{StaticResource MaterialDesignFloatingHintTextBox}"
-                                     Margin="0,0,0,30" />
-                            <TextBox materialDesign:HintAssist.Hint="Name"
+                        <StackPanel Margin="0,0,10,0">
+                            <TextBox materialDesign:HintAssist.Hint="Имя"
                                      Name="NameTextBox"
                                      Style="{StaticResource MaterialDesignFloatingHintTextBox}"
                                      Margin="0,0,0,30" />
-                            <TextBox materialDesign:HintAssist.Hint="Price"
-                                     Name="PriceTextBox"
-                                     materialDesign:TextFieldAssist.SuffixText="₽"
+                            <TextBox materialDesign:HintAssist.Hint="Фамилия"
+                                     Name="SurnameTextBox"
                                      Style="{StaticResource MaterialDesignFloatingHintTextBox}"
                                      Margin="0,0,0,30" />
-                            <TextBox materialDesign:HintAssist.Hint="Ограничения"
-                                     Name="ConstraintsTextBox"
+                            <TextBox materialDesign:HintAssist.Hint="Отчество"
+                                     Name="PatrTextBox"
                                      Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                                     Margin="0,0,0,30" />
+                            <CheckBox Name="SanCheckBox"
+                                      Content="Сан. обработка"
                                      Margin="0,0,0,30" />
                         </StackPanel>
 
                     </StackPanel>
-                    
+
                     <Rectangle Fill="#74D8FF"
                                Grid.Row="0"
-                               Opacity=".7"
+                               Opacity=".9"
                                Grid.Column="1"
                                HorizontalAlignment="Stretch"
                                Width="5"
                                RadiusX="2"
                                RadiusY="2"
-                               Margin="5,25,5,0"/>
+                               Margin="5,25,5,0" />
 
                     <StackPanel Grid.Row="0"
                                 HorizontalAlignment="Stretch"
@@ -151,16 +144,17 @@
                                    Margin="0,-20,0,10" />
                         <Rectangle Fill="#74D8FF"
                                    VerticalAlignment="Stretch"
-                                   Opacity=".7"
+                                   Opacity=".9"
                                    Height="5"
                                    RadiusX="2"
                                    RadiusY="2"
                                    Margin="5,0,0,0" />
                         <ComboBox FontSize="18"
-                                  Name="TypeComboBox"
-                                  DisplayMemberPath="Name"
-                                  materialDesign:HintAssist.Hint="Type"
+                                  Name="LicenceComboBox"
+                                  materialDesign:HintAssist.Hint="Лицензия"
+                                  materialDesign:HintAssist.HelperText="Серия/номер"
                                   Style="{StaticResource MaterialDesignFloatingHintComboBox}"
+                                  SelectionChanged="LicenceComboBox_SelectionChanged"
                                   Margin="10,0,0,20" />
 
                     </StackPanel>

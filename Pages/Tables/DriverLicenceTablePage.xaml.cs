@@ -19,15 +19,32 @@ using System.Windows.Shapes;
 namespace LogisticsClientsApp.Pages.Tables
 {
     /// <summary>
-    /// Логика взаимодействия для CargoTypesPage.xaml
+    /// Логика взаимодействия для DriverLicenceTablePage.xaml
     /// </summary>
-    public partial class CargoTypesPage : Page
+    public partial class DriverLicenceTablePage : Page
     {
-        public List<CargoTypesObject> CargoTypes { get; set; }
+        public List<DriverLicenceObject> DriversLicence { get; set; }
         private Locale locale;
 
         StartWindow startWindow;
-        public CargoTypesPage()
+
+        public class DriversLicenceReady
+        {
+            public int? Id { get; set; }
+            public int? Series { get; set; }
+            public int? Number { get; set; }
+            public DateTime Date { get; set; }
+
+            public DriversLicenceReady(int? id, int? series, int? number, Google.Protobuf.WellKnownTypes.Timestamp date)
+            {
+                this.Id = id;
+                this.Series = series;
+                this.Number = number;
+                this.Date = date.ToDateTime();
+            }
+        }
+
+        public DriverLicenceTablePage()
         {
             InitializeComponent();
         }
@@ -51,26 +68,22 @@ namespace LogisticsClientsApp.Pages.Tables
 
         private void DeleteButton_Click(object sender, RoutedEventArgs e)
         {
-            var result = MessageBox.Show($"Вы действительно хотите удалить запись?", "Удаление", MessageBoxButton.OKCancel, MessageBoxImage.Warning, MessageBoxResult.No);
-            if (result == MessageBoxResult.OK)
-            {
-                var item = dataGrid.SelectedItem as CargoTypesObject;
-                startWindow.client.DeleteCargoTypeAsync(new GetOrDeleteCargoTypesRequest { Id = item.Id });
-                CargoTypes.Remove(item);
-                dataGrid.ItemsSource = null;
-                dataGrid.ItemsSource = CargoTypes;
-            }
+            var item = dataGrid.SelectedItem;
         }
 
         private async void SetData()
         {
             try
             {
-                var item = await startWindow.client.GetListCargoTypesAsync(new Google.Protobuf.WellKnownTypes.Empty());
-                CargoTypes = new List<CargoTypesObject>();
-                CargoTypes.AddRange(item.CargoType.ToList());
+                var item = await startWindow.client.GetListDriverLicencesAsync(new Google.Protobuf.WellKnownTypes.Empty());
+                List<DriversLicenceReady> driversLicenceReadies = new List<DriversLicenceReady>();
+
+                DriversLicence = new List<DriverLicenceObject>();
+                DriversLicence.AddRange(item.DriverLicence.ToList());
+                DriversLicence.ForEach(license => driversLicenceReadies.Add(new DriversLicenceReady(license.Id, license.Series, license.Number, license.Date)));
+                
                 dataGrid.ItemsSource = null;
-                dataGrid.ItemsSource = CargoTypes;
+                dataGrid.ItemsSource = driversLicenceReadies;
                 locale.SetLocale(this);
             }
             catch (RpcException ex)

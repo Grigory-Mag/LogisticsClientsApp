@@ -347,31 +347,35 @@ namespace LogisticsClientsApp
                     switch (i)
                     {
                         case 0:
-                            page.ChangeSelectedTable(new CargoTablePage());
-                            MessageBox.Show("Changed");
+                            page!.ChangeSelectedTable(new CargoTablePage());
                             break;
                         case 1:
-                            page.ChangeSelectedTable(new CargoTypesPage());
+                            page!.ChangeSelectedTable(new CargoTypesPage());
                             break;
                         case 2:
+                            page!.ChangeSelectedTable(new DriversTablePage());
                             break;
                         case 3:
+                            page!.ChangeSelectedTable(new DriverLicenceTablePage());
                             break;
                         case 4:
+                            page!.ChangeSelectedTable(new RequisitesTablePage());
                             break;
                         case 5:
+                            page!.ChangeSelectedTable(new RolesTabePage());
                             break;
                         case 6:
+                            page!.ChangeSelectedTable(new VehiclesTablePage());
                             break;
                         case 7:
+                            page!.ChangeSelectedTable(new VehiclesTypesTablePage());
                             break;
                         case 8:
+                            page!.ChangeSelectedTable(new RequestsTablePage());
                             break;
                         case 9:
                             break;
                         case 10:
-                            break;
-                        case 11:
                             break;
                     }
                 }

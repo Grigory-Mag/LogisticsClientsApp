@@ -15,8 +15,7 @@
         FontFamily="{DynamicResource MaterialDesignFont}"
         Height="800"
         Width="1050"
-        Title="Моя логистика"
-        Icon="Resources/Images/truck.png">
+        Title="Моя логистика">
     <Window.Resources>
         <Color x:Key="PrimaryColor">#2196f3</Color>
         <Storyboard x:Key="OpenMenu">

@@ -133,7 +133,7 @@ namespace LogisticsClientsApp.Localizations.Data {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Вес.
+        ///   Ищет локализованную строку, похожую на Масса.
         /// </summary>
         internal static string CargoWeight {
             get {
@@ -147,15 +147,6 @@ namespace LogisticsClientsApp.Localizations.Data {
         internal static string Constraints {
             get {
                 return ResourceManager.GetString("Constraints", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Ищет локализованную строку, похожую на Заказчики.
-        /// </summary>
-        internal static string Customers {
-            get {
-                return ResourceManager.GetString("Customers", resourceCulture);
             }
         }
         
@@ -268,6 +259,15 @@ namespace LogisticsClientsApp.Localizations.Data {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Организации.
+        /// </summary>
+        internal static string Organizations {
+            get {
+                return ResourceManager.GetString("Organizations", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Владельцы.
         /// </summary>
         internal static string Ownerships {
@@ -336,6 +336,15 @@ namespace LogisticsClientsApp.Localizations.Data {
         internal static string RoleLogistic {
             get {
                 return ResourceManager.GetString("RoleLogistic", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Категории.
+        /// </summary>
+        internal static string Roles {
+            get {
+                return ResourceManager.GetString("Roles", resourceCulture);
             }
         }
         

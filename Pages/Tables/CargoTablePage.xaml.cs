@@ -55,7 +55,16 @@ namespace LogisticsClientsApp.Pages.Tables
 
         private void DeleteButton_Click(object sender, RoutedEventArgs e)
         {
-            var item = dataGrid.SelectedItem;
+            var result = MessageBox.Show($"Вы действительно хотите удалить запись?", "Удаление", MessageBoxButton.OKCancel, MessageBoxImage.Warning, MessageBoxResult.No);
+            if (result == MessageBoxResult.OK)
+            {
+                var item = dataGrid.SelectedItem as CargoObject;
+                startWindow.client.DeleteCargoAsync(new GetOrDeleteCargoRequest { Id = item.Id });
+                CargoObjects.Remove(item);
+                dataGrid.ItemsSource = null;
+                dataGrid.ItemsSource = CargoObjects;
+            }
+
         }
 
         private async void SetData()
@@ -80,7 +89,7 @@ namespace LogisticsClientsApp.Pages.Tables
         {
             
             TablePage tablePage = (TablePage)startWindow.MainFrameK.Content;
-            tablePage.ShowModalPage();
+            tablePage.ShowModalPage(0);
             /*
             tablePage.MainPanel.Opacity = .5;
             tablePage.MainPanel.IsEnabled = false;

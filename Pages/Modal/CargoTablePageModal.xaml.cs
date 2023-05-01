@@ -1,4 +1,5 @@
 ﻿using ApiService;
+using Grpc.Core;
 using LogisticsClientsApp.Localizations;
 using LogisticsClientsApp.Pages.Tables;
 using System;
@@ -26,7 +27,9 @@ namespace LogisticsClientsApp.Pages.Modal
     {
         private static CargoTablePageModal instance;
         public StartWindow startWindow;
-        public CargoObject cargoObjects;
+        public CargoObject data = new CargoObject();
+        public ListCargoType cargoTypes;
+        public byte mode = 0;
 
         public CargoTablePageModal()
         {
@@ -36,6 +39,7 @@ namespace LogisticsClientsApp.Pages.Modal
         private void ModalPageControl_Loaded(object sender, RoutedEventArgs e)
         {
             startWindow = (StartWindow)Window.GetWindow(this);
+            SetLinkedData();
             Locale locale = new Locale(startWindow.selectedLocale);
             locale.SetLocale(this);
         }
@@ -51,35 +55,91 @@ namespace LogisticsClientsApp.Pages.Modal
             sb.Begin(ModalPageControl);
         }
 
-        List<string> cargoTypeList;
-
         public void UpdateDisplayedData(CargoObject cargoObject)
-        {           
-            this.cargoObjects = cargoObject;
-            cargoTypeList = new List<string>
-            {
-                cargoObject.CargoType.Name,
-            };
-            WeightTextBox.Text = cargoObjects.Weight.ToString();
-            VolumeTextBox.Text = cargoObjects.Volume.ToString();
-            NameTextBox.Text = cargoObjects.Name.ToString();
-            PriceTextBox.Text = cargoObjects.Price.ToString();
-            TypeComboBox.ItemsSource = cargoTypeList;
-            TypeComboBox.SelectedItem = cargoTypeList.First();
-            
-        }
-        /*
-        public static CargoTablePageModal getInstance()
         {
-            if (instance == null)
-                instance = new CargoTablePageModal();
+            this.data = cargoObject;
+            WeightTextBox.Text = data.Weight.ToString();
+            VolumeTextBox.Text = data.Volume.ToString();
+            NameTextBox.Text = data.Name.ToString();
+            PriceTextBox.Text = data.Price.ToString();
+            if (startWindow != null)
+                SetLinkedData();
 
-            return instance;
-        }*/
+        }
+
+        public async void SetLinkedData()
+        {
+            cargoTypes = await startWindow.client.GetListCargoTypesAsync(new Google.Protobuf.WellKnownTypes.Empty());
+            TypeComboBox.ItemsSource = cargoTypes.CargoType;
+            TypeComboBox.SelectedItem = data.CargoType == null ? null : cargoTypes.CargoType.First(x => x.Id == data.CargoType.Id);
+        }
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
             CloseAnimation();
+        }
+
+        private async void UpdateData()
+        {
+            try
+            {
+                CargoObject reqResult = new CargoObject();
+                if (mode == 0)
+                    reqResult = await startWindow.client.UpdateCargoAsync(new CreateOrUpdateCargoRequest { Cargo = data });
+                if (mode == 1)
+                    reqResult = await startWindow.client.CreateCargoAsync(new CreateOrUpdateCargoRequest { Cargo = data });
+
+                var tablePage = (TablePage)startWindow.MainFrameK.Content;
+                var page = tablePage.DataGridFrame.Content as CargoTablePage;
+                if (mode == 0)
+                {
+                    var index = page.CargoObjects.FindIndex(t => t.Id == reqResult.Id);
+                    page.CargoObjects[index] = reqResult;
+                }
+                if (mode == 1)                
+                    page.CargoObjects.Add(reqResult);
+                
+                page.dataGrid.ItemsSource = null;
+                page.dataGrid.ItemsSource = page.CargoObjects;
+                page.dataGrid.Items.Refresh();
+            }
+            catch (RpcException ex)
+            {
+
+            }
+
+        }
+
+        private void UpdateButton_Click(object sender, RoutedEventArgs e)
+        {
+            StringBuilder changedDataNotify = new StringBuilder();
+            if (mode == 0)
+            {
+                if (WeightTextBox.Text != data.Weight.ToString())
+                    changedDataNotify.Append($"Масса: {data.Weight} -> {WeightTextBox.Text}\n");
+                if (VolumeTextBox.Text != data.Volume.ToString())
+                    changedDataNotify.Append($"Объём: {data.Volume} -> {VolumeTextBox.Text}\n");
+                if (NameTextBox.Text != data.Name.ToString())
+                    changedDataNotify.Append($"Название: {data.Name} -> {NameTextBox.Text}\n");
+                if (PriceTextBox.Text != data.Price.ToString())
+                    changedDataNotify.Append($"Цена: {data.Price} -> {PriceTextBox.Text}\n");
+                if (ConstraintsTextBox.Text != data.Constraints.ToString())
+                    changedDataNotify.Append($"Ограничения: {data.Constraints} -> {ConstraintsTextBox.Text}\n");
+                if ((TypeComboBox.SelectedItem as CargoTypesObject)!.Name != data.CargoType.Name.ToString())
+                    changedDataNotify.Append($"Тип груза: {data.CargoType.Name} -> {TypeComboBox.SelectedItem}\n");
+            }
+
+            var result = MessageBox.Show($"Применить изменения?\n {changedDataNotify}", "Обновление", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
+            if (result == MessageBoxResult.Yes)
+            {
+                data.Weight = double.Parse(WeightTextBox.Text);
+                data.Volume = double.Parse(VolumeTextBox.Text);
+                data.Name = NameTextBox.Text;
+                data.Price = double.Parse(PriceTextBox.Text);
+                data.Constraints = ConstraintsTextBox.Text;
+                data.CargoType = TypeComboBox.SelectedItem as CargoTypesObject;
+                UpdateData();
+            }
         }
     }
 }

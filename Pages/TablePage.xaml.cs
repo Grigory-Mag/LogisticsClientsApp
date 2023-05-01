@@ -29,6 +29,7 @@ using LogisticsClientsApp.Pages.Tables;
 using System.Globalization;
 using LogisticsClientsApp.Validations;
 using LogisticsClientsApp.Pages.Modal;
+using static LogisticsClientsApp.Pages.Tables.DriverLicenceTablePage;
 
 namespace LogisticsClientsApp.Pages
 {
@@ -130,11 +131,6 @@ namespace LogisticsClientsApp.Pages
 
         }
 
-        private void Button_Click_1(object sender, RoutedEventArgs e)
-        {
-
-        }
-
         private void btnclose_Click(object sender, RoutedEventArgs e)
         {
 
@@ -209,25 +205,90 @@ namespace LogisticsClientsApp.Pages
             locale.SetLocale(this);
         }
 
-        public void ShowModalPage()
+        public void ShowModalPage(byte mode)
         {
             switch (DataGridFrame.Content)
             {
                 case CargoTablePage:
                     CargoTablePageModal cargoTablePage = new CargoTablePageModal();
+                    cargoTablePage.mode = mode;
                     ModalPageFrame.Content = cargoTablePage;
-                    var modalPage = DataGridFrame.Content as CargoTablePage;
-                    cargoTablePage.UpdateDisplayedData(modalPage.dataGrid.SelectedItem as CargoObject);
-
+                    if (mode == 0)
+                    {
+                        var modalPage = DataGridFrame.Content as CargoTablePage;
+                        cargoTablePage.UpdateDisplayedData(modalPage.dataGrid.SelectedItem as CargoObject);
+                    }
                     Storyboard? sb = cargoTablePage.Resources["OpenModal"] as Storyboard;
                     sb!.Begin(ModalPageFrame);
                     break;
                 case CargoTypesPage:
+                    var cargoType = new CargoTypesTablePageModal();
+                    cargoType.mode = mode;
+                    ModalPageFrame.Content = cargoType;
+                    if (mode == 0)
+                    {
+                        var modalPage = DataGridFrame.Content as CargoTypesPage;
+                        cargoType.UpdateDisplayedData(modalPage.dataGrid.SelectedItem as CargoTypesObject);
+                    }
+                    (cargoType.Resources["OpenModal"] as Storyboard)!.Begin(ModalPageFrame);
                     locale.SetLocale(this);
+                    break;
+                case DriverLicenceTablePage:
+                    var driverLicence = new DriverLicenceTablePageModal();
+                    ModalPageFrame.Content = driverLicence;
+                    var driverLicenceModalPage = DataGridFrame.Content as DriverLicenceTablePage;
+                    driverLicence.UpdateDisplayedData(driverLicenceModalPage.dataGrid.SelectedItem as DriversLicenceReady);
+
+                    (driverLicence.Resources["OpenModal"] as Storyboard)!.Begin(ModalPageFrame);
+                    break;
+                case DriversTablePage:
+                    var driver = new DriversTablePageModal();
+                    ModalPageFrame.Content = driver;
+                    var driverTableModalPage = DataGridFrame.Content as DriversTablePage;
+                    driver.UpdateDisplayedData(driverTableModalPage.dataGrid.SelectedItem as DriversObject);
+
+                    (driver.Resources["OpenModal"] as Storyboard)!.Begin(ModalPageFrame);
+                    break;
+                case RequisitesTablePage:
+                    var requisite = new RequisitesTablePageModal();
+                    ModalPageFrame.Content = requisite;
+                    var requisitesTableModalPage = DataGridFrame.Content as RequisitesTablePage;
+                    requisite.UpdateDisplayedData(requisitesTableModalPage.dataGrid.SelectedItem as RequisitesObject);
+
+                    (requisite.Resources["OpenModal"] as Storyboard)!.Begin(ModalPageFrame);
+                    break;
+                case RolesTabePage:
+                    var role = new RolesTablePageModal();
+                    ModalPageFrame.Content = role;
+                    var rolesTablePageModal = DataGridFrame.Content as RolesTabePage;
+                    role.UpdateDisplayedData(rolesTablePageModal.dataGrid.SelectedItem as RolesObject);
+
+                    (role.Resources["OpenModal"] as Storyboard)!.Begin(ModalPageFrame);
+                    break;
+                case VehiclesTablePage:
+                    var vehicle = new VehiclesTablePageModal();
+                    ModalPageFrame.Content = vehicle;
+                    var vehiclesTableModalPage = DataGridFrame.Content as VehiclesTablePage;
+                    vehicle.UpdateDisplayedData(vehiclesTableModalPage.dataGrid.SelectedItem as VehiclesObject);
+
+                    (vehicle.Resources["OpenModal"] as Storyboard)!.Begin(ModalPageFrame);
+                    break;
+                case VehiclesTypesTablePage:
+                    var vehicleType = new VehiclesTypesTablePageModal();
+                    ModalPageFrame.Content = vehicleType;
+                    var vehiclesTypeTableModalPage = DataGridFrame.Content as VehiclesTypesTablePage;
+                    vehicleType.UpdateDisplayedData(vehiclesTypeTableModalPage.dataGrid.SelectedItem as VehiclesTypesObject);
+
+                    (vehicleType.Resources["OpenModal"] as Storyboard)!.Begin(ModalPageFrame);
                     break;
             }
             MainPanel.Opacity = .5;
             MainPanel.IsEnabled = false;            
+        }
+
+        private void AddButton_Click(object sender, RoutedEventArgs e)
+        {
+            ShowModalPage(1);
         }
     }
 

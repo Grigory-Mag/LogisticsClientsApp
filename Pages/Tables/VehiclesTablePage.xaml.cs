@@ -19,19 +19,18 @@ using System.Windows.Shapes;
 namespace LogisticsClientsApp.Pages.Tables
 {
     /// <summary>
-    /// Логика взаимодействия для CargoTypesPage.xaml
+    /// Логика взаимодействия для VehiclesTabplePage.xaml
     /// </summary>
-    public partial class CargoTypesPage : Page
+    public partial class VehiclesTablePage : Page
     {
-        public List<CargoTypesObject> CargoTypes { get; set; }
+        public List<VehiclesObject> vehicles { get; set; }
         private Locale locale;
 
         StartWindow startWindow;
-        public CargoTypesPage()
+        public VehiclesTablePage()
         {
             InitializeComponent();
         }
-
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
             startWindow = (StartWindow)Window.GetWindow(this);
@@ -51,26 +50,18 @@ namespace LogisticsClientsApp.Pages.Tables
 
         private void DeleteButton_Click(object sender, RoutedEventArgs e)
         {
-            var result = MessageBox.Show($"Вы действительно хотите удалить запись?", "Удаление", MessageBoxButton.OKCancel, MessageBoxImage.Warning, MessageBoxResult.No);
-            if (result == MessageBoxResult.OK)
-            {
-                var item = dataGrid.SelectedItem as CargoTypesObject;
-                startWindow.client.DeleteCargoTypeAsync(new GetOrDeleteCargoTypesRequest { Id = item.Id });
-                CargoTypes.Remove(item);
-                dataGrid.ItemsSource = null;
-                dataGrid.ItemsSource = CargoTypes;
-            }
+            var item = dataGrid.SelectedItem;
         }
 
         private async void SetData()
         {
             try
             {
-                var item = await startWindow.client.GetListCargoTypesAsync(new Google.Protobuf.WellKnownTypes.Empty());
-                CargoTypes = new List<CargoTypesObject>();
-                CargoTypes.AddRange(item.CargoType.ToList());
+                var item = await startWindow.client.GetListVehiclesAsync(new Google.Protobuf.WellKnownTypes.Empty());
+                vehicles = new List<VehiclesObject>();
+                vehicles.AddRange(item.Vehicle.ToList());
                 dataGrid.ItemsSource = null;
-                dataGrid.ItemsSource = CargoTypes;
+                dataGrid.ItemsSource = vehicles;
                 locale.SetLocale(this);
             }
             catch (RpcException ex)

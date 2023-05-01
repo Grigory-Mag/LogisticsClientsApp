@@ -136,7 +136,7 @@
     <value>Объём</value>
   </data>
   <data name="CargoWeight" xml:space="preserve">
-    <value>Вес</value>
+    <value>Масса</value>
   </data>
   <data name="Cargo_Constraints" xml:space="preserve">
     <value>Ограничения грузов</value>
@@ -146,9 +146,6 @@
   </data>
   <data name="Constraints" xml:space="preserve">
     <value>Ограничения</value>
-  </data>
-  <data name="Customers" xml:space="preserve">
-    <value>Заказчики</value>
   </data>
   <data name="Drivers" xml:space="preserve">
     <value>Водители</value>
@@ -186,6 +183,9 @@
   <data name="Orders" xml:space="preserve">
     <value>Заказы</value>
   </data>
+  <data name="Organizations" xml:space="preserve">
+    <value>Организации</value>
+  </data>
   <data name="Ownerships" xml:space="preserve">
     <value>Владельцы</value>
   </data>
@@ -209,6 +209,9 @@
   </data>
   <data name="RoleLogistic" xml:space="preserve">
     <value>Логист</value>
+  </data>
+  <data name="Roles" xml:space="preserve">
+    <value>Категории</value>
   </data>
   <data name="SearchField" xml:space="preserve">
     <value>Поиск</value>

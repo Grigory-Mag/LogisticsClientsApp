@@ -143,11 +143,10 @@ namespace LogisticsClientsApp.Localizations
                     startWindow.TextBlockLogout.Text = RU.LogoutBtn;
                     startWindow.tables = new Dictionary<string, List<string>>()
                     {
-                        { RU.Cargo, new List<string>() {RU.Cargo_Types, RU.Constraints, RU.Cargo } },
+                        { RU.Cargo, new List<string>() {RU.Cargo_Types, RU.Cargo } },
                         { RU.Drivers, new List<string>() {RU.Driver_Licence, RU.Drivers} },
-                        { RU.Customers, new List<string>() {RU.Requisites, RU.Ownerships, RU.Customers} },
+                        { RU.Organizations, new List<string>() {RU.Requisites, RU.Roles } },
                         { RU.Vehicles, new List<string>() {RU.Vehicle_Types, RU.Vehicles} },
-                        { RU.Orders, new List<string>() },
                         { RU.Requests, new List<string>()},
                         { RU.Users, new List<string>()},
                     };
@@ -155,13 +154,10 @@ namespace LogisticsClientsApp.Localizations
                     {
                         RU.Cargo,
                         RU.Cargo_Types,
-                        RU.Constraints,
                         RU.Drivers,
                         RU.Driver_Licence,
-                        RU.Customers,
                         RU.Requisites,
-                        RU.Ownerships,
-                        RU.Orders,
+                        RU.Roles,
                         RU.Vehicles,
                         RU.Vehicle_Types,
                         RU.Requests,
