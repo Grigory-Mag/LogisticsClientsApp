@@ -26,10 +26,10 @@ namespace LogisticsClientsApp.Pages.Modal
     /// </summary>
     public partial class DriversTablePageModal : UserControl
     {
-        public DriversObject data;
+        public DriversObject data = new DriversObject();
         public ListDriverLicence licenses;
         private Locale locale;
-
+        public byte mode = 0;
         StartWindow startWindow;
 
         public DriversTablePageModal()
@@ -62,7 +62,8 @@ namespace LogisticsClientsApp.Pages.Modal
             List<string> stringLicenses = new List<string>();
             licenses.DriverLicence.ToList().ForEach(item => stringLicenses.Add($"{item.Series}/{item.Number}"));
             LicenceComboBox.ItemsSource = stringLicenses;
-            LicenceComboBox.SelectedItem = ($"{data.Licence.Series}/{data.Licence.Number}");
+            if (data.Licence != null)
+                LicenceComboBox.SelectedItem = ($"{data.Licence.Series}/{data.Licence.Number}");
         }
 
         public void UpdateDisplayedData(DriversObject data)
@@ -95,17 +96,27 @@ namespace LogisticsClientsApp.Pages.Modal
         {
             try
             {
-                var reqResult = await startWindow.client.UpdateDriverAsync(new CreateOrUpdateDriversRequest { Driver = data });
+                var reqResult = new DriversObject();
+                if (mode == 0)
+                    reqResult = await startWindow.client.UpdateDriverAsync(new CreateOrUpdateDriversRequest { Driver = data });
+                if (mode == 1)
+                    reqResult = await startWindow.client.CreateDriverAsync(new CreateOrUpdateDriversRequest { Driver = data });
                 var tablePage = (TablePage)startWindow.MainFrameK.Content;
                 var page = tablePage.DataGridFrame.Content as DriversTablePage;
-                var index = page.Drivers.FindIndex(t => t.Id == reqResult.Id);
-                page.Drivers[index] = reqResult;
+                if (mode == 0)
+                {
+                    var index = page.Drivers.FindIndex(t => t.Id == reqResult.Id);
+                    page.Drivers[index] = reqResult;
+                }
+                if (mode == 1)
+                    page.Drivers.Add(reqResult);
+
                 page.dataGrid.ItemsSource = null;
                 page.dataGrid.ItemsSource = page.Drivers;
             }
             catch (RpcException ex)
             {
-
+                MessageBox.Show($"Произошла ошибка: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
         }
@@ -113,17 +124,19 @@ namespace LogisticsClientsApp.Pages.Modal
         private void UpdateButton_Click(object sender, RoutedEventArgs e)
         {
             StringBuilder changedDataNotify = new StringBuilder();
-
-            if (NameTextBox.Text != data.Name.ToString())
-                changedDataNotify.Append($"Название: {data.Name} -> {NameTextBox.Text}\n");
-            if (SurnameTextBox.Text != data.Surname.ToString())
-                changedDataNotify.Append($"Владелец: {data.Surname} -> {SurnameTextBox.Text}\n");
-            if (PatrTextBox.Text != data.Patronymic)
-                changedDataNotify.Append($"ИНН: {data.Patronymic} -> {SurnameTextBox.Text}\n");
-            if (SanCheckBox.IsChecked != data.Sanitation)
-                changedDataNotify.Append($"Юр. адрес: {data.Sanitation} -> {SanCheckBox.IsChecked}\n");
-            if (foundedData.Id != data.Licence.Id)
-                changedDataNotify.Append($"Роль: {data.Licence.Series}/{data.Licence.Number} -> {foundedData.Series}/{foundedData.Number}\n");
+            if (mode == 0)
+            {
+                if (NameTextBox.Text != data.Name.ToString())
+                    changedDataNotify.Append($"Название: {data.Name} -> {NameTextBox.Text}\n");
+                if (SurnameTextBox.Text != data.Surname.ToString())
+                    changedDataNotify.Append($"Владелец: {data.Surname} -> {SurnameTextBox.Text}\n");
+                if (PatrTextBox.Text != data.Patronymic)
+                    changedDataNotify.Append($"ИНН: {data.Patronymic} -> {SurnameTextBox.Text}\n");
+                if (SanCheckBox.IsChecked != data.Sanitation)
+                    changedDataNotify.Append($"Юр. адрес: {data.Sanitation} -> {SanCheckBox.IsChecked}\n");
+                if (foundedData.Id != data.Licence.Id)
+                    changedDataNotify.Append($"Роль: {data.Licence.Series}/{data.Licence.Number} -> {foundedData.Series}/{foundedData.Number}\n");
+            }
 
             var result = MessageBox.Show($"Применить изменения?\n {changedDataNotify}", "Обновление", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
             if (result == MessageBoxResult.Yes)

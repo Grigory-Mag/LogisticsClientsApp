@@ -30,24 +30,24 @@
                           AutoGenerateColumns="False">
                     <DataGrid.Columns>
                         <DataGridTextColumn Width="Auto"
-                                            Header="Name"
+                                            Header="Название"
                                             Binding="{Binding Name}" />
                         <DataGridTextColumn Width="Auto"
-                                            Header="Legal address"
+                                            Header="Юр. адрес"
                                             Binding="{Binding LegalAddress}" />
                         <DataGridTextColumn Width="Auto"
-                                            Header="Inn"
+                                            Header="ИНН"
                                             Binding="{Binding Inn}" />
                         <DataGridTextColumn Width="Auto"
-                                            Header="CEO"
+                                            Header="Владелц"
                                             Binding="{Binding Ceo}" />
                         <DataGridTextColumn Width="Auto"
-                                            Header="PTS"
+                                            Header="ПТС"
                                             Binding="{Binding Pts}" />
                         <DataGridTextColumn Width="Auto"
-                                            Header="Role"
+                                            Header="Роль"
                                             Binding="{Binding Role.Name}" />
-                        <DataGridTemplateColumn Header="Open">
+                        <DataGridTemplateColumn Header="Открыть">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel>
@@ -67,7 +67,7 @@
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Header="Delete">
+                        <DataGridTemplateColumn Header="Удалить">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel>

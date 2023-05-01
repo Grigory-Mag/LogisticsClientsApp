@@ -235,25 +235,35 @@ namespace LogisticsClientsApp.Pages
                     break;
                 case DriverLicenceTablePage:
                     var driverLicence = new DriverLicenceTablePageModal();
+                    driverLicence.mode = mode;
                     ModalPageFrame.Content = driverLicence;
-                    var driverLicenceModalPage = DataGridFrame.Content as DriverLicenceTablePage;
-                    driverLicence.UpdateDisplayedData(driverLicenceModalPage.dataGrid.SelectedItem as DriversLicenceReady);
-
+                    if (mode == 0)
+                    {
+                        var driverLicenceModalPage = DataGridFrame.Content as DriverLicenceTablePage;
+                        driverLicence.UpdateDisplayedData(driverLicenceModalPage.dataGrid.SelectedItem as DriversLicenceReady);
+                    }
                     (driverLicence.Resources["OpenModal"] as Storyboard)!.Begin(ModalPageFrame);
                     break;
                 case DriversTablePage:
                     var driver = new DriversTablePageModal();
                     ModalPageFrame.Content = driver;
-                    var driverTableModalPage = DataGridFrame.Content as DriversTablePage;
-                    driver.UpdateDisplayedData(driverTableModalPage.dataGrid.SelectedItem as DriversObject);
-
+                    driver.mode = mode;
+                    if (mode == 0)
+                    {
+                        var driverTableModalPage = DataGridFrame.Content as DriversTablePage;
+                        driver.UpdateDisplayedData(driverTableModalPage.dataGrid.SelectedItem as DriversObject);
+                    }
                     (driver.Resources["OpenModal"] as Storyboard)!.Begin(ModalPageFrame);
                     break;
                 case RequisitesTablePage:
                     var requisite = new RequisitesTablePageModal();
                     ModalPageFrame.Content = requisite;
-                    var requisitesTableModalPage = DataGridFrame.Content as RequisitesTablePage;
-                    requisite.UpdateDisplayedData(requisitesTableModalPage.dataGrid.SelectedItem as RequisitesObject);
+                    requisite.mode = mode;
+                    if (mode == 0)
+                    {
+                        var requisitesTableModalPage = DataGridFrame.Content as RequisitesTablePage;
+                        requisite.UpdateDisplayedData(requisitesTableModalPage.dataGrid.SelectedItem as RequisitesObject);
+                    }
 
                     (requisite.Resources["OpenModal"] as Storyboard)!.Begin(ModalPageFrame);
                     break;

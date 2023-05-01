@@ -27,10 +27,10 @@ namespace LogisticsClientsApp.Pages.Modal
     /// </summary>
     public partial class RequisitesTablePageModal : UserControl
     {
-        public RequisitesObject data;
+        public RequisitesObject data = new RequisitesObject();
         public ListRoles roles;
         private Locale locale;
-
+        public byte mode = 0;
         StartWindow startWindow;
 
         public RequisitesTablePageModal()
@@ -61,7 +61,8 @@ namespace LogisticsClientsApp.Pages.Modal
         {
             roles = await startWindow.client.GetListRolesAsync(new Google.Protobuf.WellKnownTypes.Empty());
             RoleComboBox.ItemsSource = roles.RolesObject;
-            RoleComboBox.SelectedItem = roles.RolesObject.First(x=> x.Name == data.Role.Name);
+            if (data.Role != null)
+                RoleComboBox.SelectedItem = roles.RolesObject.First(x=> x.Name == data.Role.Name);
         }
 
         public void UpdateDisplayedData(RequisitesObject data)
@@ -92,13 +93,22 @@ namespace LogisticsClientsApp.Pages.Modal
         {
             try
             {
-                var reqResult = await startWindow.client.UpdateRequisiteAsync(new CreateOrUpdateRequisitesRequest { Requisite = data });
+                var reqResult= new RequisitesObject();
+                if (mode == 0)
+                    reqResult = await startWindow.client.UpdateRequisiteAsync(new CreateOrUpdateRequisitesRequest { Requisite = data });
+                if (mode == 1)
+                    reqResult = await startWindow.client.CreateRequisiteAsync(new CreateOrUpdateRequisitesRequest { Requisite = data });
                 var tablePage = (TablePage)startWindow.MainFrameK.Content;
                 var page = tablePage.DataGridFrame.Content as RequisitesTablePage;
-                var index = page.requisites.FindIndex(t => t.Id == reqResult.Id);
-                page.requisites[index] = reqResult;
+                if (mode == 0)
+                {
+                    var index = page.Requisites.FindIndex(t => t.Id == reqResult.Id);
+                    page.Requisites[index] = reqResult;
+                }
+                if (mode == 1)
+                    page.Requisites.Add(reqResult);
                 page.dataGrid.ItemsSource = null;
-                page.dataGrid.ItemsSource = page.requisites;
+                page.dataGrid.ItemsSource = page.Requisites;
             }
             catch (RpcException ex)
             {
@@ -110,18 +120,21 @@ namespace LogisticsClientsApp.Pages.Modal
         private void UpdateButton_Click(object sender, RoutedEventArgs e)
         {
             StringBuilder changedDataNotify = new StringBuilder();
-
-            if (NameTextBox.Text != data.Name.ToString())            
-                changedDataNotify.Append($"Название: {data.Name} -> {NameTextBox.Text}\n");
-            if (CeoTextBox.Text != data.Ceo.ToString())
-                changedDataNotify.Append($"Владелец: {data.Ceo} -> {CeoTextBox.Text}\n");
-            if (InnTextBox.Text != data.Inn)
-                changedDataNotify.Append($"ИНН: {data.Inn} -> {InnTextBox.Text}\n");
-            if (AddressTextBox.Text != data.LegalAddress.ToString())
-                changedDataNotify.Append($"Юр. адрес: {data.LegalAddress} -> {AddressTextBox.Text}\n");
-            if ((RoleComboBox.SelectedItem as RolesObject)!.Name != data.Role.Name)
-                changedDataNotify.Append($"Роль: {data.Role.Name} -> {(RoleComboBox.SelectedItem as RolesObject)!.Name}\n");
             
+            if (mode == 0)
+            {
+                if (NameTextBox.Text != data.Name.ToString())
+                    changedDataNotify.Append($"Название: {data.Name} -> {NameTextBox.Text}\n");
+                if (CeoTextBox.Text != data.Ceo.ToString())
+                    changedDataNotify.Append($"Владелец: {data.Ceo} -> {CeoTextBox.Text}\n");
+                if (InnTextBox.Text != data.Inn)
+                    changedDataNotify.Append($"ИНН: {data.Inn} -> {InnTextBox.Text}\n");
+                if (AddressTextBox.Text != data.LegalAddress.ToString())
+                    changedDataNotify.Append($"Юр. адрес: {data.LegalAddress} -> {AddressTextBox.Text}\n");
+                if ((RoleComboBox.SelectedItem as RolesObject)!.Name != data.Role.Name)
+                    changedDataNotify.Append($"Роль: {data.Role.Name} -> {(RoleComboBox.SelectedItem as RolesObject)!.Name}\n");
+            }
+
             var result = MessageBox.Show($"Применить изменения?\n {changedDataNotify}", "Обновление", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
             if (result == MessageBoxResult.Yes)
             {

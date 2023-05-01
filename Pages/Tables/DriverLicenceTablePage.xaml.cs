@@ -42,6 +42,8 @@ namespace LogisticsClientsApp.Pages.Tables
                 this.Number = number;
                 this.Date = date.ToDateTime();
             }
+
+            public DriversLicenceReady() { }
         }
 
         public DriverLicenceTablePage()
@@ -68,7 +70,19 @@ namespace LogisticsClientsApp.Pages.Tables
 
         private void DeleteButton_Click(object sender, RoutedEventArgs e)
         {
-            var item = dataGrid.SelectedItem;
+            var result = MessageBox.Show($"Вы действительно хотите удалить запись?", "Удаление", MessageBoxButton.OKCancel, MessageBoxImage.Warning, MessageBoxResult.No);
+            if (result == MessageBoxResult.OK)
+            {
+                var item = dataGrid.SelectedItem as DriversLicenceReady;
+                startWindow.client.DeleteDriverLicenceAsync(new GetOrDeleteDriverLicenceRequest { Id = (int)item.Id });
+                DriversLicence.Remove(DriversLicence.First(x=> x.Id == item.Id));
+
+                List<DriversLicenceReady> driversLicenceReadies = new List<DriversLicenceReady>();
+                DriversLicence.ForEach(license => driversLicenceReadies.Add(new DriversLicenceReady(license.Id, license.Series, license.Number, license.Date)));
+
+                dataGrid.ItemsSource = null;
+                dataGrid.ItemsSource = driversLicenceReadies;
+            }
         }
 
         private async void SetData()

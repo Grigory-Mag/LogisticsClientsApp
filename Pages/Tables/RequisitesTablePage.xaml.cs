@@ -23,7 +23,7 @@ namespace LogisticsClientsApp.Pages.Tables
     /// </summary>
     public partial class RequisitesTablePage : Page
     {
-        public List<RequisitesObject> requisites { get; set; }
+        public List<RequisitesObject> Requisites { get; set; }
         private Locale locale;
 
         StartWindow startWindow;
@@ -50,7 +50,16 @@ namespace LogisticsClientsApp.Pages.Tables
 
         private void DeleteButton_Click(object sender, RoutedEventArgs e)
         {
-            var item = dataGrid.SelectedItem;
+            var result = MessageBox.Show($"Вы действительно хотите удалить запись?", "Удаление", MessageBoxButton.OKCancel, MessageBoxImage.Warning, MessageBoxResult.No);
+            if (result == MessageBoxResult.OK)
+            {
+                var item = dataGrid.SelectedItem as RequisitesObject;
+                startWindow.client.DeleteRequisiteAsync(new GetOrDeleteRequisitesRequest { Id = item.Id });
+                Requisites.Remove(item);
+
+                dataGrid.ItemsSource = null;
+                dataGrid.ItemsSource = Requisites;
+            }
         }
 
         private async void SetData()
@@ -58,10 +67,10 @@ namespace LogisticsClientsApp.Pages.Tables
             try
             {
                 var item = await startWindow.client.GetListRequisitesAsync(new Google.Protobuf.WellKnownTypes.Empty());
-                requisites = new List<RequisitesObject>();
-                requisites.AddRange(item.Requisites.ToList());
+                Requisites = new List<RequisitesObject>();
+                Requisites.AddRange(item.Requisites.ToList());
                 dataGrid.ItemsSource = null;
-                dataGrid.ItemsSource = requisites;
+                dataGrid.ItemsSource = Requisites;
                 locale.SetLocale(this);
             }
             catch (RpcException ex)

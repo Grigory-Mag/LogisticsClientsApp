@@ -2,6 +2,7 @@
 using Grpc.Core;
 using LogisticsClientsApp.Localizations;
 using LogisticsClientsApp.Pages.Tables;
+using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,8 +28,8 @@ namespace LogisticsClientsApp.Pages.Modal
     public partial class DriverLicenceTablePageModal : UserControl
     {
         public StartWindow startWindow;
-        public DriversLicenceReady data;
-
+        public DriversLicenceReady data = new DriversLicenceReady();
+        public byte mode = 0;
         public DriverLicenceTablePageModal()
         {
             InitializeComponent();
@@ -70,13 +71,27 @@ namespace LogisticsClientsApp.Pages.Modal
         {
             try
             {
-                var reqResult = await startWindow.client.UpdateDriverLicenceAsync(new CreateOrUpdateDriverLicenceRequest { DriverLicence = new DriverLicenceObject { Id = (int)data.Id, Date = Google.Protobuf.WellKnownTypes.Timestamp.FromDateTime(data.Date.ToUniversalTime()), Number = data.Number, Series = data.Series } });
+                var reqResult = new DriverLicenceObject();
+                if (mode == 0)
+                    reqResult = await startWindow.client.UpdateDriverLicenceAsync(new CreateOrUpdateDriverLicenceRequest { DriverLicence = new DriverLicenceObject { Id = (int)data.Id, Date = Google.Protobuf.WellKnownTypes.Timestamp.FromDateTime(data.Date.ToUniversalTime()), Number = data.Number, Series = data.Series } });
+                if (mode == 1)
+                    reqResult = await startWindow.client.CreateDriverLicenceAsync(new CreateOrUpdateDriverLicenceRequest { DriverLicence = new DriverLicenceObject { Date = Google.Protobuf.WellKnownTypes.Timestamp.FromDateTime(data.Date.ToUniversalTime()), Number = data.Number, Series = data.Series } });
+                
                 var tablePage = (TablePage)startWindow.MainFrameK.Content;
                 var page = tablePage.DataGridFrame.Content as DriverLicenceTablePage;
-                var index = page.DriversLicence.FindIndex(t => t.Id == reqResult.Id);
-                page.DriversLicence[index] = reqResult;
+                if (mode == 0)
+                {                    
+                    var index = page.DriversLicence.FindIndex(t => t.Id == reqResult.Id);
+                    page.DriversLicence[index] = reqResult;
+                }
+                if (mode == 1)
+                    page.DriversLicence.Add(reqResult);
+
+                List<DriversLicenceReady> driversLicenceReadies = new List<DriversLicenceReady>();
+                page.DriversLicence.ForEach(license => driversLicenceReadies.Add(new DriversLicenceReady(license.Id, license.Series, license.Number, license.Date)));
+
                 page.dataGrid.ItemsSource = null;
-                page.dataGrid.ItemsSource = page.DriversLicence;
+                page.dataGrid.ItemsSource = driversLicenceReadies;
                 page.dataGrid.Items.Refresh();
             }
             catch (RpcException ex)
@@ -89,14 +104,15 @@ namespace LogisticsClientsApp.Pages.Modal
         private void UpdateButton_Click(object sender, RoutedEventArgs e)
         {
             StringBuilder changedDataNotify = new StringBuilder();
-            
-            if (SeriesTextBox.Text != data.Series.ToString())
-                changedDataNotify.Append($"Серия: {data.Series} -> {SeriesTextBox.Text}\n");
-            if (NumberTextBox.Text != data.Number.ToString())
-                changedDataNotify.Append($"Номер: {data.Number} -> {NumberTextBox.Text}\n");
-            if (DatePicker.SelectedDate != data.Date)
-                changedDataNotify.Append($"Дата выдачи: {data.Date} -> {DatePicker.SelectedDate}\n");
-            
+            if (mode == 0)
+            {
+                if (SeriesTextBox.Text != data.Series.ToString())
+                    changedDataNotify.Append($"Серия: {data.Series} -> {SeriesTextBox.Text}\n");
+                if (NumberTextBox.Text != data.Number.ToString())
+                    changedDataNotify.Append($"Номер: {data.Number} -> {NumberTextBox.Text}\n");
+                if (DatePicker.SelectedDate.Value.Date != data.Date.Date)
+                    changedDataNotify.Append($"Дата выдачи: {data.Date.Date.ToShortDateString()} -> {DatePicker.SelectedDate.Value.Date.ToShortDateString()}\n");
+            }
 
             var result = MessageBox.Show($"Применить изменения?\n {changedDataNotify}", "Обновление", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
             if (result == MessageBoxResult.Yes)

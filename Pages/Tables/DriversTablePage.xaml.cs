@@ -15,6 +15,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using static LogisticsClientsApp.Pages.Tables.DriverLicenceTablePage;
 
 namespace LogisticsClientsApp.Pages.Tables
 {
@@ -52,7 +53,16 @@ namespace LogisticsClientsApp.Pages.Tables
 
         private void DeleteButton_Click(object sender, RoutedEventArgs e)
         {
-            var item = dataGrid.SelectedItem;
+            var result = MessageBox.Show($"Вы действительно хотите удалить запись?", "Удаление", MessageBoxButton.OKCancel, MessageBoxImage.Warning, MessageBoxResult.No);
+            if (result == MessageBoxResult.OK)
+            {
+                var item = dataGrid.SelectedItem as DriversObject;
+                startWindow.client.DeleteDriverAsync(new GetOrDeleteDriversRequest { Id = (int)item.Id });
+                Drivers.Remove(item);
+
+                dataGrid.ItemsSource = null;
+                dataGrid.ItemsSource = Drivers;
+            }
         }
 
         private async void SetData()

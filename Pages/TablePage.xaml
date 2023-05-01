@@ -133,9 +133,11 @@
                         HorizontalAlignment="Center">
                 <Button Foreground="White"
                         FontSize="18"
+                        Height="50"
+                        Typography.Capitals="SmallCaps"
                         Style="{StaticResource MaterialDesignRaisedButton}">
                     <TextBlock TextAlignment="Center">
-                        <Run Text="Расширенный"/>
+                        <Run Text="расширенный"/>
                         <LineBreak />
                         <Run Text="поиск" />
                     </TextBlock>
