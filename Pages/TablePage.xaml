@@ -170,8 +170,8 @@
 
             <Grid Margin="0,0,0,20">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="1*" />
                 </Grid.ColumnDefinitions>
                 <StackPanel Orientation="Horizontal"
                             Grid.Column="0"
@@ -183,7 +183,20 @@
                 </StackPanel>
 
                 <StackPanel Grid.Column="1"
-                            HorizontalAlignment="Right">
+                            HorizontalAlignment="Right"
+                            Orientation="Horizontal">
+                    <Button x:Name="ExportButton"
+                            Typography.Capitals="SmallCaps"
+                            FontSize="18"
+                            Style="{StaticResource MaterialDesignPaperButton}"
+                            BorderBrush="#9CCC65"
+                            Margin="0,0,100,0"
+                            Click="ExportButton_Click">
+                        <StackPanel>
+                            <TextBlock Text="экспорт в excel"
+                                       Foreground="#7CB342"/>
+                        </StackPanel>
+                    </Button>
                     <Button Width="Auto"
                             Name="AddButton"
                             FontSize="18"

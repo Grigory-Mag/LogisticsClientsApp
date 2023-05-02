@@ -23,7 +23,7 @@ namespace LogisticsClientsApp.Pages.Tables
     /// </summary>
     public partial class RolesTabePage : Page
     {
-        public List<RolesObject> roles { get; set; }
+        public List<RolesObject> Roles { get; set; }
         private Locale locale;
 
         StartWindow startWindow;
@@ -51,7 +51,16 @@ namespace LogisticsClientsApp.Pages.Tables
 
         private void DeleteButton_Click(object sender, RoutedEventArgs e)
         {
-            var item = dataGrid.SelectedItem;
+            var result = MessageBox.Show($"Вы действительно хотите удалить запись?", "Удаление", MessageBoxButton.OKCancel, MessageBoxImage.Warning, MessageBoxResult.No);
+            if (result == MessageBoxResult.OK)
+            {
+                var item = dataGrid.SelectedItem as RolesObject;
+                startWindow.client.DeleteRoleAsync(new GetOrDeleteRoleRequest { Id = item.Id });
+                Roles.Remove(item);
+
+                dataGrid.ItemsSource = null;
+                dataGrid.ItemsSource = Roles;
+            }
         }
 
         private async void SetData()
@@ -59,10 +68,10 @@ namespace LogisticsClientsApp.Pages.Tables
             try
             {
                 var item = await startWindow.client.GetListRolesAsync(new Google.Protobuf.WellKnownTypes.Empty());
-                roles = new List<RolesObject>();
-                roles.AddRange(item.RolesObject.ToList());
+                Roles = new List<RolesObject>();
+                Roles.AddRange(item.RolesObject.ToList());
                 dataGrid.ItemsSource = null;
-                dataGrid.ItemsSource = roles;
+                dataGrid.ItemsSource = Roles;
                 locale.SetLocale(this);
             }
             catch (RpcException ex)

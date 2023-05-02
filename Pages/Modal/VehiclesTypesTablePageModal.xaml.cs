@@ -26,8 +26,9 @@ namespace LogisticsClientsApp.Pages.Modal
     /// </summary>
     public partial class VehiclesTypesTablePageModal : UserControl
     {
-        public VehiclesTypesObject data;
+        public VehiclesTypesObject data = new VehiclesTypesObject();
         private Locale locale;
+        public byte mode = 0;
 
         StartWindow startWindow;
 
@@ -69,13 +70,23 @@ namespace LogisticsClientsApp.Pages.Modal
         {
             try
             {
-                var reqResult = await startWindow.client.UpdateVehiclesTypeAsync(new CreateOrUpdateVehiclesTypesRequest { VehiclesTypes = data });
+                var reqResult = new VehiclesTypesObject();
+                if (mode == 0)
+                    reqResult = await startWindow.client.UpdateVehiclesTypeAsync(new CreateOrUpdateVehiclesTypesRequest { VehiclesTypes = data });
+                if (mode == 1)
+                    reqResult = await startWindow.client.CreateVehiclesTypeAsync(new CreateOrUpdateVehiclesTypesRequest { VehiclesTypes = data });
                 var tablePage = (TablePage)startWindow.MainFrameK.Content;
                 var page = tablePage.DataGridFrame.Content as VehiclesTypesTablePage;
-                var index = page.types.FindIndex(t => t.Id == reqResult.Id);
-                page.types[index] = reqResult;
+                if (mode == 0)
+                {
+                    var index = page.Types.FindIndex(t => t.Id == reqResult.Id);
+                    page.Types[index] = reqResult;
+                }
+                if (mode == 1)
+                    page.Types.Add(reqResult);
+
                 page.dataGrid.ItemsSource = null;
-                page.dataGrid.ItemsSource = page.types;
+                page.dataGrid.ItemsSource = page.Types;
             }
             catch (RpcException ex)
             {
@@ -88,7 +99,15 @@ namespace LogisticsClientsApp.Pages.Modal
         {
             if (data.Name != NameTextBox.Text && NameTextBox.Text != "")
             {
-                var result = MessageBox.Show($"Применить изменения?\n {data.Name} -> {NameTextBox.Text}", "Обновление", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
+                StringBuilder changedDataNotify = new StringBuilder();
+
+                if (mode == 0)
+                {
+                    if (NameTextBox.Text != data.Name.ToString())
+                        changedDataNotify.Append($"Название: {data.Name} -> {NameTextBox.Text}");
+                }
+
+                var result = MessageBox.Show($"Применить изменения?\n {changedDataNotify}", "Обновление", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
                 if (result == MessageBoxResult.Yes)
                 {
                     data.Name = NameTextBox.Text;

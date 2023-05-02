@@ -25,9 +25,10 @@ namespace LogisticsClientsApp.Pages.Modal
     /// </summary>
     public partial class RolesTablePageModal : UserControl
     {
-        public RolesObject data;
+        public RolesObject data = new RolesObject();
         public ListRoles roles;
         private Locale locale;
+        public byte mode = 0;
 
         StartWindow startWindow;
         public RolesTablePageModal()
@@ -67,13 +68,23 @@ namespace LogisticsClientsApp.Pages.Modal
         {
             try
             {
-                var reqResult = await startWindow.client.UpdateRoleAsync(new CreateOrUpdateRoleRequest { RoleObject = data });
+                var reqResult = new RolesObject();
+                if (mode == 0)
+                    reqResult = await startWindow.client.UpdateRoleAsync(new CreateOrUpdateRoleRequest { RoleObject = data });
+                if (mode == 1)
+                    reqResult = await startWindow.client.CreateRoleAsync(new CreateOrUpdateRoleRequest { RoleObject = data });
                 var tablePage = (TablePage)startWindow.MainFrameK.Content;
                 var page = tablePage.DataGridFrame.Content as RolesTabePage;
-                var index = page.roles.FindIndex(t => t.Id == reqResult.Id);
-                page.roles[index] = reqResult;
+                if (mode == 0)
+                {
+                    var index = page.Roles.FindIndex(t => t.Id == reqResult.Id);
+                    page.Roles[index] = reqResult;
+                }
+                if (mode == 1)
+                    page.Roles.Add(reqResult);
+
                 page.dataGrid.ItemsSource = null;
-                page.dataGrid.ItemsSource = page.roles;
+                page.dataGrid.ItemsSource = page.Roles;
             }
             catch (RpcException ex)
             {
@@ -86,10 +97,12 @@ namespace LogisticsClientsApp.Pages.Modal
         {
             StringBuilder changedDataNotify = new StringBuilder();
 
-            if (NameTextBox.Text != data.Name.ToString())
+            if (mode == 0)
             {
-                changedDataNotify.Append($"Название: {data.Name} -> {NameTextBox.Text}");
+                if (NameTextBox.Text != data.Name.ToString())
+                    changedDataNotify.Append($"Название: {data.Name} -> {NameTextBox.Text}");
             }
+            
             var result = MessageBox.Show($"Применить изменения?\n {changedDataNotify}", "Обновление", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
             if (result == MessageBoxResult.Yes)
             {

@@ -25,10 +25,11 @@ namespace LogisticsClientsApp.Pages.Modal
     /// </summary>
     public partial class VehiclesTablePageModal : UserControl
     {
-        public VehiclesObject data;
+        public VehiclesObject data = new VehiclesObject();
         public ListRequisites requisites;
         public ListVehiclesTypes types;
         private Locale locale;
+        public byte mode = 0;
 
         StartWindow startWindow;
 
@@ -59,14 +60,13 @@ namespace LogisticsClientsApp.Pages.Modal
         public async void SetLinkedData()
         {
             requisites = await startWindow.client.GetListRequisitesAsync(new Google.Protobuf.WellKnownTypes.Empty());
-            List<string> stringRequisites = new List<string>();
-            requisites.Requisites.ToList().ForEach(item => stringRequisites.Add(item.Name));
             CeoComboBox.ItemsSource = requisites.Requisites;
-            CeoComboBox.SelectedItem = requisites.Requisites.First(x => x.Id == data.Id);
-
+            if (data.Id != 0)
+                CeoComboBox.SelectedItem = requisites.Requisites.First(x => x.Id == data.Owner.Id);
             types = await startWindow.client.GetListVehiclesTypesAsync(new Google.Protobuf.WellKnownTypes.Empty());
             TypeComboBox.ItemsSource = types.VehiclesTypes;
-            TypeComboBox.SelectedItem = types.VehiclesTypes.First(x => x.Id == data.Type.Id);
+            if (data.Type != null)
+                TypeComboBox.SelectedItem = types.VehiclesTypes.First(x => x.Id == data.Type.Id);
         }
 
         public void UpdateDisplayedData(VehiclesObject data)
@@ -106,13 +106,23 @@ namespace LogisticsClientsApp.Pages.Modal
         {
             try
             {
-                var reqResult = await startWindow.client.UpdateVehicleAsync(new CreateOrUpdateVehiclesRequest { Vehicle = data });
+                var reqResult = new VehiclesObject();
+                if (mode == 0)
+                    reqResult = await startWindow.client.UpdateVehicleAsync(new CreateOrUpdateVehiclesRequest { Vehicle = data });
+                if (mode == 1)
+                    reqResult = await startWindow.client.CreateVehicleAsync(new CreateOrUpdateVehiclesRequest { Vehicle = data });
                 var tablePage = (TablePage)startWindow.MainFrameK.Content;
                 var page = tablePage.DataGridFrame.Content as VehiclesTablePage;
-                var index = page.vehicles.FindIndex(t => t.Id == reqResult.Id);
-                page.vehicles[index] = reqResult;
+                if (mode == 0)
+                {
+                    var index = page.Vehicles.FindIndex(t => t.Id == reqResult.Id);
+                    page.Vehicles[index] = reqResult;
+                }
+                if (mode == 1)
+                    page.Vehicles.Add(reqResult);
+
                 page.dataGrid.ItemsSource = null;
-                page.dataGrid.ItemsSource = page.vehicles;
+                page.dataGrid.ItemsSource = page.Vehicles;
             }
             catch (RpcException ex)
             {
@@ -125,14 +135,18 @@ namespace LogisticsClientsApp.Pages.Modal
         {
             StringBuilder changedDataNotify = new StringBuilder();
 
-            if ((TypeComboBox.SelectedItem as VehiclesTypesObject)!.Name != data.Type.Name)
-                changedDataNotify.Append($"Тип: {data.Type.Name} -> {(TypeComboBox.SelectedItem as VehiclesTypesObject).Name}\n");
-            if ((CeoComboBox.SelectedItem as RequisitesObject)!.Name != data.Owner.Name)
-                changedDataNotify.Append($"Владелец: {data.Owner.Name} -> {(CeoComboBox.SelectedItem as RequisitesObject).Name}\n");
-            if (NumberTextBox.Text != data.Number)
-                changedDataNotify.Append($"Номер машины: {data.Number} -> {NumberTextBox.Text}");
-            if (TrailerNumberTextBox.Text != data.TrailerNumber)
-                changedDataNotify.Append($"Номер прицепа: {data.TrailerNumber} -> {TrailerNumberTextBox.Text}");
+            if (mode == 0)
+            {
+                if ((TypeComboBox.SelectedItem as VehiclesTypesObject)!.Name != data.Type.Name)
+                    changedDataNotify.Append($"Тип: {data.Type.Name} -> {(TypeComboBox.SelectedItem as VehiclesTypesObject).Name}\n");
+                if ((CeoComboBox.SelectedItem as RequisitesObject)!.Name != data.Owner.Name)
+                    changedDataNotify.Append($"Владелец: {data.Owner.Name} -> {(CeoComboBox.SelectedItem as RequisitesObject).Name}\n");
+                if (NumberTextBox.Text != data.Number)
+                    changedDataNotify.Append($"Номер машины: {data.Number} -> {NumberTextBox.Text}");
+                if (TrailerNumberTextBox.Text != data.TrailerNumber)
+                    changedDataNotify.Append($"Номер прицепа: {data.TrailerNumber} -> {TrailerNumberTextBox.Text}");
+            }
+
 
             var result = MessageBox.Show($"Применить изменения?\n {changedDataNotify}", "Обновление", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
             if (result == MessageBoxResult.Yes)

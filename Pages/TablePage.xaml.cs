@@ -270,24 +270,36 @@ namespace LogisticsClientsApp.Pages
                 case RolesTabePage:
                     var role = new RolesTablePageModal();
                     ModalPageFrame.Content = role;
-                    var rolesTablePageModal = DataGridFrame.Content as RolesTabePage;
-                    role.UpdateDisplayedData(rolesTablePageModal.dataGrid.SelectedItem as RolesObject);
+                    role.mode = mode;
+                    if (mode == 0)
+                    {
+                        var rolesTablePageModal = DataGridFrame.Content as RolesTabePage;
+                        role.UpdateDisplayedData(rolesTablePageModal.dataGrid.SelectedItem as RolesObject);
+                    }
 
                     (role.Resources["OpenModal"] as Storyboard)!.Begin(ModalPageFrame);
                     break;
                 case VehiclesTablePage:
                     var vehicle = new VehiclesTablePageModal();
                     ModalPageFrame.Content = vehicle;
-                    var vehiclesTableModalPage = DataGridFrame.Content as VehiclesTablePage;
-                    vehicle.UpdateDisplayedData(vehiclesTableModalPage.dataGrid.SelectedItem as VehiclesObject);
+                    vehicle.mode = mode;
+                    if (mode == 0)
+                    {
+                        var vehiclesTableModalPage = DataGridFrame.Content as VehiclesTablePage;
+                        vehicle.UpdateDisplayedData(vehiclesTableModalPage.dataGrid.SelectedItem as VehiclesObject);
+                    }
 
                     (vehicle.Resources["OpenModal"] as Storyboard)!.Begin(ModalPageFrame);
                     break;
                 case VehiclesTypesTablePage:
                     var vehicleType = new VehiclesTypesTablePageModal();
                     ModalPageFrame.Content = vehicleType;
-                    var vehiclesTypeTableModalPage = DataGridFrame.Content as VehiclesTypesTablePage;
-                    vehicleType.UpdateDisplayedData(vehiclesTypeTableModalPage.dataGrid.SelectedItem as VehiclesTypesObject);
+                    vehicleType.mode = mode;
+                    if (mode == 0)
+                    {
+                        var vehiclesTypeTableModalPage = DataGridFrame.Content as VehiclesTypesTablePage;
+                        vehicleType.UpdateDisplayedData(vehiclesTypeTableModalPage.dataGrid.SelectedItem as VehiclesTypesObject);
+                    }
 
                     (vehicleType.Resources["OpenModal"] as Storyboard)!.Begin(ModalPageFrame);
                     break;
@@ -299,6 +311,15 @@ namespace LogisticsClientsApp.Pages
         private void AddButton_Click(object sender, RoutedEventArgs e)
         {
             ShowModalPage(1);
+        }
+
+        private void ExportButton_Click(object sender, RoutedEventArgs e)
+        {
+            switch (DataGridFrame.Content)
+            {
+                case CargoTablePage:
+                    break;
+            }
         }
     }
 

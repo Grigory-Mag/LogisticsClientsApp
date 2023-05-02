@@ -23,7 +23,7 @@ namespace LogisticsClientsApp.Pages.Tables
     /// </summary>
     public partial class VehiclesTypesTablePage : Page
     {
-        public List<VehiclesTypesObject> types { get; set; }
+        public List<VehiclesTypesObject> Types { get; set; }
         private Locale locale;
 
         StartWindow startWindow;
@@ -51,7 +51,16 @@ namespace LogisticsClientsApp.Pages.Tables
 
         private void DeleteButton_Click(object sender, RoutedEventArgs e)
         {
-            var item = dataGrid.SelectedItem;
+            var result = MessageBox.Show($"Вы действительно хотите удалить запись?", "Удаление", MessageBoxButton.OKCancel, MessageBoxImage.Warning, MessageBoxResult.No);
+            if (result == MessageBoxResult.OK)
+            {
+                var item = dataGrid.SelectedItem as VehiclesTypesObject;
+                startWindow.client.DeleteVehiclesTypeAsync(new GetOrDeleteVehiclesTypesRequest { Id = item.Id });
+                Types.Remove(item);
+
+                dataGrid.ItemsSource = null;
+                dataGrid.ItemsSource = Types;
+            }
         }
 
         private async void SetData()
@@ -59,10 +68,10 @@ namespace LogisticsClientsApp.Pages.Tables
             try
             {
                 var item = await startWindow.client.GetListVehiclesTypesAsync(new Google.Protobuf.WellKnownTypes.Empty());
-                types = new List<VehiclesTypesObject>();
-                types.AddRange(item.VehiclesTypes.ToList());
+                Types = new List<VehiclesTypesObject>();
+                Types.AddRange(item.VehiclesTypes.ToList());
                 dataGrid.ItemsSource = null;
-                dataGrid.ItemsSource = types;
+                dataGrid.ItemsSource = Types;
                 locale.SetLocale(this);
             }
             catch (RpcException ex)
