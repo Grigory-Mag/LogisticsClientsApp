@@ -137,7 +137,7 @@ namespace LogisticsClientsApp.Localizations
                 case "ru":
                     StartWindow startWindow = window as StartWindow;
                     startWindow.TextBlockReferences.Text = RU.ReferencesBtn;
-                    startWindow.TextBlockMessages.Text = RU.MessagesBtn;
+                    startWindow.TextBlockMessages.Text = RU.OrdersBtn;
                     startWindow.TextBlockEmail.Text = RU.EamilBtn;
                     startWindow.TextBlockAccount.Text = RU.AccountBtn;
                     startWindow.TextBlockLogout.Text = RU.LogoutBtn;
@@ -145,9 +145,9 @@ namespace LogisticsClientsApp.Localizations
                     {
                         { RU.Cargo, new List<string>() {RU.Cargo_Types, RU.Cargo } },
                         { RU.Drivers, new List<string>() {RU.Driver_Licence, RU.Drivers} },
-                        { RU.Organizations, new List<string>() {RU.Requisites, RU.Roles } },
+                        { RU.Organizations, new List<string>() {RU.Requisites, RU.Roles, RU.RequisiteType } },
                         { RU.Vehicles, new List<string>() {RU.Vehicle_Types, RU.Vehicles} },
-                        { RU.Requests, new List<string>()},
+                        { RU.RoutesActions, new List<string>()},
                         { RU.Users, new List<string>()},
                     };
                     startWindow.tablesList = new List<string>()
@@ -158,6 +158,7 @@ namespace LogisticsClientsApp.Localizations
                         RU.Driver_Licence,
                         RU.Requisites,
                         RU.Roles,
+                        RU.RequisiteType,
                         RU.Vehicles,
                         RU.Vehicle_Types,
                         RU.Requests,

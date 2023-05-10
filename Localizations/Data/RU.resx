@@ -183,6 +183,9 @@
   <data name="Orders" xml:space="preserve">
     <value>Заказы</value>
   </data>
+  <data name="OrdersBtn" xml:space="preserve">
+    <value>Заявки</value>
+  </data>
   <data name="Organizations" xml:space="preserve">
     <value>Организации</value>
   </data>
@@ -201,6 +204,9 @@
   <data name="Requisites" xml:space="preserve">
     <value>Реквизиты</value>
   </data>
+  <data name="RequisiteType" xml:space="preserve">
+    <value>Типы организаций</value>
+  </data>
   <data name="RoleAdmin" xml:space="preserve">
     <value>Администратор</value>
   </data>
@@ -212,6 +218,9 @@
   </data>
   <data name="Roles" xml:space="preserve">
     <value>Категории</value>
+  </data>
+  <data name="RoutesActions" xml:space="preserve">
+    <value>Действия на маршрутах</value>
   </data>
   <data name="SearchField" xml:space="preserve">
     <value>Поиск</value>

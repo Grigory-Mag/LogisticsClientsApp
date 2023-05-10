@@ -259,6 +259,15 @@ namespace LogisticsClientsApp.Localizations.Data {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Заявки.
+        /// </summary>
+        internal static string OrdersBtn {
+            get {
+                return ResourceManager.GetString("OrdersBtn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Организации.
         /// </summary>
         internal static string Organizations {
@@ -313,6 +322,15 @@ namespace LogisticsClientsApp.Localizations.Data {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Типы организаций.
+        /// </summary>
+        internal static string RequisiteType {
+            get {
+                return ResourceManager.GetString("RequisiteType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Администратор.
         /// </summary>
         internal static string RoleAdmin {
@@ -345,6 +363,15 @@ namespace LogisticsClientsApp.Localizations.Data {
         internal static string Roles {
             get {
                 return ResourceManager.GetString("Roles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Действия на маршрутах.
+        /// </summary>
+        internal static string RoutesActions {
+            get {
+                return ResourceManager.GetString("RoutesActions", resourceCulture);
             }
         }
         
