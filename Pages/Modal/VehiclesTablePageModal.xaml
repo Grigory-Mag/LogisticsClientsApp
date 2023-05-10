@@ -14,9 +14,8 @@
              FontSize="20"
              Background="Transparent"
              FontFamily="{DynamicResource MaterialDesignFont}"
-             Height="500"
-             MinWidth="500"
-             Width="Auto"
+             Height="600"
+             Width="500"
              Name="ModalPageControl"
              Loaded="ModalPageControl_Loaded">
 

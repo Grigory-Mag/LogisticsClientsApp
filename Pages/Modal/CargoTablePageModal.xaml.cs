@@ -62,6 +62,7 @@ namespace LogisticsClientsApp.Pages.Modal
             VolumeTextBox.Text = data.Volume.ToString();
             NameTextBox.Text = data.Name.ToString();
             PriceTextBox.Text = data.Price.ToString();
+            ConstraintsTextBox.Text = data.Constraints.ToString();
             if (startWindow != null)
                 SetLinkedData();
 
@@ -69,7 +70,7 @@ namespace LogisticsClientsApp.Pages.Modal
 
         public async void SetLinkedData()
         {
-            cargoTypes = await startWindow.client.GetListCargoTypesAsync(new Google.Protobuf.WellKnownTypes.Empty());
+            cargoTypes = await startWindow.client.GetListCargoTypesAsync(new Google.Protobuf.WellKnownTypes.Empty(), startWindow.headers);
             TypeComboBox.ItemsSource = cargoTypes.CargoType;
             TypeComboBox.SelectedItem = data.CargoType == null ? null : cargoTypes.CargoType.First(x => x.Id == data.CargoType.Id);
         }
@@ -85,9 +86,9 @@ namespace LogisticsClientsApp.Pages.Modal
             {
                 CargoObject reqResult = new CargoObject();
                 if (mode == 0)
-                    reqResult = await startWindow.client.UpdateCargoAsync(new CreateOrUpdateCargoRequest { Cargo = data });
+                    reqResult = await startWindow.client.UpdateCargoAsync(new CreateOrUpdateCargoRequest { Cargo = data }, startWindow.headers);
                 if (mode == 1)
-                    reqResult = await startWindow.client.CreateCargoAsync(new CreateOrUpdateCargoRequest { Cargo = data });
+                    reqResult = await startWindow.client.CreateCargoAsync(new CreateOrUpdateCargoRequest { Cargo = data }, startWindow.headers);
 
                 var tablePage = (TablePage)startWindow.MainFrameK.Content;
                 var page = tablePage.DataGridFrame.Content as CargoTablePage;
@@ -126,7 +127,7 @@ namespace LogisticsClientsApp.Pages.Modal
                 if (ConstraintsTextBox.Text != data.Constraints.ToString())
                     changedDataNotify.Append($"Ограничения: {data.Constraints} -> {ConstraintsTextBox.Text}\n");
                 if ((TypeComboBox.SelectedItem as CargoTypesObject)!.Name != data.CargoType.Name.ToString())
-                    changedDataNotify.Append($"Тип груза: {data.CargoType.Name} -> {TypeComboBox.SelectedItem}\n");
+                    changedDataNotify.Append($"Тип груза: {data.CargoType.Name} -> {(TypeComboBox.SelectedItem as CargoTypesObject).Name}\n");
             }
 
             var result = MessageBox.Show($"Применить изменения?\n {changedDataNotify}", "Обновление", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
