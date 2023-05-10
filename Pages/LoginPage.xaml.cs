@@ -1,4 +1,6 @@
-﻿using LogisticsClientsApp.Localizations;
+﻿using ApiService;
+using Grpc.Core;
+using LogisticsClientsApp.Localizations;
 using LogisticsClientsApp.Localizations.Data;
 using LogisticsClientsApp.Pages.Tables;
 using MaterialDesignThemes.Wpf;
@@ -34,7 +36,7 @@ namespace LogisticsClientsApp.Pages
             InitializeComponent();
             startWindow.MainFrameK.NavigationService.RemoveBackEntry();
             if (startWindow != null) this.startWindow = startWindow;
-            startWindow.LeftMenu.Visibility = Visibility.Hidden;
+            startWindow.LeftMenu.Visibility = Visibility.Collapsed;
             Locale locale = new Locale("ru");
             locale.SetLocale(this);
 
@@ -43,9 +45,21 @@ namespace LogisticsClientsApp.Pages
 
         private async void LoginHandler()
         {
-            var data = await startWindow.Login(LoginTextBox.Text.ToString(), PasswordTextBox.Password.ToString());
-            startWindow.ChangePage(new TablePage());
-            startWindow.ShowSideMenu();
+            try
+            {
+                var data = await startWindow.Login(LoginTextBox.Text.ToString(), PasswordTextBox.Password.ToString());
+                if (data.Token == "Invalid data")
+                    MessageBox.Show("Error");
+                startWindow.ChangePage(new TablePage());
+                startWindow.ShowSideMenu();
+                startWindow.NameTextBlock.Text = data.User.Name;
+                startWindow.SurnameTextBlock.Text = data.User.Surname;
+                startWindow.RoleTextBlock.Text = data.User.UserRole.Name;
+            }
+            catch (RpcException ex)
+            {
+                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void LoginButton_Click(object sender, RoutedEventArgs e)
