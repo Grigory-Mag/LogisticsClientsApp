@@ -1,22 +1,31 @@
 ﻿using ApiService;
+using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
+using Grpc.Core.Interceptors;
 using Grpc.Net.Client;
 using LogisticsClientsApp.Localizations;
 using LogisticsClientsApp.Pages;
 using LogisticsClientsApp.Pages.Tables;
 using MaterialDesignThemes.Wpf;
 using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data.Common;
+using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
@@ -35,6 +44,12 @@ namespace LogisticsClientsApp
         public UserService.UserServiceClient client;
         public Metadata headers = new Metadata();
         public List<string> tablesList = new List<string>();
+        public double windowSize = 0;
+
+        public string userName { get; set; }
+        public string userSurname { get; set; }
+        public string userPatronymic { get; set; }
+        public string userRole { get; set; }
 
         private UserService.UserServiceClient loginClient = new UserService.UserServiceClient(GrpcChannel.ForAddress(Properties.Default.Address.ToString()));
         private Dictionary<string, List<object>> buttonsReferences = new Dictionary<string, List<object>>();
@@ -49,9 +64,14 @@ namespace LogisticsClientsApp
         {
             InitializeComponent();
 
+
+            userName = "Name";
+            userSurname = "Surname";
+            userPatronymic = "Patronymic";
+            userRole = "Role";
+
             LoginPage = new LoginPage(this);
             ChangePage(LoginPage);
-
 
             Uri path = new Uri(Directory.GetCurrentDirectory() + @"\Resources\Images\loginBackground.jpg");
             MainGrid.Background = new ImageBrush(new BitmapImage(path));
@@ -61,10 +81,25 @@ namespace LogisticsClientsApp
             Locale locale = new Locale("ru");
             locale.SetLocale(this);
 
+            NameTextBlock.Text = userName;
+            SurnameTextBlock.Text = userSurname;
+            RoleTextBlock.Text = userRole;
+
+
+
+            IconImage.Source = LoadLogo();
+
             InitElements();
-
             SelectBtn("References");
+        }
 
+        public BitmapImage LoadLogo()
+        {
+            BitmapImage logo = new BitmapImage();
+            logo.BeginInit();
+            logo.UriSource = new Uri(@"pack://application:,,,/Resources/Images/truck.ico");
+            logo.EndInit();
+            return logo;
         }
 
         public void ChangePage(Page page)
@@ -78,11 +113,6 @@ namespace LogisticsClientsApp
             var data = MainFrameK.NavigationService;
 
             //while (MainFrameK.NavigationService.RemoveBackEntry() != null) ;
-        }
-
-        public void ToggleSideMenu(bool isToggle)
-        {
-
         }
 
         private void DarkModeToggle_Checked(object sender, RoutedEventArgs e)
@@ -203,8 +233,6 @@ namespace LogisticsClientsApp
             // buttons.ForEach(item => UnselectBtn(buttons.IndexOf(item), item));
         }
 
-
-
         private void button_Click(object sender, RoutedEventArgs e)
         {
 
@@ -236,6 +264,16 @@ namespace LogisticsClientsApp
         {
             UncheckAllBtns();
             CheckSelectionBtn("Messages");
+
+            var page = MainFrameK.Content as TablePage;
+            if (page == null)
+            {
+                page = new TablePage(new RequestsTablePage());
+                ChangePage(page);
+            }
+            else
+                ChangePage(new TablePage(new RequestsTablePage()));
+
         }
 
         private void EmailBtn_Click(object sender, RoutedEventArgs e)
@@ -292,14 +330,14 @@ namespace LogisticsClientsApp
         {
             Storyboard sb = Resources["CloseMenu"] as Storyboard;
             sb.Begin(LeftMenu);
-            MenuCloseBtn.Visibility = Visibility.Hidden;
-            MenuOpenBtn.Visibility = Visibility.Hidden;
+            MenuCloseBtn.Visibility = Visibility.Collapsed;
+            MenuOpenBtn.Visibility = Visibility.Collapsed;
 
-            LeftMenu.Visibility = Visibility.Hidden;
-            LoginPage.ErrorStackPanel.Visibility = Visibility.Hidden;
+            LeftMenu.Visibility = Visibility.Collapsed;
+            LoginPage.ErrorStackPanel.Visibility = Visibility.Collapsed;
 
             foreach (KeyValuePair<string, List<object>> entry in buttonsReferences)
-                (buttonsReferences[entry.Key][4] as Button)!.Visibility = Visibility.Hidden;
+                (buttonsReferences[entry.Key][4] as Button)!.Visibility = Visibility.Collapsed;
         }
 
         private void LogoutButton_Click(object sender, RoutedEventArgs e)
@@ -310,17 +348,19 @@ namespace LogisticsClientsApp
             ChangePage(LoginPage);
         }
 
-        public async Task<string> Login(string login, string password)
+        public async Task<LoginReply> Login(string login, string password)
         {
             var loginObject = new LoginObject { Login = login, Password = password };
             var item = await loginClient.LoginUserAsync(new LoginRequest { Data = loginObject });
             if (item.Token != "Invalid data")
             {
-                client = new UserService.UserServiceClient(GrpcChannel.ForAddress(Properties.Default.Address.ToString()));
+                headers.Clear();
                 headers.Add("Authorization", $"Bearer {item.Token}");
+                var options = new CallOptions().WithHeaders(headers);
+                client = new UserService.UserServiceClient(GrpcChannel.ForAddress(Properties.Default.Address.ToString()));
             }
 
-            return await Task.FromResult(item.Token);
+            return await Task.FromResult(item);
         }
 
         private void ReferencesMenu_Click(object sender, RoutedEventArgs e)
@@ -329,7 +369,18 @@ namespace LogisticsClientsApp
             var a = menuItem.Items;
         }
 
-        private void ReferencesMenu_SubMenu_Click(object sender, RoutedEventArgs e)
+        private async Task LoadAsyncPage()
+        {
+            await Task.Run(() =>
+            {
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    ChangePage(new TablePage());
+                });
+            });
+        }
+
+        private async void ReferencesMenu_SubMenu_Click(object sender, RoutedEventArgs e)
         {
             MenuItem menuItem = (sender as MenuItem);
             var mainMenu = menuItem.Header;
@@ -338,6 +389,13 @@ namespace LogisticsClientsApp
             var subMenu = obMenuItem.Header;
 
             var page = MainFrameK.Content as TablePage;
+            if (page == null)
+            {
+                page = new TablePage();
+                await LoadAsyncPage();
+                page = MainFrameK.Content as TablePage;
+            }
+
             var keys = tables.Keys.ToList();
 
             for (int i = 0; i < tablesList.Count(); i++)
@@ -365,17 +423,20 @@ namespace LogisticsClientsApp
                             page!.ChangeSelectedTable(new RolesTabePage());
                             break;
                         case 6:
-                            page!.ChangeSelectedTable(new VehiclesTablePage());
+                            page!.ChangeSelectedTable(new RequisiteTypesTablePage());
                             break;
                         case 7:
-                            page!.ChangeSelectedTable(new VehiclesTypesTablePage());
+                            page!.ChangeSelectedTable(new VehiclesTablePage());
                             break;
                         case 8:
-                            page!.ChangeSelectedTable(new RequestsTablePage());
+                            page!.ChangeSelectedTable(new VehiclesTypesTablePage());
                             break;
                         case 9:
+                            page!.ChangeSelectedTable(new RequestsTablePage());
                             break;
                         case 10:
+                            break;
+                        case 11:
                             break;
                     }
                 }
@@ -383,6 +444,76 @@ namespace LogisticsClientsApp
 
         }
 
+        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            windowSize = Height / 2 - 40;
+        }
+
+        private void CloseAppButton_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
+
+        private void ResizeAppWindowButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (WindowState == WindowState.Normal)
+            {
+                // Получаем высоту экрана и рабочей области
+                double screenHeight = SystemParameters.PrimaryScreenHeight;
+                double workAreaHeight = SystemParameters.WorkArea.Height;
+
+                // Вычисляем высоту taskbar'а
+                double taskbarHeight = screenHeight - workAreaHeight;
+
+                // Устанавливаем максимальную высоту окна с учетом taskbar'а
+                MaxHeight = screenHeight - taskbarHeight + 15;
+
+                // Устанавливаем состояние окна на "Максимизировано"                
+                WindowState = WindowState.Maximized;
+
+                ResizeIcon.Kind = PackIconKind.Resize;
+            }
+            else
+            {
+                WindowState = WindowState.Normal;
+                ResizeIcon.Kind = PackIconKind.Maximize;
+            }
+
+        }
+
+        private void MinimizeAppWindowButton_Click(object sender, RoutedEventArgs e)
+        {
+            WindowState = WindowState.Minimized;
+        }
+
+        private void OperationsWithWindowPanel_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == MouseButton.Left)
+            {
+                DragMove();
+                WindowState = WindowState.Normal;
+                ResizeIcon.Kind = PackIconKind.Maximize;
+            }
+
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            WindowState = WindowState.Normal;
+
+            // Получаем высоту экрана и рабочей области
+            double screenHeight = SystemParameters.PrimaryScreenHeight;
+            double workAreaHeight = SystemParameters.WorkArea.Height;
+
+            // Вычисляем высоту taskbar'а
+            double taskbarHeight = screenHeight - workAreaHeight;
+
+            // Устанавливаем максимальную высоту окна с учетом taskbar'а
+            MaxHeight = screenHeight - taskbarHeight + 15;
+
+            // Устанавливаем состояние окна на "Максимизировано"                
+            WindowState = WindowState.Maximized;
+        }
     }
 
 }

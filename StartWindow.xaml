@@ -13,9 +13,14 @@
         TextOptions.TextRenderingMode="Auto"
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
-        Height="800"
-        Width="1050"
-        Title="Моя логистика">
+        Height="850"
+        Width="1250"
+        Title="Моя логистика"
+        SizeChanged="Window_SizeChanged"
+        Style="{StaticResource MaterialDesignWindow}"
+        WindowStyle="None"
+        WindowState="Maximized"
+        Loaded="Window_Loaded">
     <Window.Resources>
         <Color x:Key="PrimaryColor">#2196f3</Color>
         <Storyboard x:Key="OpenMenu">
@@ -25,8 +30,6 @@
                                 DecelerationRatio="0.5"
                                 Duration="0:0:0.5" />
         </Storyboard>
-
-
         <Storyboard x:Key="CloseMenu">
             <ThicknessAnimation Storyboard.TargetProperty="Margin"
                                 From="0,0,0,0"
@@ -40,22 +43,107 @@
                          Opacity="0" />
     </Window.Resources>
     <Grid x:Name="MainGrid">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="3*" />
         </Grid.ColumnDefinitions>
 
-        <Frame Grid.Column="1"
-               Grid.ZIndex = "2"
-               Margin="80,40,80,20"
-               NavigationUIVisibility="Hidden"
-               HorizontalAlignment="Stretch"
-               VerticalAlignment="Stretch"
-               Name="MainFrameK"
-               Navigated="MainFrameK_Navigated" />
+
+
+        <Rectangle VerticalAlignment="Bottom"
+                   Panel.ZIndex="1"
+                   Grid.Row="0"
+                   Grid.Column="1"
+                   Grid.ColumnSpan="3"
+                   HorizontalAlignment="Stretch"
+                   Height="2"
+                   Fill="{StaticResource AccentPrimaryColor}" />
+
+        <DockPanel Grid.Row="0"
+                   Grid.Column="1"
+                   HorizontalAlignment="Stretch"
+                   Name="OperationsWithWindowPanel"
+                   MouseDown="OperationsWithWindowPanel_MouseDown"
+                   Grid.ColumnSpan="3"
+                   Background="{DynamicResource MaterialDesignPaper}">
+
+            <Image Name="IconImage"
+                   Width="55"
+                   Height="55" />
+
+            <TextBlock Text="Моя логистика"
+                       VerticalAlignment="Center"
+                       Typography.Capitals="AllSmallCaps"
+                       FontWeight="SemiBold"
+                       FontSize="20"
+                       FontFamily="Segoe Print"
+                       Margin="20,0,0,0" />
+
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Right">
+                <Button Style="{StaticResource MaterialDesignIconButton}"
+                        Height="30"
+                        Width="30"
+                        Focusable="False"
+                        HorizontalAlignment="Right"
+                        Name="MinimizeAppWindowButton"
+                        Click="MinimizeAppWindowButton_Click"
+                        Margin="0,0,10,0">
+                    <WrapPanel>
+                        <materialDesign:PackIcon Kind="Minimize" />
+                    </WrapPanel>
+                </Button>
+                <Button Style="{StaticResource MaterialDesignIconButton}"
+                        Height="30"
+                        Width="30"
+                        Focusable="False"
+                        HorizontalAlignment="Right"
+                        Name="ResizeAppWindowButton"
+                        Click="ResizeAppWindowButton_Click"
+                        Margin="0,0,10,0">
+                    <WrapPanel>
+                        <materialDesign:PackIcon Name="ResizeIcon"
+                                                 Kind="Resize" />
+                    </WrapPanel>
+                </Button>
+                <Button Style="{StaticResource MaterialDesignIconButton}"
+                        Height="30"
+                        Width="30"
+                        Focusable="False"
+                        Name="CloseAppButton"
+                        Click="CloseAppButton_Click"
+                        Margin="0,0,10,0">
+                    <WrapPanel>
+                        <materialDesign:PackIcon Kind="Close"
+                                                 Foreground="{StaticResource AccentCustomColor}" />
+                    </WrapPanel>
+                </Button>
+
+            </StackPanel>
+        </DockPanel>
+
+        <DockPanel Grid.Column="1"
+                   Grid.Row="1">
+            <Frame Grid.Column="1"
+                   Grid.ZIndex="2"
+                   Margin="80,40,80,20"
+                   Focusable="False"
+                   NavigationUIVisibility="Hidden"
+                   HorizontalAlignment="Stretch"
+                   VerticalAlignment="Stretch"
+                   Name="MainFrameK"
+                   Navigated="MainFrameK_Navigated" />
+        </DockPanel>
+
 
         <!-- SIDE MENU -->
         <StackPanel  Grid.ZIndex="0"
+                     Grid.Row="0"
+                     Grid.RowSpan="2"
                      x:Name="LeftMenu"
                      Orientation="Horizontal"
                      HorizontalAlignment="Left"
@@ -70,7 +158,13 @@
 
                     <StackPanel>
 
-                        <Image Source="C:\Users\User\Desktop\background_image.png" />
+                        <Rectangle Width="300"
+                                   Height="240">
+                            <Rectangle.Fill>
+                                <ImageBrush ImageSource="C:\Users\User\Desktop\background_image.png"
+                                            x:Name="ProfileBackgroundImage" />
+                            </Rectangle.Fill>
+                        </Rectangle>
 
                         <Border Width="160"
                                 Height="160"
@@ -87,6 +181,7 @@
                                 <Ellipse>
                                     <Ellipse.Fill>
                                         <ImageBrush Stretch="UniformToFill"
+                                                    x:Name="UserProfileImage"
                                                     ImageSource="C:\Users\User\Desktop\Всякое\Файлы\Снимок экрана 2021-12-14 202255.png" />
                                     </Ellipse.Fill>
                                 </Ellipse>
@@ -143,14 +238,17 @@
                                 </WrapPanel.Resources>
                                 <TextBlock Style="{DynamicResource MaterialDesignHeadline6TextBlock}"
                                            Text="Name"
+                                           Name="NameTextBlock"
                                            Padding="0,10" />
                                 <TextBlock Style="{DynamicResource MaterialDesignHeadline6TextBlock}"
                                            Text="Surname"
+                                           Name="SurnameTextBlock"
                                            Padding="5,10" />
                             </WrapPanel>
 
                             <TextBlock Style="{DynamicResource MaterialDesignHeadline6TextBlock}"
                                        Text="Role"
+                                       Name="RoleTextBlock"
                                        HorizontalAlignment="Center"
                                        Padding="0" />
 
@@ -208,7 +306,7 @@
                                 VerticalAlignment="Top">
                             <StackPanel HorizontalAlignment="Left"
                                         VerticalAlignment="Top">
-                                <TextBlock Text="Messages"
+                                <TextBlock Text="Orders"
                                            Width="150"
                                            Typography.Capitals="Normal"
                                            Name="TextBlockMessages"
@@ -218,8 +316,8 @@
                                 <materialDesign:PackIcon Width="32"
                                                          Height="27"
                                                          Name="MessagesIcon"
-                                                         Kind="MessageTextOutline"
-                                                         Margin="-5,-25,0,0" />
+                                                         Kind="FileDocumentAddOutline"
+                                                         Margin="-5,-28,0,0" />
                             </StackPanel>
                         </Button>
 
@@ -327,7 +425,6 @@
                             <materialDesign:PackIcon Width="28"
                                                      Height="25"
                                                      Kind="Logout"
-                                                     
                                                      Margin="0,-28,0,0" />
                         </StackPanel>
                     </Button>
@@ -379,7 +476,8 @@
                     <Menu Margin="0,-25"
                           Width="0"
                           Height="0">
-                        <MenuItem Name="ReferencesMenu" Click="ReferencesMenu_Click" />
+                        <MenuItem Name="ReferencesMenu"
+                                  Click="ReferencesMenu_Click" />
                     </Menu>
                     <Button Name="MenuReferencesBtn"
                             Click="ReferencesBtn_Click"
@@ -399,7 +497,7 @@
                                                      Margin="-5,0,0,0" />
                         </StackPanel>
                     </Button>
-                    
+
 
 
 
@@ -418,7 +516,7 @@
                             <materialDesign:PackIcon Width="38"
                                                      Height="35"
                                                      Name="MenuMessagesIcon"
-                                                     Kind="MessageTextOutline"
+                                                     Kind="FileDocumentOutline"
                                                      Margin="-5,0,0,0" />
                         </StackPanel>
                     </Button>
