@@ -26,6 +26,7 @@ namespace LogisticsClientsApp.Pages.Tables
     {
         public List<DriversObject> Drivers { get; set; }
         private Locale locale;
+        string tableName = "водители";
 
         StartWindow startWindow;
 
@@ -38,6 +39,8 @@ namespace LogisticsClientsApp.Pages.Tables
         {
             startWindow = (StartWindow)Window.GetWindow(this);
             locale = new Locale(startWindow.selectedLocale);
+            var tablePage = startWindow.MainFrameK.Content as TablePage;
+            tablePage.TextBlockTableName.Text = tableName;
             SetData();
         }
 
@@ -57,7 +60,7 @@ namespace LogisticsClientsApp.Pages.Tables
             if (result == MessageBoxResult.OK)
             {
                 var item = dataGrid.SelectedItem as DriversObject;
-                startWindow.client.DeleteDriverAsync(new GetOrDeleteDriversRequest { Id = (int)item.Id });
+                startWindow.client.DeleteDriverAsync(new GetOrDeleteDriversRequest { Id = (int)item.Id }, startWindow.headers);
                 Drivers.Remove(item);
 
                 dataGrid.ItemsSource = null;
@@ -69,7 +72,7 @@ namespace LogisticsClientsApp.Pages.Tables
         {
             try
             {
-                var item = await startWindow.client.GetListDriversAsync(new Google.Protobuf.WellKnownTypes.Empty());
+                var item = await startWindow.client.GetListDriversAsync(new Google.Protobuf.WellKnownTypes.Empty(), startWindow.headers);
                 Drivers = new List<DriversObject>();
                 Drivers.AddRange(item.Drivers.ToList());
                 dataGrid.ItemsSource = null;

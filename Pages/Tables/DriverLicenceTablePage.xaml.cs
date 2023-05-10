@@ -25,6 +25,7 @@ namespace LogisticsClientsApp.Pages.Tables
     {
         public List<DriverLicenceObject> DriversLicence { get; set; }
         private Locale locale;
+        string tableName = "водительские лицензии";
 
         StartWindow startWindow;
 
@@ -54,7 +55,9 @@ namespace LogisticsClientsApp.Pages.Tables
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
             startWindow = (StartWindow)Window.GetWindow(this);
-            locale = new Locale(startWindow.selectedLocale);
+            locale = new Locale(startWindow.selectedLocale);            
+            var tablePage = startWindow.MainFrameK.Content as TablePage;
+            tablePage.TextBlockTableName.Text = tableName;
             SetData();
         }
 
@@ -74,7 +77,7 @@ namespace LogisticsClientsApp.Pages.Tables
             if (result == MessageBoxResult.OK)
             {
                 var item = dataGrid.SelectedItem as DriversLicenceReady;
-                startWindow.client.DeleteDriverLicenceAsync(new GetOrDeleteDriverLicenceRequest { Id = (int)item.Id });
+                startWindow.client.DeleteDriverLicenceAsync(new GetOrDeleteDriverLicenceRequest { Id = (int)item.Id}, startWindow.headers);
                 DriversLicence.Remove(DriversLicence.First(x=> x.Id == item.Id));
 
                 List<DriversLicenceReady> driversLicenceReadies = new List<DriversLicenceReady>();
@@ -89,7 +92,7 @@ namespace LogisticsClientsApp.Pages.Tables
         {
             try
             {
-                var item = await startWindow.client.GetListDriverLicencesAsync(new Google.Protobuf.WellKnownTypes.Empty());
+                var item = await startWindow.client.GetListDriverLicencesAsync(new Google.Protobuf.WellKnownTypes.Empty(), startWindow.headers);
                 List<DriversLicenceReady> driversLicenceReadies = new List<DriversLicenceReady>();
 
                 DriversLicence = new List<DriverLicenceObject>();

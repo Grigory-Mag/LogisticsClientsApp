@@ -6,6 +6,7 @@ using MaterialDesignThemes.Wpf;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -28,6 +29,8 @@ namespace LogisticsClientsApp.Pages.Tables
     public partial class CargoTablePage : Page
     {
         public List<CargoObject> CargoObjects { get; set; }
+        public List<string> SearchFields = new List<string>() { "Тип", "Ограничения", "Масса", "Объём", "Название", "Цена"};
+        public TablePage tablePage;
         private Locale locale;
 
         StartWindow startWindow;
@@ -39,8 +42,19 @@ namespace LogisticsClientsApp.Pages.Tables
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
             startWindow = (StartWindow)Window.GetWindow(this);
+            tablePage = (TablePage)startWindow.MainFrameK.Content;
             locale = new Locale(startWindow.selectedLocale);
+            startWindow.SizeChanged += (o, e) =>
+            {
+                ResizeDataGrid();
+            };
+            CreateAdvancedSearchFields();
             SetData();
+        }
+
+        public void ResizeDataGrid()
+        {
+            dataGrid.MaxHeight = startWindow.Height / 2 - 40; ;
         }
 
         private void PrevTablePageButton_Click(object sender, RoutedEventArgs e)
@@ -67,12 +81,32 @@ namespace LogisticsClientsApp.Pages.Tables
 
         }
 
+        private void CreateAdvancedSearchFields()
+        {
+            foreach (var item in SearchFields)
+            {
+                var textBox = new TextBox();
+                var myResourceDictionary = new ResourceDictionary
+                {
+                    Source = new Uri("pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.TextBox.xaml", UriKind.RelativeOrAbsolute)
+                };
+                HintAssist.SetHint(textBox, item);
+                textBox.Margin = new Thickness(0, 0, 20, 0);
+                textBox.Style = myResourceDictionary["MaterialDesignOutlinedTextBox"] as Style;
+                textBox.MaxWidth = 130;
+                textBox.MinWidth = 130;
+                textBox.FontSize = 16;
+                textBox.MaxLength = 30;
+                tablePage.AdvancedSearch.Children.Add(textBox);
+            }
+        }
+
         private async void SetData()
         {
             try
             {
                 var item = await startWindow.client.GetCargoAsync(new GetOrDeleteCargoRequest { Id = 1 }, startWindow.headers);
-                var item2 = await startWindow.client.GetListCargoAsync(new Google.Protobuf.WellKnownTypes.Empty());
+                var item2 = await startWindow.client.GetListCargoAsync(new Google.Protobuf.WellKnownTypes.Empty(), startWindow.headers);
                 CargoObjects = new List<CargoObject>();
                 CargoObjects.AddRange(item2.Cargo.ToList());
                 dataGrid.ItemsSource = null;
@@ -101,7 +135,6 @@ namespace LogisticsClientsApp.Pages.Tables
             cargoTablePage.UpdateDisplayedData(dataGrid.SelectedItem as CargoObject);
             */
         }
-
 
     }
 }

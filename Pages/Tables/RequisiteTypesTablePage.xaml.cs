@@ -19,15 +19,17 @@ using System.Windows.Shapes;
 namespace LogisticsClientsApp.Pages.Tables
 {
     /// <summary>
-    /// Логика взаимодействия для RolesTabePage.xaml
+    /// Логика взаимодействия для RequisiteTypesTablePage.xaml
     /// </summary>
-    public partial class RolesTabePage : Page
+    public partial class RequisiteTypesTablePage : Page
     {
-        public List<RolesObject> Roles { get; set; }
+        public List<RequisiteTypeObject> RequisitesTypes { get; set; }
         private Locale locale;
+        public byte mode = 0;
 
         StartWindow startWindow;
-        public RolesTabePage()
+
+        public RequisiteTypesTablePage()
         {
             InitializeComponent();
         }
@@ -36,11 +38,9 @@ namespace LogisticsClientsApp.Pages.Tables
         {
             startWindow = (StartWindow)Window.GetWindow(this);
             locale = new Locale(startWindow.selectedLocale);
-            string tableName = "роли";
-            var tablePage = startWindow.MainFrameK.Content as TablePage;
-            tablePage.TextBlockTableName.Text = tableName;
             SetData();
         }
+
 
         private void PrevTablePageButton_Click(object sender, RoutedEventArgs e)
         {
@@ -57,12 +57,12 @@ namespace LogisticsClientsApp.Pages.Tables
             var result = MessageBox.Show($"Вы действительно хотите удалить запись?", "Удаление", MessageBoxButton.OKCancel, MessageBoxImage.Warning, MessageBoxResult.No);
             if (result == MessageBoxResult.OK)
             {
-                var item = dataGrid.SelectedItem as RolesObject;
-                startWindow.client.DeleteRoleAsync(new GetOrDeleteRoleRequest { Id = item.Id }, startWindow.headers);
-                Roles.Remove(item);
+                var item = dataGrid.SelectedItem as RequisiteTypeObject;
+                startWindow.client.DeleteRequisiteAsync(new GetOrDeleteRequisitesRequest { Id = item.Id }, startWindow.headers);
+                RequisitesTypes.Remove(item);
 
                 dataGrid.ItemsSource = null;
-                dataGrid.ItemsSource = Roles;
+                dataGrid.ItemsSource = RequisitesTypes;
             }
         }
 
@@ -70,11 +70,11 @@ namespace LogisticsClientsApp.Pages.Tables
         {
             try
             {
-                var item = await startWindow.client.GetListRolesAsync(new Google.Protobuf.WellKnownTypes.Empty(), startWindow.headers);
-                Roles = new List<RolesObject>();
-                Roles.AddRange(item.RolesObject.ToList());
+                var item = await startWindow.client.GetListRequisiteTypesAsync(new Google.Protobuf.WellKnownTypes.Empty(), startWindow.headers);
+                RequisitesTypes = new List<RequisiteTypeObject>();
+                RequisitesTypes.AddRange(item.RequisiteType.ToList());
                 dataGrid.ItemsSource = null;
-                dataGrid.ItemsSource = Roles;
+                dataGrid.ItemsSource = RequisitesTypes;
                 locale.SetLocale(this);
             }
             catch (RpcException ex)

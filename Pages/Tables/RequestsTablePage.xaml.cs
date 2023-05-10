@@ -88,6 +88,9 @@ namespace LogisticsClientsApp.Pages.Tables
         {
             startWindow = (StartWindow)Window.GetWindow(this);
             locale = new Locale(startWindow.selectedLocale);
+            string tableName = "заявки";
+            var tablePage = startWindow.MainFrameK.Content as TablePage;
+            tablePage.TextBlockTableName.Text = tableName;
             SetData();
         }
 
@@ -110,7 +113,7 @@ namespace LogisticsClientsApp.Pages.Tables
         {
             try
             {
-                var item = await startWindow.client.GetListRequestsAsync(new Google.Protobuf.WellKnownTypes.Empty());
+                var item = await startWindow.client.GetListRequestsAsync(new Google.Protobuf.WellKnownTypes.Empty(), startWindow.headers);
                 requests = new List<RequestsObject>();
                 requests.AddRange(item.Requests.ToList());
                 var requestsReady = new List<RequestsReady>();

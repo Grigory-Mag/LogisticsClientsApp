@@ -36,6 +36,9 @@ namespace LogisticsClientsApp.Pages.Tables
         {
             startWindow = (StartWindow)Window.GetWindow(this);
             locale = new Locale(startWindow.selectedLocale);
+            string tableName = "типы транспорта";
+            var tablePage = startWindow.MainFrameK.Content as TablePage;
+            tablePage.TextBlockTableName.Text = tableName;
             SetData();
         }
 
@@ -55,7 +58,7 @@ namespace LogisticsClientsApp.Pages.Tables
             if (result == MessageBoxResult.OK)
             {
                 var item = dataGrid.SelectedItem as VehiclesTypesObject;
-                startWindow.client.DeleteVehiclesTypeAsync(new GetOrDeleteVehiclesTypesRequest { Id = item.Id });
+                startWindow.client.DeleteVehiclesTypeAsync(new GetOrDeleteVehiclesTypesRequest { Id = item.Id }, startWindow.headers);
                 Types.Remove(item);
 
                 dataGrid.ItemsSource = null;
@@ -67,7 +70,7 @@ namespace LogisticsClientsApp.Pages.Tables
         {
             try
             {
-                var item = await startWindow.client.GetListVehiclesTypesAsync(new Google.Protobuf.WellKnownTypes.Empty());
+                var item = await startWindow.client.GetListVehiclesTypesAsync(new Google.Protobuf.WellKnownTypes.Empty(), startWindow.headers);
                 Types = new List<VehiclesTypesObject>();
                 Types.AddRange(item.VehiclesTypes.ToList());
                 dataGrid.ItemsSource = null;

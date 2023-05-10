@@ -1,8 +1,8 @@
 ﻿<Page x:Class="LogisticsClientsApp.Pages.Tables.RequestsTablePage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:local="clr-namespace:LogisticsClientsApp.Pages.Tables"
       mc:Ignorable="d"
       xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
@@ -30,17 +30,47 @@
                           AutoGenerateColumns="False">
                     <DataGrid.Columns>
                         <DataGridTextColumn Width="Auto"
-                                            Header="Дата создания"
-                                            Binding="{Binding CreationDate, StringFormat=\{0:dd.MM.yy HH:mm:ss\}}" />
+                                            Header="Номер"
+                                            Binding="{Binding Id}" />
+                        <DataGridCheckBoxColumn Width="Auto"
+                                                Header="Закрыто"
+                                                Binding="{Binding IsFinished}" />
                         <DataGridTextColumn Width="Auto"
-                                            Header="Цена перевозки"
-                                            Binding="{Binding Price}" />
+                                            Binding="{Binding CreationDate, StringFormat=\{0:dd.MM.yy HH:mm:ss\}}">
+                            <DataGridTextColumn.Header>
+                                <TextBlock VerticalAlignment="Center">
+                                    <Run Text="Дата"
+                                         BaselineAlignment="Center" />
+                                    <LineBreak />
+                                    <Run Text="cоздания" />
+                                </TextBlock>
+                            </DataGridTextColumn.Header>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Width="Auto"
+                                            Binding="{Binding Price}">
+                            <DataGridTextColumn.Header>
+                                <TextBlock VerticalAlignment="Center">
+                                    <Run Text="Цена"
+                                         BaselineAlignment="Center" />
+                                    <LineBreak />
+                                    <Run Text="перевозки" />
+                                </TextBlock>
+                            </DataGridTextColumn.Header>
+                        </DataGridTextColumn>
                         <DataGridTextColumn Width="Auto"
                                             Header="Машина"
                                             Binding="{Binding Vehicle.Type.Name}" />
                         <DataGridTextColumn Width="Auto"
-                                            Header="Номер машины"
-                                            Binding="{Binding Vehicle.Number}" />
+                                            Binding="{Binding Vehicle.Number}">
+                            <DataGridTextColumn.Header>
+                                <TextBlock VerticalAlignment="Center">
+                                    <Run Text="Номер"
+                                         BaselineAlignment="Center" />
+                                    <LineBreak />
+                                    <Run Text="машины" />
+                                </TextBlock>
+                            </DataGridTextColumn.Header>
+                        </DataGridTextColumn>
                         <DataGridTextColumn Width="Auto"
                                             Header="Водитель"
                                             Binding="{Binding Vehicle.Driver.Name}" />
@@ -48,17 +78,14 @@
                                             Header="Перевозчик"
                                             Binding="{Binding TransporterReq.Name}" />
                         <DataGridTextColumn Width="Auto"
-                                            Header="заказчик"
+                                            Header="Заказчик"
                                             Binding="{Binding CustomerReq.Name}" />
                         <DataGridTextColumn Width="Auto"
-                                            Header="Cargo"
+                                            Header="Груз"
                                             Binding="{Binding Cargo.Name}" />
                         <DataGridCheckBoxColumn Header="Документы"
                                                 Width="Auto"
                                                 Binding="{Binding Documents}" />
-                        <DataGridCheckBoxColumn Width="Auto"
-                                            Header="Закрыто"
-                                            Binding="{Binding IsFinished}" />
                         <DataGridTemplateColumn Header="Открыть">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>

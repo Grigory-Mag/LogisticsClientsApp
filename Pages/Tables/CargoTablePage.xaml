@@ -19,15 +19,21 @@
       Loaded="Page_Loaded">
 
     <Grid>
-        <materialDesign:Card>
-            <StackPanel>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
 
+        <materialDesign:Card Grid.Row="0">
+            <StackPanel>
                 <DataGrid x:Name="dataGrid"
                           IsReadOnly="True"
-                          MaxHeight="600"
                           FontSize="18"
+                          MaxHeight="450"
                           ItemsSource="{Binding Source=objects}"
+                          Style="{StaticResource MaterialDesignDataGrid}"
                           AutoGenerateColumns="False">
+
                     <DataGrid.Columns>
                         <DataGridTextColumn Width="Auto"
                                             Header="Id"
@@ -70,7 +76,6 @@
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-
                         <DataGridTemplateColumn Header="Delete">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
@@ -107,7 +112,7 @@
                 <StackPanel Orientation="Horizontal"
                             HorizontalAlignment="Right"
                             VerticalAlignment="Bottom"
-                            Margin="0,20,70,0"
+                            Margin="0,0,70,0"
                             Grid.Row="1">
 
                     <Button Width="40"

@@ -25,6 +25,7 @@ namespace LogisticsClientsApp.Pages.Tables
     {
         public List<CargoTypesObject> CargoTypes { get; set; }
         private Locale locale;
+        string tableName = "типы грузов";
 
         StartWindow startWindow;
         public CargoTypesPage()
@@ -36,6 +37,8 @@ namespace LogisticsClientsApp.Pages.Tables
         {
             startWindow = (StartWindow)Window.GetWindow(this);
             locale = new Locale(startWindow.selectedLocale);
+            var tablePage = startWindow.MainFrameK.Content as TablePage;
+            tablePage.TextBlockTableName.Text = tableName;
             SetData();
         }
 
@@ -55,7 +58,7 @@ namespace LogisticsClientsApp.Pages.Tables
             if (result == MessageBoxResult.OK)
             {
                 var item = dataGrid.SelectedItem as CargoTypesObject;
-                startWindow.client.DeleteCargoTypeAsync(new GetOrDeleteCargoTypesRequest { Id = item.Id });
+                startWindow.client.DeleteCargoTypeAsync(new GetOrDeleteCargoTypesRequest { Id = item.Id }, startWindow.headers);
                 CargoTypes.Remove(item);
                 dataGrid.ItemsSource = null;
                 dataGrid.ItemsSource = CargoTypes;
@@ -66,7 +69,7 @@ namespace LogisticsClientsApp.Pages.Tables
         {
             try
             {
-                var item = await startWindow.client.GetListCargoTypesAsync(new Google.Protobuf.WellKnownTypes.Empty());
+                var item = await startWindow.client.GetListCargoTypesAsync(new Google.Protobuf.WellKnownTypes.Empty(), startWindow.headers);
                 CargoTypes = new List<CargoTypesObject>();
                 CargoTypes.AddRange(item.CargoType.ToList());
                 dataGrid.ItemsSource = null;

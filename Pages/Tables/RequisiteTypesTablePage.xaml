@@ -1,23 +1,22 @@
-﻿<Page x:Class="LogisticsClientsApp.Pages.Tables.RequisitesTablePage"
-      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      xmlns:local="clr-namespace:LogisticsClientsApp.Pages.Tables"
-      mc:Ignorable="d"
-      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-      TextElement.Foreground="{DynamicResource MaterialDesignBody}"
-      TextElement.FontWeight="Regular"
-      TextElement.FontSize="13"
-      TextOptions.TextFormattingMode="Ideal"
-      TextOptions.TextRenderingMode="Auto"
-      Background="{DynamicResource MaterialDesignPaper}"
-      FontFamily="{DynamicResource MaterialDesignFont}"
-      Height="Auto"
-      Width="Auto"
-      Title="RequisitesTablePage"
-      Loaded="Page_Loaded">
-
+﻿<Page x:Class="LogisticsClientsApp.Pages.Tables.RequisiteTypesTablePage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:LogisticsClientsApp.Pages.Tables"
+             mc:Ignorable="d"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+             TextElement.FontWeight="Regular"
+             TextElement.FontSize="13"
+             TextOptions.TextFormattingMode="Ideal"
+             TextOptions.TextRenderingMode="Auto"
+             Background="{DynamicResource MaterialDesignPaper}"
+             FontFamily="{DynamicResource MaterialDesignFont}"
+             Height="Auto"
+             Width="Auto"
+             Title="RequisitesTypesTablePage"
+             Loaded="Page_Loaded">
     <Grid>
         <materialDesign:Card>
             <StackPanel>
@@ -30,26 +29,8 @@
                           AutoGenerateColumns="False">
                     <DataGrid.Columns>
                         <DataGridTextColumn Width="Auto"
-                                            Header="Тип"
-                                            Binding="{Binding Type.Name}" />
-                        <DataGridTextColumn Width="Auto"
                                             Header="Название"
                                             Binding="{Binding Name}" />
-                        <DataGridTextColumn Width="Auto"
-                                            Header="Юр. адрес"
-                                            Binding="{Binding LegalAddress}" />
-                        <DataGridTextColumn Width="Auto"
-                                            Header="ИНН"
-                                            Binding="{Binding Inn}" />
-                        <DataGridTextColumn Width="Auto"
-                                            Header="Владелц"
-                                            Binding="{Binding Ceo}" />
-                        <DataGridTextColumn Width="Auto"
-                                            Header="ПТС"
-                                            Binding="{Binding Pts}" />
-                        <DataGridTextColumn Width="Auto"
-                                            Header="Роль"
-                                            Binding="{Binding Role.Name}" />
                         <DataGridTemplateColumn Header="Открыть">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>

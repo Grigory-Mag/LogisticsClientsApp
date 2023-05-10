@@ -35,6 +35,9 @@ namespace LogisticsClientsApp.Pages.Tables
         {
             startWindow = (StartWindow)Window.GetWindow(this);
             locale = new Locale(startWindow.selectedLocale);
+            string tableName = "организации";
+            var tablePage = startWindow.MainFrameK.Content as TablePage;
+            tablePage.TextBlockTableName.Text = tableName;
             SetData();
         }
 
@@ -54,7 +57,7 @@ namespace LogisticsClientsApp.Pages.Tables
             if (result == MessageBoxResult.OK)
             {
                 var item = dataGrid.SelectedItem as RequisitesObject;
-                startWindow.client.DeleteRequisiteAsync(new GetOrDeleteRequisitesRequest { Id = item.Id });
+                startWindow.client.DeleteRequisiteAsync(new GetOrDeleteRequisitesRequest { Id = item.Id }, startWindow.headers);
                 Requisites.Remove(item);
 
                 dataGrid.ItemsSource = null;
@@ -66,7 +69,7 @@ namespace LogisticsClientsApp.Pages.Tables
         {
             try
             {
-                var item = await startWindow.client.GetListRequisitesAsync(new Google.Protobuf.WellKnownTypes.Empty());
+                var item = await startWindow.client.GetListRequisitesAsync(new Google.Protobuf.WellKnownTypes.Empty(), startWindow.headers);
                 Requisites = new List<RequisitesObject>();
                 Requisites.AddRange(item.Requisites.ToList());
                 dataGrid.ItemsSource = null;

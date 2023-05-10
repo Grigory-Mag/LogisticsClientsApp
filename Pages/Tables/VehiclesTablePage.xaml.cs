@@ -35,6 +35,9 @@ namespace LogisticsClientsApp.Pages.Tables
         {
             startWindow = (StartWindow)Window.GetWindow(this);
             locale = new Locale(startWindow.selectedLocale);
+            string tableName = "транспорт";
+            var tablePage = startWindow.MainFrameK.Content as TablePage;
+            tablePage.TextBlockTableName.Text = tableName;
             SetData();
         }
 
@@ -66,7 +69,7 @@ namespace LogisticsClientsApp.Pages.Tables
         {
             try
             {
-                var item = await startWindow.client.GetListVehiclesAsync(new Google.Protobuf.WellKnownTypes.Empty());
+                var item = await startWindow.client.GetListVehiclesAsync(new Google.Protobuf.WellKnownTypes.Empty(), startWindow.headers);
                 Vehicles = new List<VehiclesObject>();
                 Vehicles.AddRange(item.Vehicle.ToList());
                 dataGrid.ItemsSource = null;
