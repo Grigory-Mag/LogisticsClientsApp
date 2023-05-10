@@ -48,6 +48,12 @@
                      Opacity=".5" />
     <SolidColorBrush x:Key="PrimaryCustomColor"
                      Color="#2196f3" />
+    <SolidColorBrush x:Key="GrayColor"
+                     Color="#7a757d" />
+    <SolidColorBrush x:Key="LightGrayColor"
+                     Color="#99b3b3" />
+    <SolidColorBrush x:Key="AccentPrimaryColor"
+                     Color="#74D8FF"/>
 
     <SolidColorBrush x:Key="AccentCustomColor"
                      Color="#DB4437" />
@@ -104,7 +110,7 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-        
+
         <Style.Triggers>
             <Trigger Property="IsMouseOver"
                      Value="True">
@@ -115,6 +121,5 @@
             </Trigger>
         </Style.Triggers>
     </Style>
-
 
 </ResourceDictionary>
