@@ -46,7 +46,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>RU.resx</DependentUpon>
     </Compile>
-    <Compile Update="Properties.Designer.cs">
+    <Compile Update="Properties\Properties.Designer.cs">
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <AutoGen>True</AutoGen>
       <DependentUpon>Properties.settings</DependentUpon>
@@ -61,12 +61,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Resources\Magical.mp4">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Properties.settings">
+    <None Update="Properties\Properties.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Properties.Designer.cs</LastGenOutput>
+    </None>
+    <None Update="Resources\Magical.mp4">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 

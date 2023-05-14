@@ -64,7 +64,6 @@ namespace LogisticsClientsApp
         {
             InitializeComponent();
 
-
             userName = "Name";
             userSurname = "Surname";
             userPatronymic = "Patronymic";
@@ -85,11 +84,24 @@ namespace LogisticsClientsApp
             SurnameTextBlock.Text = userSurname;
             RoleTextBlock.Text = userRole;
 
+            ITheme theme = new PaletteHelper().GetTheme();
+            PaletteHelper palette = new PaletteHelper(); ;
 
-
+            var SelectedTheme = Properties.Default.SelectedTheme;
+            if (SelectedTheme == "Light")
+            {
+                theme.SetBaseTheme(Theme.Light);
+                palette.SetTheme(theme);
+            }
+            else
+            {
+                theme.SetBaseTheme(Theme.Dark);
+                palette.SetTheme(theme);
+            }
             IconImage.Source = LoadLogo();
 
             InitElements();
+            LoadImages();
             SelectBtn("References");
         }
 
@@ -100,6 +112,43 @@ namespace LogisticsClientsApp
             logo.UriSource = new Uri(@"pack://application:,,,/Resources/Images/truck.ico");
             logo.EndInit();
             return logo;
+        }
+
+        private void LoadImages()
+        {
+            var fileBackgroundPath = Properties.Default.BackgroundImage;
+            var fileForegroundPath = Properties.Default.ForegroundImage;
+            Properties.Default.Save();
+            Uri? uri;
+            var created = Uri.TryCreate(fileBackgroundPath, UriKind.RelativeOrAbsolute, out uri);
+            if (created)
+                try
+                {
+                    BitmapImage background = new BitmapImage();
+                    background.BeginInit();
+                    background.UriSource = new Uri(fileBackgroundPath);
+                    background.EndInit();
+                    ProfileBackgroundImage.ImageSource = background;
+                }
+                catch (Exception ex)
+                {
+                    
+                }
+
+            created = Uri.TryCreate(fileForegroundPath, UriKind.RelativeOrAbsolute, out uri);
+            if (created)
+                try
+                {
+                    BitmapImage background = new BitmapImage();
+                    background.BeginInit();
+                    background.UriSource = new Uri(fileForegroundPath);
+                    background.EndInit();
+                    UserProfileImage.ImageSource = background;
+                }
+                catch (Exception ex)
+                {
+                    
+                }
         }
 
         public void ChangePage(Page page)

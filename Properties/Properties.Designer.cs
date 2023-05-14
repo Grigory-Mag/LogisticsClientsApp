@@ -23,12 +23,48 @@ namespace LogisticsClientsApp {
             }
         }
         
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Light")]
+        public string SelectedTheme {
+            get {
+                return ((string)(this["SelectedTheme"]));
+            }
+            set {
+                this["SelectedTheme"] = value;
+            }
+        }
+        
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("http://localhost:8008")]
         public string Address {
             get {
                 return ((string)(this["Address"]));
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Users\\User\\Desktop\\background_image.png")]
+        public string BackgroundImage {
+            get {
+                return ((string)(this["BackgroundImage"]));
+            }
+            set {
+                this["BackgroundImage"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Users\\User\\Desktop\\Всякое\\Файлы\\Снимок экрана 2021-12-14 202255.png")]
+        public string ForegroundImage {
+            get {
+                return ((string)(this["ForegroundImage"]));
+            }
+            set {
+                this["ForegroundImage"] = value;
             }
         }
     }
