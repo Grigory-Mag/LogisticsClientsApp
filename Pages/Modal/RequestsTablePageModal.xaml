@@ -181,7 +181,7 @@
                         <ComboBox FontSize="18"
                                   Name="VehicleComboBox"
                                   materialDesign:HintAssist.Hint="Транспорт"
-                                  DisplayMemberPath="Name"
+                                  DisplayMemberPath="Number"
                                   Style="{StaticResource MaterialDesignFloatingHintComboBox}"
                                   SelectionChanged="LicenceComboBox_SelectionChanged"
                                   Margin="10,0,0,20" />
@@ -253,14 +253,15 @@
                                             Binding="{Binding Address}" />
                         <DataGridComboBoxColumn Header="Событие"
                                                 Width="Auto"
-                                                x:Name="Aboba"
-                                                SelectedItemBinding="{Binding Action}" />
+                                                x:Name="ActionsComboBox"
+                                                DisplayMemberPath="Action" 
+                                                SelectedItemBinding="{Binding Action}"/>
                         <DataGridTemplateColumn Header="Дата">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <DatePicker Style="{StaticResource MaterialDesignFloatingHintDatePicker}"
                                                 Width="Auto"
-                                                SelectedDate="{Binding SelectedDate}" />
+                                                SelectedDate="{Binding ActionDate}" />
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>

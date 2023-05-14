@@ -19,6 +19,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using static LogisticsClientsApp.Pages.Tables.RequestsTablePage;
 
 namespace LogisticsClientsApp.Pages.Modal
 {
@@ -28,8 +29,14 @@ namespace LogisticsClientsApp.Pages.Modal
     public partial class RequestsTablePageModal : UserControl
     {
         public RequestsObject data = new RequestsObject();
-        public ListRoles roles;
-        public ListRequisiteTypes types;
+        public ListVehicles vehicles;
+        public ListRequisites transporters;
+        public ListRequisites customers;
+        public ListDrivers drivers;
+        public ListCargo cargos;
+        public ListRouteActions routeActions;
+        public ListRouteObjects routes;
+
         private Locale locale;
         public byte mode = 0;
         public List<CustomTrash> dataMobile { get; set; }
@@ -45,7 +52,7 @@ namespace LogisticsClientsApp.Pages.Modal
             public CustomTrash() 
             {
                 Number = 0;
-                Action = "Сдохнуть";
+                Action = "Разгрузить";
                 SelectedDate = DateTime.Now;
             }
 
@@ -61,25 +68,26 @@ namespace LogisticsClientsApp.Pages.Modal
         public RequestsTablePageModal()
         {
             InitializeComponent();
+
             dataMobile = new List<CustomTrash>()
             {
-                new CustomTrash(1, "0_abobus", DateTime.Now, "Сдохнуть"),
-                new CustomTrash(2, "1_abobus", DateTime.Now.AddDays(-1), "Умереть"),
-                new CustomTrash(3, "2_abobus", DateTime.Now.AddDays(-2), "Сдохнуть"),
-                new CustomTrash(4, "3_abobus", DateTime.Now.AddDays(-3), "Умереть"),
-                new CustomTrash(5, "4_abobus", DateTime.Now.AddDays(-4), "Сдохнуть"),
-                new CustomTrash(6, "5_abobus", DateTime.Now.AddDays(-5), "Умереть"),
+                new CustomTrash(1, "0_адрес", DateTime.Now, "Разгрузить"),
+                new CustomTrash(2, "1_адрес", DateTime.Now.AddDays(-1), "Загрузить"),
+                new CustomTrash(3, "2_адрес", DateTime.Now.AddDays(-2), "Разгрузить"),
+                new CustomTrash(4, "3_адрес", DateTime.Now.AddDays(-3), "Загрузить"),
+                new CustomTrash(5, "4_адрес", DateTime.Now.AddDays(-4), "Разгрузить"),
+                new CustomTrash(6, "5_адрес", DateTime.Now.AddDays(-5), "Загрузить"),
             };
-            Aboba.ItemsSource = new List<string>() { "Сдохнуть", "Умереть" };
-            RoutesDataGrid.ItemsSource = dataMobile;
+            //Aboba.ItemsSource = new List<string>() { "Разгрузить", "Загрузить" };
+            //RoutesDataGrid.ItemsSource = dataMobile;
             Language = XmlLanguage.GetLanguage(CultureInfo.CurrentCulture.IetfLanguageTag);
         }
         private void ModalPageControl_Loaded(object sender, RoutedEventArgs e)
         {
             startWindow = (StartWindow)Window.GetWindow(this);
+            SetLinkedData();
             Locale locale = new Locale(startWindow.selectedLocale);
             locale.SetLocale(this);
-            SetLinkedData();
         }
 
         public void CloseAnimation()
@@ -95,25 +103,45 @@ namespace LogisticsClientsApp.Pages.Modal
 
         public async void SetLinkedData()
         {
-            /*            roles = await startWindow.client.GetListRolesAsync(new Google.Protobuf.WellKnownTypes.Empty(), startWindow.headers);
-                        types = await startWindow.client.GetListRequisiteTypesAsync(new Google.Protobuf.WellKnownTypes.Empty(), startWindow.headers);
-                        RoleComboBox.ItemsSource = roles.RolesObject;
-                        TypeComboBox.ItemsSource = types.RequisiteType;
-                        if (data.Type != null)
-                            TypeComboBox.SelectedItem = types.RequisiteType.First(x => x.Name == data.Type.Name);
-                        if (data.Role != null)
-                            RoleComboBox.SelectedItem = roles.RolesObject.First(x => x.Name == data.Role.Name);*/
+            transporters = await startWindow.client.GetListRequisitesAsync(new Google.Protobuf.WellKnownTypes.Empty(), startWindow.headers);
+            drivers = await startWindow.client.GetListDriversAsync(new Google.Protobuf.WellKnownTypes.Empty(), startWindow.headers);
+            cargos = await startWindow.client.GetListCargoAsync(new Google.Protobuf.WellKnownTypes.Empty(), startWindow.headers);
+            vehicles = await startWindow.client.GetListVehiclesAsync(new Google.Protobuf.WellKnownTypes.Empty(), startWindow.headers);
+            routeActions = await startWindow.client.GetListRouteActionsAsync(new Google.Protobuf.WellKnownTypes.Empty(), startWindow.headers);
+            routes = await startWindow.client.GetListRouteAsync(new Google.Protobuf.WellKnownTypes.Empty(), startWindow.headers);
+
+            TransporterComboBox.ItemsSource = transporters.Requisites;
+            CustomerComboBox.ItemsSource = transporters.Requisites;
+            DriverComboBox.ItemsSource = drivers.Drivers;
+            CargoComboBox.ItemsSource = cargos.Cargo;
+            VehicleComboBox.ItemsSource = vehicles.Vehicle;
+
+            ActionsComboBox.ItemsSource = routeActions.RouteActionsObject;
+            RoutesDataGrid.ItemsSource = routes.RouteObjects;
+
+            if (data != null)
+            {
+                if (data.TransporterReq != null)
+                    TransporterComboBox.SelectedItem = transporters.Requisites.First(x => x.Id == data.TransporterReq.Id);
+                if (data.CustomerReq != null)
+                    CustomerComboBox.SelectedItem = transporters.Requisites.First(x => x.Id == data.CustomerReq.Id);
+                if (data.Driver != null)
+                    DriverComboBox.SelectedItem = drivers.Drivers.First(x => x.Id == data.Driver.Id);
+                if (data.Vehicle != null)
+                    VehicleComboBox.SelectedItem = vehicles.Vehicle.First(x => x.Id == data.Vehicle.Id);
+                if (data.Cargo != null)
+                    CargoComboBox.SelectedItem = cargos.Cargo.First(x => x.Id == data.Cargo.Id);
+            }
         }
 
         public void UpdateDisplayedData(RequestsObject data)
         {
-            /*            this.data = data;
-                        NameTextBox.Text = data.Name.ToString();
-                        AddressTextBox.Text = data.LegalAddress.ToString();
-                        InnTextBox.Text = data.Inn.ToString();
-                        CeoTextBox.Text = data.Ceo.ToString();
-                        if (startWindow != null)
-                            SetLinkedData();*/
+            this.data = data;
+            NumberTextBox.Text = data.Id.ToString();
+            PriceTextBox.Text = data.Price.ToString();
+            DatePicker.SelectedDate = data.CreationDate.ToDateTime();
+            if (startWindow != null)
+                SetLinkedData();
         }
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)

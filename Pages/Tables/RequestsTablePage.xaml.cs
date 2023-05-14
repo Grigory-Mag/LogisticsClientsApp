@@ -104,6 +104,11 @@ namespace LogisticsClientsApp.Pages.Tables
 
         }
 
+        public RequestsObject GetSelectedDataGridItem()
+        {
+            return requests.First(x => x.Id == (dataGrid.SelectedItem as RequestsReady).Id);
+        }
+
         private void DeleteButton_Click(object sender, RoutedEventArgs e)
         {
             var item = dataGrid.SelectedItem;

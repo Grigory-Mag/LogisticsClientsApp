@@ -23,6 +23,7 @@ using System.Data;
 using System.Reflection;
 using ExcelExportLib;
 using System.Threading;
+using static LogisticsClientsApp.Pages.Tables.RequestsTablePage;
 
 namespace LogisticsClientsApp.Pages
 {
@@ -83,14 +84,6 @@ namespace LogisticsClientsApp.Pages
         }
 
         public string IdHeader;
-        public Binding binding = new Binding();
-        private void test()
-        {
-            IdHeader = RU.SearchField;
-            binding.ElementName = "Hint";
-            binding.Path = new PropertyPath("Text");
-            HintAssist.SetHint(testBix, IdHeader);
-        }
         public async Task<int> SetData()
         {
             CargoObject cargo = await GetTestData();
@@ -201,6 +194,7 @@ namespace LogisticsClientsApp.Pages
             DataGridFrame.Navigate(page);
             selectedPage = page;
             locale = new Locale(startWindow.selectedLocale);
+            ModalPageFrame.Content = null;
             locale.SetLocale(this);
         }
 
@@ -330,7 +324,7 @@ namespace LogisticsClientsApp.Pages
                     if (mode == 0)
                     {
                         var requestModalPage = DataGridFrame.Content as RequestsTablePage;
-                        request.UpdateDisplayedData(requestModalPage.dataGrid.SelectedItem as RequestsObject);
+                        request.UpdateDisplayedData(requestModalPage.GetSelectedDataGridItem());
                         requestModalPage.dataGrid.SelectedItem = null;
                     }
 
@@ -418,6 +412,7 @@ namespace LogisticsClientsApp.Pages
                         dataReady.Rows.Add(new object[5] { item.Surname, item.Name, item.Patronymic, item.Sanitation == true ? "Есть" : "Нет", $"{item.Licence.Series}/{item.Licence.Number}" });
                     break;
                 case var cls when cls == typeof(RequestsObject):
+                    dataReady.Columns.Add("Номер");
                     dataReady.Columns.Add("Транспорт");
                     dataReady.Columns.Add("Водитель");
                     dataReady.Columns.Add("Цена");
@@ -430,7 +425,7 @@ namespace LogisticsClientsApp.Pages
                     dataReady.Columns.Add("Тип груза");
                     dataReady.Columns.Add("Статус");
                     foreach (var item in items as List<RequestsObject>)
-                        dataReady.Rows.Add(new object[11] { $"{item.Vehicle.Type.Name}, Тягач: {item.Vehicle.Number}, Прицеп: {item.Vehicle.TrailerNumber}",
+                        dataReady.Rows.Add(new object[12] { item.Id, $"{item.Vehicle.Type.Name}, Тягач: {item.Vehicle.Number}, Прицеп: {item.Vehicle.TrailerNumber}",
                             $"{item.Driver.Surname} {item.Driver.Name} {item.Driver.Patronymic}",
                             item.Price,
                             item.CreationDate.ToDateTime().Date,
@@ -553,6 +548,7 @@ namespace LogisticsClientsApp.Pages
             if (AdvancedSearch.Visibility == Visibility.Visible)
             {
                 Storyboard? sb = Resources["CloseAdvancedSearch"] as Storyboard;
+                ChevronSearch.Kind = PackIconKind.ChevronDown;
                 sb!.Begin(AdvancedSearch);
                 await AdvancesSearchCollapsed();
                 AdvancedSearch.Visibility = Visibility.Collapsed;
@@ -560,6 +556,7 @@ namespace LogisticsClientsApp.Pages
             else
             {
                 AdvancedSearch.Visibility = Visibility.Visible;
+                ChevronSearch.Kind = PackIconKind.ChevronUp;
                 Storyboard? sb = Resources["OpenAdvancedSearch"] as Storyboard;
                 sb!.Begin(AdvancedSearch);
             }

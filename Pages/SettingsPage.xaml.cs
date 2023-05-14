@@ -24,6 +24,7 @@ namespace LogisticsClientsApp.Pages
     public partial class SettingsPage : Page
     {
         public static List<string> Languages = new List<string>() { "Русский", "English (United States)" };
+        public string SelectedTheme;
 
         ITheme theme = new PaletteHelper().GetTheme();
         public PaletteHelper palette;
@@ -33,23 +34,37 @@ namespace LogisticsClientsApp.Pages
             InitializeComponent();
             LanguagesComboBox.ItemsSource = Languages;
             LanguagesComboBox.SelectedIndex = 0;
+            palette = new PaletteHelper();
+            AdjustTheme();
+        }
+
+        private void AdjustTheme()
+        {
+            SelectedTheme = Properties.Default.SelectedTheme;
+            if (SelectedTheme == "Light")
+                ToggleDarkMode.IsChecked = false;
+            else 
+                ToggleDarkMode.IsChecked = true;           
         }
 
         private void ToggleDarkMode_Checked(object sender, RoutedEventArgs e)
         {
             theme.SetBaseTheme(Theme.Dark);
             palette.SetTheme(theme);
+            Properties.Default.SelectedTheme = "Dark";
+            Properties.Default.Save();
         }
 
         private void ToggleDarkMode_Unchecked(object sender, RoutedEventArgs e)
         {
             theme.SetBaseTheme(Theme.Light);
             palette.SetTheme(theme);
+            Properties.Default.SelectedTheme = "Light";
+            Properties.Default.Save();
         }
 
         private void SettingsPage_Loaded(object sender, RoutedEventArgs e)
         {
-            palette = new PaletteHelper();
         }
 
         private void ChooseFileButton_Click(object sender, RoutedEventArgs e)
@@ -87,6 +102,8 @@ namespace LogisticsClientsApp.Pages
                     var startWindow = Window.GetWindow(this) as StartWindow;
                     startWindow.ProfileBackgroundImage.ImageSource = background;
                     SelectedBackgroundImage.Visibility = Visibility.Visible;
+                    Properties.Default.BackgroundImage = textBox.Text;
+                    Properties.Default.Save();
                 }
                 catch (Exception ex)
                 {
@@ -140,6 +157,8 @@ namespace LogisticsClientsApp.Pages
                     var startWindow = Window.GetWindow(this) as StartWindow;
                     startWindow!.UserProfileImage.ImageSource = background;
                     SelectedForegroundImage.Visibility = Visibility.Visible;
+                    Properties.Default.ForegroundImage = textBox.Text;
+                    Properties.Default.Save();
                 }
                 catch (Exception ex)
                 {

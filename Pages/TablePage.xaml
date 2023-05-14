@@ -167,6 +167,7 @@
                                    Grid.Row="1"
                                    Width="40" />
                         <materialDesign:PackIcon Kind="ChevronDown"
+                                                 x:Name="ChevronSearch"
                                                  HorizontalAlignment="Center"
                                                  Grid.Row="1"
                                                  Width="40"
