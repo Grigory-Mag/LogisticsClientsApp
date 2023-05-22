@@ -44,9 +44,9 @@
                         <DataGridTextColumn Width="Auto"
                                             Header="Владелц"
                                             Binding="{Binding Ceo}" />
-                        <DataGridTextColumn Width="Auto"
-                                            Header="ПТС"
-                                            Binding="{Binding Pts}" />
+                       <!-- <DataGridTextColumn Width="Auto" -->
+                        <!--                    Header="КПП" -->
+                         <!--                   Binding="{Binding Pts}" /> -->
                         <DataGridTextColumn Width="Auto"
                                             Header="Роль"
                                             Binding="{Binding Role.Name}" />

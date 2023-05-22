@@ -115,10 +115,10 @@ namespace LogisticsClientsApp.Localizations
             var page = this.page as CargoTablePage;
             List<string> table = TablesLocale.GetCargoTableHeaders_RU();
 
-            for (int i = 0; i < (page.dataGrid.Columns.Count); i++)
+/*            for (int i = 0; i < (page.dataGrid.Columns.Count); i++)
                 page.dataGrid.Columns[i].Header = table[i];
 
-            page.dataGrid.Columns[0].Header = RU.SearchField;
+            page.dataGrid.Columns[0].Header = RU.SearchField;*/
         }
 
         private void SetCargoTypesTableLocale_RU()
@@ -141,16 +141,18 @@ namespace LogisticsClientsApp.Localizations
                     startWindow.TextBlockEmail.Text = RU.EamilBtn;
                     startWindow.TextBlockAccount.Text = RU.AccountBtn;
                     startWindow.TextBlockLogout.Text = RU.LogoutBtn;
-                    startWindow.tables = new Dictionary<string, List<string>>()
+                    switch (startWindow.role)
+                    {
+                        case 1:
+                            startWindow.tables = new Dictionary<string, List<string>>()
                     {
                         { RU.Cargo, new List<string>() {RU.Cargo_Types, RU.Cargo } },
                         { RU.Drivers, new List<string>() {RU.Driver_Licence, RU.Drivers} },
                         { RU.Organizations, new List<string>() {RU.Requisites, RU.Roles, RU.RequisiteType } },
                         { RU.Vehicles, new List<string>() {RU.Vehicle_Types, RU.Vehicles} },
                         { RU.RoutesActions, new List<string>()},
-                        { RU.Users, new List<string>()},
                     };
-                    startWindow.tablesList = new List<string>()
+                            startWindow.tablesList = new List<string>()
                     {
                         RU.Cargo,
                         RU.Cargo_Types,
@@ -162,8 +164,37 @@ namespace LogisticsClientsApp.Localizations
                         RU.Vehicles,
                         RU.Vehicle_Types,
                         RU.Requests,
+                        RU.RoutesActions,
+                    };
+                            break;
+                        case 2:
+                            startWindow.tables = new Dictionary<string, List<string>>()
+                    {
+                        { RU.Cargo, new List<string>() {RU.Cargo_Types, RU.Cargo } },
+                        { RU.Drivers, new List<string>() {RU.Driver_Licence, RU.Drivers} },
+                        { RU.Organizations, new List<string>() {RU.Requisites, RU.Roles, RU.RequisiteType } },
+                        { RU.Vehicles, new List<string>() {RU.Vehicle_Types, RU.Vehicles} },
+                        { RU.RoutesActions, new List<string>()},
+                        { RU.Users, new List<string>()},
+                    };
+                            startWindow.tablesList = new List<string>()
+                    {
+                        RU.Cargo,
+                        RU.Cargo_Types,
+                        RU.Drivers,
+                        RU.Driver_Licence,
+                        RU.Requisites,
+                        RU.Roles,
+                        RU.RequisiteType,
+                        RU.Vehicles,
+                        RU.Vehicle_Types,
+                        RU.Requests,
+                        RU.RoutesActions,
                         RU.Users,
                     };
+                            break;
+                    }
+
 
                     /*{
                         

@@ -16,6 +16,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Channels;
@@ -45,6 +46,7 @@ namespace LogisticsClientsApp
         public Metadata headers = new Metadata();
         public List<string> tablesList = new List<string>();
         public double windowSize = 0;
+        public int role = 0;
 
         public string userName { get; set; }
         public string userSurname { get; set; }
@@ -71,6 +73,9 @@ namespace LogisticsClientsApp
 
             LoginPage = new LoginPage(this);
             ChangePage(LoginPage);
+            //DEBUG ONLY:
+            //Properties.Default.Address = "http://185.248.101.68:8008";
+            //Properties.Default.Save();
 
             Uri path = new Uri(Directory.GetCurrentDirectory() + @"\Resources\Images\loginBackground.jpg");
             MainGrid.Background = new ImageBrush(new BitmapImage(path));
@@ -132,7 +137,7 @@ namespace LogisticsClientsApp
                 }
                 catch (Exception ex)
                 {
-                    
+
                 }
 
             created = Uri.TryCreate(fileForegroundPath, UriKind.RelativeOrAbsolute, out uri);
@@ -147,13 +152,54 @@ namespace LogisticsClientsApp
                 }
                 catch (Exception ex)
                 {
-                    
+
                 }
         }
 
         public void ChangePage(Page page)
         {
+            if (MainFrameK.Content != null)
+            {
+                switch (MainFrameK.Content) 
+                {
+                    case var cls when cls == typeof(CargoTablePage):
+
+                        break;
+                    case var cls when cls == typeof(CargoTypesPage):
+
+                        break;
+                    case var cls when cls == typeof(DriverLicenceTablePage):
+
+                        break;
+                    case var cls when cls == typeof(DriversTablePage):
+                        break;
+                    case var cls when cls == typeof(RequestsTablePage):
+                        (MainFrameK.Content as RequestsTablePage)!.Dispose();
+                        break;
+                    case var cls when cls == typeof(RolesTabePage):
+
+                        break;
+                    case var cls when cls == typeof(VehiclesTypesTablePage):
+
+                        break;
+                    case var cls when cls == typeof(VehiclesTablePage):
+
+                        break;
+                }
+            }
+            MainFrameK.Content = null;
             MainFrameK.Navigate(page);
+            page = null;
+
+            if (MainFrameK.CanGoBack && MainFrameK.CanGoForward)
+            {
+                var entry = MainFrameK.RemoveBackEntry();
+                while (entry != null)
+                {
+                    entry = MainFrameK.RemoveBackEntry();
+                }
+            }
+
         }
 
         public void ClearFrameHistory()
@@ -399,14 +445,33 @@ namespace LogisticsClientsApp
 
         public async Task<LoginReply> Login(string login, string password)
         {
-            var loginObject = new LoginObject { Login = login, Password = password };
+            SHA512 crypt = SHA512.Create();
+            ASCIIEncoding encoding = new ASCIIEncoding();
+            byte[] bytes = encoding.GetBytes(password);
+            byte[] hash = crypt.ComputeHash(bytes);
+            var output = Convert.ToHexString(hash);
+
+            var loginObject = new LoginObject { Login = login, Password = output };
             var item = await loginClient.LoginUserAsync(new LoginRequest { Data = loginObject });
             if (item.Token != "Invalid data")
             {
                 headers.Clear();
                 headers.Add("Authorization", $"Bearer {item.Token}");
+                role = item.User.UserRole.Id;
                 var options = new CallOptions().WithHeaders(headers);
                 client = new UserService.UserServiceClient(GrpcChannel.ForAddress(Properties.Default.Address.ToString()));
+                Locale locale = new Locale("ru");
+                locale.SetLocale(this);
+                ReferencesMenu.Items.Clear();
+                foreach (var value in tables)
+                {
+                    MenuItem menuItem = new MenuItem();
+                    menuItem.Click += ReferencesMenu_SubMenu_Click;
+                    if (value.Value != null)
+                        menuItem.ItemsSource = value.Value;
+                    menuItem.Header = value.Key;
+                    ReferencesMenu.Items.Add(menuItem);
+                }
             }
 
             return await Task.FromResult(item);
@@ -484,8 +549,10 @@ namespace LogisticsClientsApp
                             page!.ChangeSelectedTable(new RequestsTablePage());
                             break;
                         case 10:
+
                             break;
                         case 11:
+                            page!.ChangeSelectedTable(new UsersTablePage());
                             break;
                     }
                 }

@@ -40,31 +40,42 @@ namespace LogisticsClientsApp.Pages
             Locale locale = new Locale("ru");
             locale.SetLocale(this);
 
-            ErrorStackPanel.Visibility = Visibility.Hidden;
+            ErrorStackPanel.Visibility = Visibility.Collapsed;
         }
 
         private async void LoginHandler()
         {
             try
             {
+
                 var data = await startWindow.Login(LoginTextBox.Text.ToString(), PasswordTextBox.Password.ToString());
                 if (data.Token == "Invalid data")
-                    MessageBox.Show("Error");
-                startWindow.ChangePage(new TablePage());
-                startWindow.ShowSideMenu();
-                startWindow.NameTextBlock.Text = data.User.Name;
-                startWindow.SurnameTextBlock.Text = data.User.Surname;
-                startWindow.RoleTextBlock.Text = data.User.UserRole.Name;
+                {
+                    ErrorStackPanel.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    startWindow.ChangePage(new TablePage());
+                    startWindow.ShowSideMenu();
+                    LoginInProcess.Visibility = Visibility.Hidden;
+                    startWindow.NameTextBlock.Text = data.User.Name;
+                    startWindow.SurnameTextBlock.Text = data.User.Surname;
+                    startWindow.RoleTextBlock.Text = data.User.UserRole.Name;
+                }
+                LoginInProcess.Visibility = Visibility.Hidden;
+
+
             }
             catch (RpcException ex)
             {
                 MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                LoginInProcess.Visibility = Visibility.Hidden;
             }
         }
 
         private void LoginButton_Click(object sender, RoutedEventArgs e)
         {
-            ErrorStackPanel.Visibility= Visibility.Visible;
+            LoginInProcess.Visibility  = Visibility.Visible;
             //Thread.Sleep(5000);
             LoginHandler();
         }
@@ -79,7 +90,7 @@ namespace LogisticsClientsApp.Pages
 
         private void UnSetErrorWhileLogin()
         {
-            ErrorStackPanel.Visibility = Visibility.Hidden;
+            ErrorStackPanel.Visibility = Visibility.Collapsed;
         }
 
         private void LoginTextBox_TextChanged(object sender, TextChangedEventArgs e)

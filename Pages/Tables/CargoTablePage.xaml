@@ -35,27 +35,27 @@
 
                     <DataGrid.Columns>
                         <DataGridTextColumn Width="Auto"
-                                            Header="Id"
+                                            Header="Номер"
                                             Binding="{Binding Id}" />
-                        <DataGridTextColumn Header="Type"
+                        <DataGridTextColumn Header="Тип"
                                             Width="Auto"
                                             Binding="{Binding CargoType.Name}" />
-                        <DataGridTextColumn Header="Constraints"
+                        <DataGridTextColumn Header="Ограничения"
                                             Width="Auto"
                                             Binding="{Binding Constraints}" />
-                        <DataGridTextColumn Header="Weight"
+                        <DataGridTextColumn Header="Масса (кг)"
                                             Width="Auto"
                                             Binding="{Binding Weight}" />
-                        <DataGridTextColumn Header="Volume"
+                        <DataGridTextColumn Header="Объём (м^3)"
                                             Width="Auto"
                                             Binding="{Binding Volume}" />
-                        <DataGridTextColumn Header="Name"
+                        <DataGridTextColumn Header="Название"
                                             Width="Auto"
                                             Binding="{Binding Name}" />
-                        <DataGridTextColumn Header="Price"
+                        <DataGridTextColumn Header="Цена (₽)"
                                             Width="Auto"
                                             Binding="{Binding Price}" />
-                        <DataGridTemplateColumn Header="Open">
+                        <DataGridTemplateColumn Header="Открыть">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel>
@@ -75,7 +75,7 @@
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Header="Delete">
+                        <DataGridTemplateColumn Header="Удалить">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel>

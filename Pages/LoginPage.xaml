@@ -110,29 +110,41 @@
                           Data="M133.095 161.283C132.332 158.551 135.435 156.385 137.737 158.042L145.496 163.627C147.174 164.835 147.155 167.338 145.46 168.522L140.271 172.145C138.576 173.328 136.22 172.482 135.664 170.491L133.095 161.283Z" />
                 </Canvas>
 
-                <StackPanel Orientation="Horizontal"
-                            Name="ErrorStackPanel"
-                            Grid.Row="1"
+
+                <StackPanel Grid.Row="1"
                             HorizontalAlignment="Center">
-                    <materialDesign:PackIcon Kind="Warning"
-                                             Foreground="{StaticResource AccentCustomColor}"
-                                             Width="70"
-                                             Height="70"
-                                             Margin="0,0,30,0" />
-                    <TextBlock FontSize="20"
-                               Name="ErrorTextBlock"
-                               FontWeight="Bold"
-                               Foreground="{StaticResource AccentCustomColor}"
-                               MaxWidth="280"
-                               HorizontalAlignment="Center"
-                               TextWrapping="Wrap"
-                               Text="invalid login or password. please, verify your data"
-                               Typography.Capitals="SmallCaps"
-                               Margin="0,0,0,20" />
-                </StackPanel>
+                    <StackPanel Orientation="Horizontal"
+                                Name="ErrorStackPanel"
+                                Visibility="Collapsed"
+                                HorizontalAlignment="Center">
 
-
-
+                        <materialDesign:PackIcon Kind="Warning"
+                                                 Foreground="{StaticResource AccentCustomColor}"
+                                                 Width="70"
+                                                 Height="70"
+                                                 Margin="0,0,30,0" />
+                        <TextBlock FontSize="20"
+                                   Name="ErrorTextBlock"
+                                   FontWeight="Bold"
+                                   Foreground="{StaticResource AccentCustomColor}"
+                                   MaxWidth="280"
+                                   HorizontalAlignment="Center"
+                                   TextWrapping="Wrap"
+                                   Text="invalid login or password. please, verify your data"
+                                   Typography.Capitals="SmallCaps"
+                                   Margin="0,0,0,20" />
+                    </StackPanel>
+                    <ProgressBar Margin="16"
+                                 HorizontalAlignment="Center"
+                                 IsIndeterminate="True"
+                                 Name="LoginInProcess"
+                                 Width="50"
+                                 Visibility="Hidden"
+                                 Height="50"
+                                 Style="{StaticResource MaterialDesignCircularProgressBar}"
+                                 Value="0" />
+                </StackPanel>             
+                
                 <TextBox Width="400"
                          Grid.Row="2"
                          Height="60"
@@ -157,6 +169,7 @@
                              Style="{StaticResource MaterialDesignOutlinedRevealPasswordBox}" />
                 <ComboBox Grid.Row="4"
                           x:Name="RoleComboBox"
+                          Visibility="Collapsed"
                           Width="200"
                           Margin="0,30,0,0"
                           FontSize="18"

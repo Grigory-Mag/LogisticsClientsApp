@@ -19,175 +19,313 @@
       Loaded="Page_Loaded">
 
     <Grid>
-        <materialDesign:Card>
-            <StackPanel>
 
-                <DataGrid x:Name="dataGrid"
-                          IsReadOnly="True"
-                          MaxHeight="600"
-                          FontSize="18"
-                          ItemsSource="{Binding Source=objects}"
-                          AutoGenerateColumns="False">
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Width="Auto"
-                                            Header="Номер"
-                                            Binding="{Binding Id}" />
-                        <DataGridCheckBoxColumn Width="Auto"
-                                                Header="Закрыто"
-                                                Binding="{Binding IsFinished}" />
-                        <DataGridTextColumn Width="Auto"
-                                            Binding="{Binding CreationDate, StringFormat=\{0:dd.MM.yy HH:mm:ss\}}">
-                            <DataGridTextColumn.Header>
-                                <TextBlock VerticalAlignment="Center">
+        <materialDesign:DialogHost x:Name="OpenThisDialog">
+            <materialDesign:DialogHost.DialogContent>
+                <StackPanel Margin="20"
+                            HorizontalAlignment="Stretch">
+                    <WrapPanel>
+                        <materialDesign:PackIcon Kind="Warning"
+                                                 Foreground="{StaticResource AccentCustomColor}"
+                                                 Width="70"
+                                                 VerticalAlignment="Center"
+                                                 Height="70"
+                                                 Margin="0,0,30,0" />
+                        <TextBlock FontSize="20"
+                                   Name="ErrorTextBlock"
+                                   FontWeight="SemiBold"
+                                   MaxWidth="280"
+                                   HorizontalAlignment="Center"
+                                   MinWidth="200"
+                                   TextWrapping="Wrap">
+                            <Run Text="Внимание!" Foreground="{StaticResource AccentCustomColor}" />
+                            <LineBreak />
+                            <Run Text="Вы собираетесь удалить запись." />
+                            <LineBreak />
+                            <Run Text="Это приведёт к удалению ряда связанных записей." />
+                            <LineBreak />
+                            <Run Text="Если вы подтверждаете удаление, введите следующий набор цифр: "/>
+                            <LineBreak />
+                            <LineBreak />
+                            <Run Text="1 - 2 - 3 - 4 - 5 - 6" 
+                                 Name="CodeNumberText"
+                                 Foreground="{StaticResource AccentCustomColor}"/>
+                        </TextBlock>
+                    </WrapPanel>
+
+                    <Grid HorizontalAlignment="Stretch">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Orientation="Horizontal"
+                                    HorizontalAlignment="Center"
+                                    Margin="0,20,0,80"
+                                    Grid.Row="0"
+                                    Grid.Column="0"
+                                    Grid.ColumnSpan="2">
+                            <TextBox Width="40"
+                                     Style="{StaticResource MaterialDesignFilledTextBox}"
+                                     Tag="Num1"
+                                     TextChanged="TextBoxNumberCode_TextChanged"
+                                     MaxLength="1"
+                                     materialDesign:TextFieldAssist.CharacterCounterVisibility="Collapsed"
+                                     FontSize="18"/>
+                            <TextBlock Text=" - "
+                                       FontSize="30"
+                                       VerticalAlignment="Center"/>
+                            <TextBox Width="40"
+                                     Style="{StaticResource MaterialDesignFilledTextBox}"
+                                     FontSize="18"
+                                     TextChanged="TextBoxNumberCode_TextChanged"
+                                     Tag="Num2"
+                                     materialDesign:TextFieldAssist.CharacterCounterVisibility="Collapsed"
+                                     MaxLength="1" />
+                            <TextBlock Text=" - "
+                                       FontSize="30"
+                                       VerticalAlignment="Center" />
+                            <TextBox Width="40"
+                                     Style="{StaticResource MaterialDesignFilledTextBox}"
+                                     TextChanged="TextBoxNumberCode_TextChanged"
+                                     Tag="Num3"
+                                     FontSize="18"
+                                     materialDesign:TextFieldAssist.CharacterCounterVisibility="Collapsed"
+                                     MaxLength="1" />
+                            <TextBlock Text=" - "
+                                       FontSize="30"
+                                       VerticalAlignment="Center"/>
+                            <TextBox Width="40"
+                                     Style="{StaticResource MaterialDesignFilledTextBox}"
+                                     TextChanged="TextBoxNumberCode_TextChanged"
+                                     Tag="Num4"
+                                     FontSize="18"
+                                     materialDesign:TextFieldAssist.CharacterCounterVisibility="Collapsed"
+                                     MaxLength="1" />
+                            <TextBlock Text=" - "
+                                       FontSize="30"
+                                       VerticalAlignment="Center" />
+                            <TextBox Width="40"
+                                     Style="{StaticResource MaterialDesignFilledTextBox}"
+                                     TextChanged="TextBoxNumberCode_TextChanged"
+                                     Tag="Num5"
+                                     FontSize="18"
+                                     materialDesign:TextFieldAssist.CharacterCounterVisibility="Collapsed"
+                                     MaxLength="1" />
+                            <TextBlock Text=" - "
+                                       FontSize="30"
+                                       VerticalAlignment="Center" />
+                            <TextBox Width="40"
+                                     Style="{StaticResource MaterialDesignFilledTextBox}"
+                                     TextChanged="TextBoxNumberCode_TextChanged"
+                                     Tag="Num6"
+                                     FontSize="18"
+                                     materialDesign:TextFieldAssist.CharacterCounterVisibility="Collapsed"
+                                     MaxLength="1" />
+                        </StackPanel>
+
+
+                        <Button Content="удалить"
+                                Style="{StaticResource MaterialDesignFlatAccentButton}"
+                                Foreground="{StaticResource AccentCustomColor}"
+                                FontSize="20"
+                                Name="ConfirmDeleteButton"
+                                Click="ConfirmDeleteButton_Click"
+                                IsEnabled="False"
+                                Height="50"
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                HorizontalAlignment="Right"
+                                Typography.Capitals="AllSmallCaps" />
+                        <Button Content="отмена"
+                                FontSize="20"
+                                Grid.Row="1"
+                                Height="50"
+                                Grid.Column="0"
+                                Style="{StaticResource MaterialDesignOutlinedButton}"
+                                HorizontalAlignment="Left"
+                                Name="CancelDeleteButton"
+                                Click="CancelDeleteButton_Click"
+                                Typography.Capitals="AllSmallCaps"/>
+                    </Grid>
+
+                </StackPanel>
+
+            </materialDesign:DialogHost.DialogContent>
+
+            <materialDesign:Card>
+                <StackPanel>
+
+                    <DataGrid x:Name="dataGrid"
+                              IsReadOnly="True"
+                              MaxHeight="450"
+                              FontSize="18"
+                              ItemsSource="{Binding Source=objects}"
+                              AutoGenerateColumns="False">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Width="Auto"
+                                                Header="Номер"
+                                                Binding="{Binding Id}" />
+                            <DataGridCheckBoxColumn Width="Auto"
+                                                    Header="Закрыто"
+                                                    Binding="{Binding IsFinished}" />
+                            <DataGridTextColumn Width="Auto"
+                                                Binding="{Binding CreationDate, StringFormat=\{0:dd.MM.yyyy HH:mm\}}">
+                                <DataGridTextColumn.Header>
+                                    <TextBlock VerticalAlignment="Center">
                                     <Run Text="Дата"
                                          BaselineAlignment="Center" />
                                     <LineBreak />
                                     <Run Text="cоздания" />
-                                </TextBlock>
-                            </DataGridTextColumn.Header>
-                        </DataGridTextColumn>
-                        <DataGridTextColumn Width="Auto"
-                                            Binding="{Binding Price}">
-                            <DataGridTextColumn.Header>
-                                <TextBlock VerticalAlignment="Center">
+                                    </TextBlock>
+                                </DataGridTextColumn.Header>
+                            </DataGridTextColumn>
+                            <DataGridTextColumn Width="Auto"
+                                                Binding="{Binding Price}">
+                                <DataGridTextColumn.Header>
+                                    <TextBlock VerticalAlignment="Center">
                                     <Run Text="Цена"
                                          BaselineAlignment="Center" />
                                     <LineBreak />
                                     <Run Text="перевозки" />
-                                </TextBlock>
-                            </DataGridTextColumn.Header>
-                        </DataGridTextColumn>
-                        <DataGridTextColumn Width="Auto"
-                                            Header="Машина"
-                                            Binding="{Binding Vehicle.Type.Name}" />
-                        <DataGridTextColumn Width="Auto"
-                                            Binding="{Binding Vehicle.Number}">
-                            <DataGridTextColumn.Header>
-                                <TextBlock VerticalAlignment="Center">
+                                    </TextBlock>
+                                </DataGridTextColumn.Header>
+                            </DataGridTextColumn>
+                            <DataGridTextColumn Width="Auto"
+                                                Header="Машина"
+                                                Binding="{Binding Vehicle.Type.Name}" />
+                            <DataGridTextColumn Width="Auto"
+                                                Binding="{Binding Vehicle.Number}">
+                                <DataGridTextColumn.Header>
+                                    <TextBlock VerticalAlignment="Center">
                                     <Run Text="Номер"
                                          BaselineAlignment="Center" />
                                     <LineBreak />
                                     <Run Text="машины" />
-                                </TextBlock>
-                            </DataGridTextColumn.Header>
-                        </DataGridTextColumn>
-                        <DataGridTextColumn Width="Auto"
-                                            Header="Водитель"
-                                            Binding="{Binding Vehicle.Driver.Name}" />
-                        <DataGridTextColumn Width="Auto"
-                                            Header="Перевозчик"
-                                            Binding="{Binding TransporterReq.Name}" />
-                        <DataGridTextColumn Width="Auto"
-                                            Header="Заказчик"
-                                            Binding="{Binding CustomerReq.Name}" />
-                        <DataGridTextColumn Width="Auto"
-                                            Header="Груз"
-                                            Binding="{Binding Cargo.Name}" />
-                        <DataGridCheckBoxColumn Header="Документы"
-                                                Width="Auto"
-                                                Binding="{Binding Documents}" />
-                        <DataGridTemplateColumn Header="Открыть">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <StackPanel>
-                                        <Button Width="40"
-                                                x:Name="OpenRowButton"
-                                                Click="OpenRowButton_Click"
-                                                Height="40">
-                                            <StackPanel Width="Auto"
-                                                        Height="Auto"
-                                                        Margin="-22,-5,-20,0">
-                                                <ContentControl ContentTemplate="{StaticResource OpenButton}"
-                                                                Width="40"
-                                                                Height="40" />
-                                            </StackPanel>
-                                        </Button>
-                                    </StackPanel>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Header="Удалить">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <StackPanel>
-                                        <Button Width="40"
-                                                Height="40"
-                                                x:Name="DeleteButton"
-                                                Click="DeleteButton_Click"
-                                                Style="{StaticResource MaterialDesignFlatSecondaryLightBgButton}"
-                                                Background="{StaticResource AccentCustomColor}"
-                                                SnapsToDevicePixels="True">
-                                            <StackPanel Width="Auto"
-                                                        Height="Auto"
-                                                        Margin="-22,-5,-20,0">
-                                                <ContentControl ContentTemplate="{StaticResource DeleteButton}"
-                                                                Width="40"
-                                                                Height="40" />
-                                            </StackPanel>
-                                        </Button>
-                                    </StackPanel>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
+                                    </TextBlock>
+                                </DataGridTextColumn.Header>
+                            </DataGridTextColumn>
+                            <DataGridTextColumn Width="Auto"
+                                                Header="Водитель"
+                                                Binding="{Binding DriverFIO}" />
+                            <DataGridTextColumn Width="Auto"
+                                                Header="Перевозчик"
+                                                Binding="{Binding TransporterReq.Name}" />
+                            <DataGridTextColumn Width="Auto"
+                                                Header="Заказчик"
+                                                Binding="{Binding CustomerReq.Name}" />
+                            <DataGridTextColumn Width="Auto"
+                                                Header="Груз"
+                                                Binding="{Binding Cargo.Name}" />
+                            <DataGridCheckBoxColumn Header="Документы"
+                                                    Width="Auto"
+                                                    Binding="{Binding Documents}" />
+                            <DataGridTemplateColumn Header="Открыть">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel>
+                                            <Button Width="40"
+                                                    x:Name="OpenRowButton"
+                                                    Click="OpenRowButton_Click"
+                                                    Height="40">
+                                                <StackPanel Width="Auto"
+                                                            Height="Auto"
+                                                            Margin="-22,-5,-20,0">
+                                                    <ContentControl ContentTemplate="{StaticResource OpenButton}"
+                                                                    Width="40"
+                                                                    Height="40" />
+                                                </StackPanel>
+                                            </Button>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Удалить">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel>
+                                            <Button Width="40"
+                                                    Height="40"
+                                                    x:Name="DeleteButton"
+                                                    Click="DeleteButton_Click"
+                                                    Style="{StaticResource MaterialDesignFlatSecondaryLightBgButton}"
+                                                    Background="{StaticResource AccentCustomColor}"
+                                                    SnapsToDevicePixels="True">
+                                                <StackPanel Width="Auto"
+                                                            Height="Auto"
+                                                            Margin="-22,-5,-20,0">
+                                                    <ContentControl ContentTemplate="{StaticResource DeleteButton}"
+                                                                    Width="40"
+                                                                    Height="40" />
+                                                </StackPanel>
+                                            </Button>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
 
-                    </DataGrid.Columns>
-                </DataGrid>
+                        </DataGrid.Columns>
+                    </DataGrid>
 
-                <TextBlock Text="1 - 10 of 20"
-                           FontSize="18"
-                           VerticalAlignment="Bottom"
-                           HorizontalAlignment="Right"
-                           Margin="0,10,80,0" />
+                    <TextBlock Text="10 из 20"
+                               FontSize="18"
+                               VerticalAlignment="Bottom"
+                               HorizontalAlignment="Right"
+                               Margin="0,10,80,0" />
 
-                <StackPanel Orientation="Horizontal"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Bottom"
-                            Margin="0,20,70,0"
-                            Grid.Row="1">
+                    <StackPanel Orientation="Horizontal"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Bottom"
+                                Margin="0,20,70,0"
+                                Grid.Row="1">
 
-                    <Button Width="40"
-                            Click="PrevTablePageButton_Click"
-                            Name="PrevTablePageButton"
-                            Height="40"
-                            Margin="0,0,20,0"
-                            Style="{StaticResource ChevronButton}">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-                            <Rectangle Fill="Transparent"
-                                       Height="40"
-                                       Grid.Row="0"
-                                       Width="40" />
-                            <materialDesign:PackIcon Kind="ChevronLeft"
-                                                     Grid.Row="0"
-                                                     Width="40"
-                                                     Height="40" />
-                        </Grid>
-                    </Button>
+                        <Button Width="40"
+                                Click="PrevTablePageButton_Click"
+                                Name="PrevTablePageButton"
+                                Height="40"
+                                Margin="0,0,20,0"
+                                Style="{StaticResource ChevronButton}">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Rectangle Fill="Transparent"
+                                           Height="40"
+                                           Grid.Row="0"
+                                           Width="40" />
+                                <materialDesign:PackIcon Kind="ChevronLeft"
+                                                         Grid.Row="0"
+                                                         Width="40"
+                                                         Height="40" />
+                            </Grid>
+                        </Button>
 
-                    <Button Width="40"
-                            Click="NextTablePageButton_Click"
-                            Name="NextTablePageButton"
-                            Height="40"
-                            Style="{StaticResource ChevronButton}">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-                            <Rectangle Fill="Transparent"
-                                       Height="40"
-                                       Grid.Row="0"
-                                       Width="40" />
-                            <materialDesign:PackIcon Kind="ChevronRight"
-                                                     Grid.Row="0"
-                                                     Width="40"
-                                                     Height="40" />
-                        </Grid>
-                    </Button>
+                        <Button Width="40"
+                                Click="NextTablePageButton_Click"
+                                Name="NextTablePageButton"
+                                Height="40"
+                                Style="{StaticResource ChevronButton}">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Rectangle Fill="Transparent"
+                                           Height="40"
+                                           Grid.Row="0"
+                                           Width="40" />
+                                <materialDesign:PackIcon Kind="ChevronRight"
+                                                         Grid.Row="0"
+                                                         Width="40"
+                                                         Height="40" />
+                            </Grid>
+                        </Button>
 
+                    </StackPanel>
                 </StackPanel>
-            </StackPanel>
-        </materialDesign:Card>
+            </materialDesign:Card>
+        </materialDesign:DialogHost>
     </Grid>
 </Page>

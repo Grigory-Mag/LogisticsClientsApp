@@ -105,8 +105,6 @@
                               FontSize="18"
                               Height="70"
                               IsEnabled="False"
-                              materialDesign:HintAssist.HelperTextFontSize="14"
-                              materialDesign:HintAssist.HelperText="*недоступно на данный момент"
                               VerticalAlignment="Bottom"
                               x:Name="LanguagesComboBox"
                               Style="{StaticResource MaterialDesignFilledComboBox}"

@@ -13,7 +13,7 @@
         TextOptions.TextRenderingMode="Auto"
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
-        Height="850"
+        Height="950"
         Width="1250"
         Title="Моя логистика"
         SizeChanged="Window_SizeChanged"
@@ -87,8 +87,8 @@
             <StackPanel Orientation="Horizontal"
                         HorizontalAlignment="Right">
                 <Button Style="{StaticResource MaterialDesignIconButton}"
-                        Height="30"
-                        Width="30"
+                        Height="50"
+                        Width="50"
                         Focusable="False"
                         HorizontalAlignment="Right"
                         Name="MinimizeAppWindowButton"
@@ -99,8 +99,8 @@
                     </WrapPanel>
                 </Button>
                 <Button Style="{StaticResource MaterialDesignIconButton}"
-                        Height="30"
-                        Width="30"
+                        Height="50"
+                        Width="50"
                         Focusable="False"
                         HorizontalAlignment="Right"
                         Name="ResizeAppWindowButton"
@@ -112,14 +112,18 @@
                     </WrapPanel>
                 </Button>
                 <Button Style="{StaticResource MaterialDesignIconButton}"
-                        Height="30"
-                        Width="30"
+                        Height="50"
+                        Width="50"
                         Focusable="False"
                         Name="CloseAppButton"
                         Click="CloseAppButton_Click"
-                        Margin="0,0,10,0">
+                        Margin="0,0,0,0">
                     <WrapPanel>
                         <materialDesign:PackIcon Kind="Close"
+                                                 Width="30"
+                                                 Height="30"
+                                                 HorizontalAlignment="Center"
+                                                 VerticalAlignment="Center"
                                                  Foreground="{StaticResource AccentCustomColor}" />
                     </WrapPanel>
                 </Button>
@@ -389,12 +393,23 @@
                         <StackPanel HorizontalAlignment="Center"
                                     VerticalAlignment="Center">
                             <TextBlock Style="{DynamicResource MaterialDesignHeadline6TextBlock}"
-                                       Text="Some text"
-                                       Margin="0,10" />
-                            <TextBlock Style="{DynamicResource MaterialDesignHeadline6TextBlock}"
+                                       Text="Помощь"
                                        HorizontalAlignment="Center"
-                                       Text="B.3"
                                        Margin="0,0" />
+                            <Button Style="{StaticResource ChevronButton}"
+                                    HorizontalAlignment="Center"
+                                    FontWeight="SemiBold"
+                                    FontSize="18"
+                                    Margin="0,20">
+                                <WrapPanel>
+                                    <materialDesign:PackIcon Kind="ArrowRightTop"
+                                                             Width="20"
+                                                             Height="20"
+                                                             VerticalAlignment="Center"
+                                                             Margin="0,0,10,0"/>
+                                    <TextBlock Text="Руководство пользователя"/>
+                                </WrapPanel>
+                            </Button>
                         </StackPanel>
 
                     </StackPanel>
@@ -447,7 +462,7 @@
                             Style="{StaticResource MaterialDesignFlatButton}"
                             Height="50"
                             BorderThickness="0"
-                            ToolTip="Open Menu"
+                            ToolTip="Открыть меню"
                             Cursor="Hand">
                         <materialDesign:PackIcon Foreground="{StaticResource PrimaryCustomColor}"
                                                  Margin="-13,0,0,0"
@@ -462,7 +477,7 @@
                             Width="60"
                             Height="50"
                             BorderThickness="0"
-                            ToolTip="Open Menu">
+                            ToolTip="Закрыть меню">
                         <materialDesign:PackIcon Foreground="White"
                                                  Margin="-13,0,0,0"
                                                  Width="50"
@@ -485,7 +500,7 @@
                             materialDesign:ButtonAssist.CornerRadius="10"
                             IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
                             Style="{StaticResource MaterialDesignFlatButton}"
-                            ToolTip="References"
+                            ToolTip="Справочники"
                             HorizontalAlignment="Stretch"
                             Height="60"
                             VerticalAlignment="Top">
@@ -507,7 +522,7 @@
                             materialDesign:ButtonAssist.CornerRadius="10"
                             IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
                             Style="{StaticResource MaterialDesignFlatButton}"
-                            ToolTip="References"
+                            ToolTip="Заявки"
                             HorizontalAlignment="Stretch"
                             Margin="{StaticResource MenuSpacing}"
                             Height="60"
@@ -527,7 +542,7 @@
                             materialDesign:ButtonAssist.CornerRadius="10"
                             IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
                             Style="{StaticResource MaterialDesignFlatButton}"
-                            ToolTip="References"
+                            ToolTip="Почта"
                             HorizontalAlignment="Stretch"
                             Margin="{StaticResource MenuSpacing}"
                             Height="60"
@@ -547,7 +562,7 @@
                             materialDesign:ButtonAssist.CornerRadius="10"
                             IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
                             Style="{StaticResource MaterialDesignFlatButton}"
-                            ToolTip="References"
+                            ToolTip="Аккаунт"
                             HorizontalAlignment="Stretch"
                             Margin="{StaticResource MenuSpacing}"
                             Height="60"

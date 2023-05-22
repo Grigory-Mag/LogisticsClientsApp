@@ -1,4 +1,5 @@
 ﻿using ApiService;
+using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using LogisticsClientsApp.Localizations;
 using LogisticsClientsApp.Pages.Modal;
@@ -138,6 +139,7 @@ namespace LogisticsClientsApp.Pages.Tables
                     comboBox.MaxWidth = 130;
                     comboBox.MinWidth = 130;
                     comboBox.FontSize = 16;
+                    comboBox.VerticalAlignment = VerticalAlignment.Bottom;
                     comboBox.DisplayMemberPath = @"Name";
                     comboBox.SelectionChanged += SearchComboBox_SelectionChanged;
                     comboBox.ItemsSource = typeItemsSource;
@@ -195,68 +197,133 @@ namespace LogisticsClientsApp.Pages.Tables
             {
                 var emptyFields = 0;
                 var searchCargoObjects = CargoObjectsOriginal;
+                List<string> values = new List<string>();
 
                 if (SearchItemsList.Count > 0)
                 {
+                    var item = new CargoTypesObject();
                     Dispatcher.Invoke(() =>
                     {
-                        searchCargoObjects = CargoObjectsOriginal.Where(x => x.CargoType.Id ==
-                            ((SearchItemsList[0] as ComboBox)!.SelectedItem as CargoTypesObject)!.Id).ToList();
+                        item = (SearchItemsList[0] as ComboBox)!.SelectedItem as CargoTypesObject;
                     });
 
-                    CargoObjects = searchCargoObjects.Where((x) =>
+                    if (item.Name != "Все типы")
+                        searchCargoObjects = CargoObjectsOriginal.Where(x => x.CargoType.Id ==
+                                item!.Id).ToList();
+                    else
+                        searchCargoObjects = CargoObjectsOriginal;                    
+                    
+                    Dispatcher.Invoke(() =>
                     {
-                        string text;
-                        List<string> values = new List<string>();
-                        //List<object> objectValues = new List<object>();
-                        CargoTypesObject selectedItem;
-                        Dispatcher.Invoke(() =>
+
+                        foreach (var value in SearchItemsList)
                         {
-                            foreach (var item in SearchItemsList)
+                            switch (value)
                             {
-                                switch (item)
-                                {
-                                    case TextBox:
-                                        values.Add((item as TextBox).Text);
-                                        break;
-                                        /*                                    case ComboBox:
-                                                                                objectValues.Add((item as ComboBox).SelectedItem);
-                                                                                break;*/
-                                }
+                                case TextBox:
+                                    values.Add((value as TextBox).Text);
+                                    break;
                             }
-                        });
+                        }
+                    });
 
-                        double weight;
-                        double volume;
-                        double price;
 
-                        var isWeightEmpty = double.TryParse(values[1], out weight);
-                        var isVolumeEmpty = double.TryParse(values[2], out volume);
-                        var isPriceEmpty = double.TryParse(values[4], out price);
 
-                        /*                        var cargoTypeSearch = (x.CargoType.Id == (objectValues[0] as CargoTypesObject)!.Id
-                                                        && (objectValues[0] as CargoTypesObject)!.Id != -1);*/
-                        var paramsSearch = (x.Constraints.Contains(values[0]) && values[0] != "") ||
-                            (x.Weight == weight && !isWeightEmpty) ||
-                            (x.Volume == volume && !isVolumeEmpty) ||
-                            (x.Name.Contains(values[3]) && values[3] != "") ||
-                            (x.Price == price && !isPriceEmpty);
+                    double weight;
+                    double volume;
+                    double price;
 
-                        //Debug.WriteLine($"============ \n c- {cargoTypeSearch} \n p- {paramsSearch} \n {!(cargoTypeSearch && paramsSearch)}");
+                    values[1] = values[1].Replace('.', ',');
+                    values[2] = values[2].Replace('.', ',');
+                    values[4] = values[4].Replace('.', ',');
 
-                        return paramsSearch;
+                    var isWeightEmpty = double.TryParse(values[1], out weight);
+                    var isVolumeEmpty = double.TryParse(values[2], out volume);
+                    var isPriceEmpty = double.TryParse(values[4], out price);
 
-                        /*                        if (cargoTypeSearch && paramsSearch)
-                                                    return true;
-                                                else
-                                                    return cargoTypeSearch;*/
-
-                        //return (cargoTypeSearch && paramsSearch);
-                    }).ToList();
+                    CargoObjects = searchCargoObjects
+                    .Where((x) =>
+                    {
+                        return values[0] == "" ? true : x.Constraints.Contains(values[0]);
+                    })
+                    .Where((x) =>
+                    {
+                        return isWeightEmpty == false ? true : x.Weight == weight;
+                    })
+                    .Where((x) =>
+                    {
+                        return isVolumeEmpty == false ? true : x.Volume == volume;
+                    })
+                    .Where((x) =>
+                    {
+                        return values[3] == "" ? true : x.Name.Contains(values[3]);
+                    })
+                    .Where((x) =>
+                    {
+                        return isPriceEmpty == false ? true : x.Price == price;
+                    })
+                    .ToList();
                     if (CargoObjects.Count == 0)
                         CargoObjects = searchCargoObjects;
-                }
 
+
+
+
+
+
+
+                    /*                    CargoObjects = searchCargoObjects.Where((x) =>
+                                        {
+                                            string text;
+                                            List<string> values = new List<string>();
+                                            //List<object> objectValues = new List<object>();
+                                            CargoTypesObject selectedItem;
+                                            Dispatcher.Invoke(() =>
+                                            {
+                                                foreach (var item in SearchItemsList)
+                                                {
+                                                    switch (item)
+                                                    {
+                                                        case TextBox:
+                                                            values.Add((item as TextBox).Text);
+                                                            break;/*
+                                                    }
+                                                }
+                                            });
+
+                                            double weight;
+                                            double volume;
+                                            double price;
+
+                                            values[1] = values[1].Replace('.', ',');
+                                            values[2] = values[2].Replace('.', ',');
+                                            values[4] = values[4].Replace('.', ',');
+
+                                            var isWeightEmpty = double.TryParse(values[1], out weight);
+                                            var isVolumeEmpty = double.TryParse(values[2], out volume);
+                                            var isPriceEmpty = double.TryParse(values[4], out price);
+
+                                            *//*                        var cargoTypeSearch = (x.CargoType.Id == (objectValues[0] as CargoTypesObject)!.Id
+                                                                            && (objectValues[0] as CargoTypesObject)!.Id != -1);*//*
+                                            var paramsSearch = (x.Constraints.Contains(values[0]) && values[0] != "") ||
+                                                (x.Weight == weight && isWeightEmpty) ||
+                                                (x.Volume == volume && isVolumeEmpty) ||
+                                                (x.Name.Contains(values[3]) && values[3] != "") ||
+                                                (x.Price == price && isPriceEmpty);
+
+                                            //Debug.WriteLine($"============ \n c- {cargoTypeSearch} \n p- {paramsSearch} \n {!(cargoTypeSearch && paramsSearch)}");
+
+                                            return paramsSearch;
+
+                                            *//*                        if (cargoTypeSearch && paramsSearch)
+                                                                        return true;
+                                                                    else
+                                                                        return cargoTypeSearch;*//*
+
+                                            //return (cargoTypeSearch && paramsSearch);
+                                        }).ToList();*/
+
+                }
             });
 
             dataGrid.ItemsSource = null;

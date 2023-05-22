@@ -14,8 +14,7 @@
              FontSize="20"
              Background="Transparent"
              FontFamily="{DynamicResource MaterialDesignFont}"
-             Height="Auto"
-             MaxHeight="750"
+             Height="800"
              Width="Auto"
              MaxWidth="1000"
              Name="ModalPageControl"
@@ -32,7 +31,7 @@
         <Storyboard x:Key="CloseModal">
             <ThicknessAnimation Storyboard.TargetProperty="Margin"
                                 From="0,0,0,0"
-                                To="0,-1600,0,0"
+                                To="0,-1900,0,0"
                                 DecelerationRatio="0.5"
                                 Duration="0:0:1.5" />
         </Storyboard>
@@ -132,11 +131,11 @@
                                         Name="DatePicker"
                                         Margin="0,0,0,30" />
                             <CheckBox Name="IsFinishedTextBox"
-                                      IsChecked="True"
                                       Content="Заявка завершена?"
+                                      IsChecked="{Binding IsFinished}"
                                       Margin="0,0,0,30" />
                             <CheckBox Name="DocumentsTextBox"
-                                      IsChecked="True"
+                                      IsChecked="{Binding Documents}"
                                       Content="Оригинал документов?"
                                       Margin="0,0,0,30" />
                         </StackPanel>
@@ -181,7 +180,7 @@
                         <ComboBox FontSize="18"
                                   Name="VehicleComboBox"
                                   materialDesign:HintAssist.Hint="Транспорт"
-                                  DisplayMemberPath="Number"
+                                  DisplayMemberPath="NumberAndTrailer"
                                   Style="{StaticResource MaterialDesignFloatingHintComboBox}"
                                   SelectionChanged="LicenceComboBox_SelectionChanged"
                                   Margin="10,0,0,20" />
@@ -195,7 +194,7 @@
                         <ComboBox FontSize="18"
                                   Name="DriverComboBox"
                                   materialDesign:HintAssist.Hint="Водитель"
-                                  DisplayMemberPath="Name"
+                                  DisplayMemberPath="FIO"
                                   Style="{StaticResource MaterialDesignFloatingHintComboBox}"
                                   SelectionChanged="LicenceComboBox_SelectionChanged"
                                   Margin="10,0,0,20" />
@@ -240,14 +239,12 @@
                           x:Name="RoutesDataGrid"
                           HorizontalAlignment="Center"
                           VerticalAlignment="Stretch"
-                          MaxHeight="150"
+                          MaxHeight="200"
                           Margin="20"
+                          
                           CanUserAddRows="True"
                           AutoGenerateColumns="False">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="Порядок"
-                                            Width="Auto"
-                                            Binding="{Binding Number}" />
                         <DataGridTextColumn Header="Адрес"
                                             Width="Auto"
                                             Binding="{Binding Address}" />
@@ -256,12 +253,34 @@
                                                 x:Name="ActionsComboBox"
                                                 DisplayMemberPath="Action" 
                                                 SelectedItemBinding="{Binding Action}"/>
-                        <DataGridTemplateColumn Header="Дата">
+                        <DataGridTemplateColumn Header="Дата"
+                                                MinWidth="150">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <DatePicker Style="{StaticResource MaterialDesignFloatingHintDatePicker}"
                                                 Width="Auto"
                                                 SelectedDate="{Binding ActionDate}" />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn>
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Width="40"
+                                            Height="40"
+                                            x:Name="DeleteButton"
+                                            Click="DeleteButton_Click"
+                                            Style="{StaticResource MaterialDesignFlatSecondaryLightBgButton}"
+                                            Background="{StaticResource AccentCustomColor}"
+                                            SnapsToDevicePixels="True">
+                                        <WrapPanel Width="Auto"
+                                                    Height="Auto"
+                                                    Margin="-22,-5,-20,0">
+                                            <ContentControl ContentTemplate="{StaticResource DeleteButton}"
+                                                            Width="40"
+                                                            Height="40" />
+                                        </WrapPanel>
+                                    </Button>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>

@@ -1,0 +1,182 @@
+﻿<UserControl x:Class="LogisticsClientsApp.Pages.Modal.UsersTablePageModal"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:LogisticsClientsApp.Pages.Modal"
+             mc:Ignorable="d"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+             TextElement.FontWeight="Regular"
+             TextElement.FontSize="13"
+             TextOptions.TextFormattingMode="Ideal"
+             TextOptions.TextRenderingMode="Auto"
+             FontSize="20"
+             Background="Transparent"
+             FontFamily="{DynamicResource MaterialDesignFont}"
+             Height="600"
+             Width="500"
+             Name="ModalPageControl"
+             Loaded="ModalPageControl_Loaded">
+    <UserControl.Resources>
+        <Storyboard x:Key="OpenModal">
+            <ThicknessAnimation Storyboard.TargetProperty="Margin"
+                                From="0,-1600,0,0"
+                                To="0,0,0,0"
+                                DecelerationRatio="0.5"
+                                Duration="0:0:1.5" />
+        </Storyboard>
+        <Storyboard x:Key="CloseModal">
+            <ThicknessAnimation Storyboard.TargetProperty="Margin"
+                                From="0,0,0,0"
+                                To="0,-1600,0,0"
+                                DecelerationRatio="0.5"
+                                Duration="0:0:1.5" />
+        </Storyboard>
+    </UserControl.Resources>
+    <Grid Name="ModalPage">
+        <materialDesign:Card UniformCornerRadius="25"
+                             materialDesign:ElevationAssist.Elevation="Dp16">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="1*" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="пользователь"
+                           Grid.Row="0"
+                           Grid.ColumnSpan="2"
+                           Grid.Column="0"
+                           FontSize="22"
+                           HorizontalAlignment="Center"
+                           Typography.Capitals="SmallCaps"
+                           FontWeight="SemiBold"
+                           Style="{StaticResource MaterialDesignTextBlock}" />
+                <Button x:Name="CloseButton"
+                        Width="50"
+                        Grid.Row="0"
+                        Grid.Column="2"
+                        Click="CloseButton_Click"
+                        HorizontalAlignment="Right"
+                        Height="45"
+                        Background="{StaticResource AccentCustomColor}"
+                        Style="{StaticResource MaterialDesignRaisedAccentButton}">
+                    <StackPanel>
+                        <materialDesign:PackIcon Width="30"
+                                                 Height="30"
+                                                 Margin="-5,0,0,0"
+                                                 Kind="Close" />
+                    </StackPanel>
+                </Button>
+
+                <Grid Grid.Row="1"
+                      Margin="0,20,0,0"
+                      Grid.ColumnSpan="2"
+                      VerticalAlignment="Center">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Row="0"
+                                HorizontalAlignment="Stretch"
+                                Margin="20,0,0,0">
+                        <TextBlock Text="основные данные"
+                                   Name="MainDataTextBlock"
+                                   Typography.Capitals="SmallCaps"
+                                   HorizontalAlignment="Center"
+                                   Foreground="#94989e"
+                                   Margin="0,-20,0,10" />
+                        <Rectangle Fill="#74D8FF"
+                                   VerticalAlignment="Stretch"
+                                   Opacity=".9"
+                                   Height="5"
+                                   RadiusX="2"
+                                   RadiusY="2"
+                                   Margin="0,0,5,0" />
+                        <StackPanel Margin="0,0,10,0">
+                            <TextBox materialDesign:HintAssist.Hint="Логин"
+                                     Name="LoginTextBox"
+                                     Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                                     Margin="0,0,0,30" />
+                            <TextBox materialDesign:HintAssist.Hint="Имя"
+                                     Name="NameTextBox"
+                                     Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                                     Margin="0,0,0,30" />
+                            <TextBox materialDesign:HintAssist.Hint="Фамилия"
+                                     Name="SurnameTextBox"
+                                     Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                                     Margin="0,0,0,30" />
+                            <TextBox materialDesign:HintAssist.Hint="Отчество"
+                                     Name="PatrTextBox"
+                                     Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                                     Margin="0,0,0,30" />
+                            <PasswordBox materialDesign:HintAssist.Hint="Пароль"
+                                         x:Name="PasswordBox"
+                                         materialDesign:HintAssist.HelperText="Введите пароль, чтобы изменить"
+                                         Style="{StaticResource MaterialDesignFloatingHintRevealPasswordBox}"
+                                         Margin="0,0,0,30" />
+                        </StackPanel>
+
+                    </StackPanel>
+
+                    <Rectangle Fill="#74D8FF"
+                               Grid.Row="0"
+                               Opacity=".9"
+                               Grid.Column="1"
+                               HorizontalAlignment="Stretch"
+                               Width="5"
+                               RadiusX="2"
+                               RadiusY="2"
+                               Margin="5,25,5,0" />
+
+                    <StackPanel Grid.Row="0"
+                                HorizontalAlignment="Stretch"
+                                Margin="0,0,20,0"
+                                Grid.Column="2">
+                        <TextBlock Text="связанные данные"
+                                   Name="SecondaryDataTextBlock"
+                                   Typography.Capitals="SmallCaps"
+                                   HorizontalAlignment="Center"
+                                   Foreground="#94989e"
+                                   Margin="0,-20,0,10" />
+                        <Rectangle Fill="#74D8FF"
+                                   VerticalAlignment="Stretch"
+                                   Opacity=".9"
+                                   Height="5"
+                                   RadiusX="2"
+                                   RadiusY="2"
+                                   Margin="5,0,0,0" />
+                        <ComboBox FontSize="18"
+                                  Name="RoleComboBox"
+                                  materialDesign:HintAssist.Hint="Роль"
+                                  DisplayMemberPath="Name"
+                                  Style="{StaticResource MaterialDesignFloatingHintComboBox}"
+                                  Margin="10,0,0,20" />
+
+                    </StackPanel>
+                </Grid>
+                <Button Grid.Row="2"
+                        Grid.ColumnSpan="3"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Bottom"
+                        Content="обновить"
+                        FontSize="18"
+                        Typography.Capitals="SmallCaps"
+                        Foreground="White"
+                        Style="{StaticResource MaterialDesignRaisedButton}"
+                        Name="UpdateButton"
+                        Click="UpdateButton_Click"
+                        Margin="0,0,0,40" />
+            </Grid>
+        </materialDesign:Card>
+    </Grid>
+</UserControl>

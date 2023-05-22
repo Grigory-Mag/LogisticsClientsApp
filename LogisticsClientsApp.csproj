@@ -65,9 +65,6 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Properties.Designer.cs</LastGenOutput>
     </None>
-    <None Update="Resources\Magical.mp4">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 
 </Project>

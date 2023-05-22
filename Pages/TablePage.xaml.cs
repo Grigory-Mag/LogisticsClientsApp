@@ -127,18 +127,6 @@ namespace LogisticsClientsApp.Pages
 
         }
 
-        private void ToggleDarkMode_Checked(object sender, RoutedEventArgs e)
-        {
-            theme.SetBaseTheme(Theme.Dark);
-            palette.SetTheme(theme);
-        }
-
-        private void ToggleDarkMode_Unchecked(object sender, RoutedEventArgs e)
-        {
-            theme.SetBaseTheme(Theme.Light);
-            palette.SetTheme(theme);
-        }
-
         private void PrevTablePageButton_Click(object sender, RoutedEventArgs e)
         {
 
@@ -330,6 +318,19 @@ namespace LogisticsClientsApp.Pages
 
                     (request.Resources["OpenModal"] as Storyboard)!.Begin(ModalPageFrame);
                     break;
+                case UsersTablePage:
+                    var login = new UsersTablePageModal();
+                    ModalPageFrame.Content = login;
+                    login.mode = mode;
+                    if (mode == 0)
+                    {
+                        var loginModalPage = DataGridFrame.Content as UsersTablePage;
+                        login.UpdateDisplayedData(loginModalPage.dataGrid.SelectedItem as LoginObject);
+                        loginModalPage.dataGrid.SelectedItem = null;
+                    }
+
+                    (login.Resources["OpenModal"] as Storyboard)!.Begin(ModalPageFrame);
+                    break;
             }
             MainPanel.Opacity = .5;
             MainPanel.IsEnabled = false;
@@ -441,11 +442,10 @@ namespace LogisticsClientsApp.Pages
                     dataReady.Columns.Add("Название");
                     dataReady.Columns.Add("Юр. адрес");
                     dataReady.Columns.Add("ИНН");
-                    dataReady.Columns.Add("ПТС");
                     dataReady.Columns.Add("Ген. директор");
                     dataReady.Columns.Add("Роль");
                     foreach (var item in items as List<RequisitesObject>)
-                        dataReady.Rows.Add(new object[6] { item.Name, item.LegalAddress, item.Inn, item.Pts, item.Ceo, item.Role.Name });
+                        dataReady.Rows.Add(new object[5] { item.Name, item.LegalAddress, item.Inn,item.Ceo, item.Role.Name });
                     break;
                 case var cls when cls == typeof(RolesObject):
                     dataReady.Columns.Add("Название");
@@ -552,9 +552,11 @@ namespace LogisticsClientsApp.Pages
                 sb!.Begin(AdvancedSearch);
                 await AdvancesSearchCollapsed();
                 AdvancedSearch.Visibility = Visibility.Collapsed;
+                SimpleSearchPanel.IsEnabled = true;
             }
             else
             {
+                SimpleSearchPanel.IsEnabled = false;
                 AdvancedSearch.Visibility = Visibility.Visible;
                 ChevronSearch.Kind = PackIconKind.ChevronUp;
                 Storyboard? sb = Resources["OpenAdvancedSearch"] as Storyboard;

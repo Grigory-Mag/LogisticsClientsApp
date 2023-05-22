@@ -78,6 +78,7 @@
 
 
                     <StackPanel Orientation="Horizontal"
+                                x:Name="SimpleSearchPanel"
                                 HorizontalAlignment="Center"
                                 Grid.Column="1">
 
@@ -178,13 +179,18 @@
 
             <!-- ### ADVANCED SEARCH ### -->
 
-            <StackPanel Orientation="Horizontal"
-                        Name="AdvancedSearch"
-                        Visibility="Collapsed"
-                        Height="0"
-                        Width="Auto"
-                        HorizontalAlignment="Center">
-            </StackPanel>
+            <ScrollViewer VerticalScrollBarVisibility="Hidden"
+                          HorizontalScrollBarVisibility="Auto"
+                          Height="Auto">
+                <StackPanel Orientation="Horizontal"
+                            Name="AdvancedSearch"
+                            Visibility="Collapsed"
+                            Height="Auto"
+                            Width="Auto"
+                            HorizontalAlignment="Center">
+                </StackPanel>
+            </ScrollViewer>
+
 
 
             <!-- DIVIDER -->
@@ -215,14 +221,6 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="1*" />
                 </Grid.ColumnDefinitions>
-                <StackPanel Orientation="Horizontal"
-                            Grid.Column="0"
-                            Margin="0,0,0,20">
-                    <ToggleButton Name="ToggleDarkMode"
-                                  Checked="ToggleDarkMode_Checked"
-                                  Grid.Row="1"
-                                  Unchecked="ToggleDarkMode_Unchecked" />
-                </StackPanel>
 
                 <StackPanel Grid.Column="1"
                             HorizontalAlignment="Right"
@@ -233,6 +231,7 @@
                             MinHeight="40"
                             Style="{StaticResource MaterialDesignPaperButton}"
                             BorderBrush="#9CCC65"
+                            materialDesign:RippleAssist.Feedback="DarkGreen"
                             Margin="0,0,100,0"
                             Click="ExportButton_Click">
                         <StackPanel>
@@ -269,7 +268,7 @@
             </Grid>
 
             <!-- DATA GRID -->
-
+            
             <Frame Name="DataGridFrame" />
 
             <!-- ### DATA GRID ### -->
@@ -280,7 +279,7 @@
         <Frame x:Name="ModalPageFrame"
                Width="Auto"
                Height="Auto"
-               MaxHeight="750"
+               MaxHeight="800"
                MaxWidth="1000"
                Margin="0,-1600,0,0" />
         <!-- ### MODAL PAGE ### -->

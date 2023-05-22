@@ -139,7 +139,7 @@ namespace LogisticsClientsApp.Pages.Modal
                 if ((RoleComboBox.SelectedItem as RolesObject)!.Name != data.Role.Name)
                     changedDataNotify.Append($"Роль: {data.Role.Name} -> {(RoleComboBox.SelectedItem as RolesObject)!.Name}\n");
                 if ((TypeComboBox.SelectedItem as RequisiteTypeObject)!.Name != data.Type.Name)
-                    changedDataNotify.Append($"Роль: {data.Type.Name} -> {(TypeComboBox.SelectedItem as RequisiteTypeObject)!.Name}\n");
+                    changedDataNotify.Append($"Тип: {data.Type.Name} -> {(TypeComboBox.SelectedItem as RequisiteTypeObject)!.Name}\n");
             }
 
             var result = MessageBox.Show($"Применить изменения?\n {changedDataNotify}", "Обновление", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);

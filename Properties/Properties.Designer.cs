@@ -35,12 +35,15 @@ namespace LogisticsClientsApp {
             }
         }
         
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("http://localhost:8008")]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://185.248.101.68:8008")]
         public string Address {
             get {
                 return ((string)(this["Address"]));
+            }
+            set {
+                this["Address"] = value;
             }
         }
         

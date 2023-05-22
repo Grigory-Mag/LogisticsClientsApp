@@ -1,4 +1,5 @@
 ﻿using ApiService;
+using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using LogisticsClientsApp.Localizations;
 using LogisticsClientsApp.Pages.Tables;
@@ -37,57 +38,111 @@ namespace LogisticsClientsApp.Pages.Modal
         public ListRouteActions routeActions;
         public ListRouteObjects routes;
 
+        public List<RouteObjectReady> routeObjectsReady = new List<RouteObjectReady>();
+        public List<DriversObjectReady> driversReady = new List<DriversObjectReady>();
+        public List<VehiclesObjectReady> vehiclesReady = new List<VehiclesObjectReady>();
+
         private Locale locale;
         public byte mode = 0;
-        public List<CustomTrash> dataMobile { get; set; }
         StartWindow startWindow;
 
-        public class CustomTrash
+        public class DriversObjectReady
         {
-            public int Number { get; set; }
-            public string Address { get; set; }
-            public string Action { get; set; }
-            public DateTime SelectedDate { get; set; }
+            public int Id { get; set; }
+            public string Name { get; set; }
+            public string Surname { get; set; }
+            public string Patronymic { get; set; }
+            public string FIO { get; set; }
+            public DriverLicenceObject Licence { get; set; }
 
-            public CustomTrash() 
+            public DriversObjectReady(DriversObject item)
             {
-                Number = 0;
-                Action = "Разгрузить";
-                SelectedDate = DateTime.Now;
+                Id = item.Id;
+                Name = item.Name;
+                Surname = item.Surname;
+                Patronymic = item.Patronymic;
+                FIO = $"{Surname} {Name} {Patronymic}";
+                Licence = item.Licence;
+            }
+        }
+
+        public class VehiclesObjectReady
+        {
+            public int Id { get; set; }
+            public string Name { get; set; }
+            public string NumberAndTrailer { get; set; }
+
+            public VehiclesObjectReady(VehiclesObject item)
+            {
+                Id = item.Id;
+                NumberAndTrailer = $"{item.Number} - {item.TrailerNumber}";
+            }
+        }
+
+        public class RouteObjectReady
+        {
+            public int Id { get; set; }
+            public string Address { get; set; }
+            public RouteActionsObject Action { get; set; }
+            public DateTime ActionDate { get; set; }
+
+            public RouteObjectReady()
+            {
+                Address = "";
+                ActionDate = DateTime.Now;
             }
 
-            public CustomTrash(int number, string address, DateTime selectedDate, string action)
+            public RouteObjectReady(int id, string address, RouteActionsObject action, Timestamp actionDate)
             {
-                Number = number;
+                Id = id;
                 Address = address;
-                SelectedDate = selectedDate;
                 Action = action;
+                ActionDate = actionDate.ToDateTime();
+            }
+
+            public RouteObjectReady(RouteObject x)
+            {
+                Id = x.Id;
+                Address = x.Address;
+                Action = x.Action;
+                ActionDate = x.ActionDate.ToDateTime();
+            }
+
+            public static explicit operator RouteObject(RouteObjectReady item)
+            {
+                return new RouteObject
+                {
+                    Id = item.Id,
+                    Action = item.Action,
+                    ActionDate = Timestamp.FromDateTime(item.ActionDate.ToUniversalTime()),
+                    Address = item.Address,
+                };
             }
         }
 
         public RequestsTablePageModal()
         {
             InitializeComponent();
-
-            dataMobile = new List<CustomTrash>()
-            {
-                new CustomTrash(1, "0_адрес", DateTime.Now, "Разгрузить"),
-                new CustomTrash(2, "1_адрес", DateTime.Now.AddDays(-1), "Загрузить"),
-                new CustomTrash(3, "2_адрес", DateTime.Now.AddDays(-2), "Разгрузить"),
-                new CustomTrash(4, "3_адрес", DateTime.Now.AddDays(-3), "Загрузить"),
-                new CustomTrash(5, "4_адрес", DateTime.Now.AddDays(-4), "Разгрузить"),
-                new CustomTrash(6, "5_адрес", DateTime.Now.AddDays(-5), "Загрузить"),
-            };
-            //Aboba.ItemsSource = new List<string>() { "Разгрузить", "Загрузить" };
-            //RoutesDataGrid.ItemsSource = dataMobile;
-            Language = XmlLanguage.GetLanguage(CultureInfo.CurrentCulture.IetfLanguageTag);
         }
+
         private void ModalPageControl_Loaded(object sender, RoutedEventArgs e)
         {
             startWindow = (StartWindow)Window.GetWindow(this);
+            System.Threading.Thread.CurrentThread.CurrentUICulture = new CultureInfo("ru-RU");
+            System.Threading.Thread.CurrentThread.CurrentCulture = new CultureInfo("ru-RU");
+            Language = XmlLanguage.GetLanguage(CultureInfo.CurrentCulture.IetfLanguageTag);
             SetLinkedData();
             Locale locale = new Locale(startWindow.selectedLocale);
             locale.SetLocale(this);
+        }
+
+        private void DeleteButton_Click(object sender, RoutedEventArgs e)
+        {
+            var item = RoutesDataGrid.SelectedItem as RouteObjectReady;
+#warning TODO
+            routeObjectsReady.Remove(item);
+            RoutesDataGrid.ItemsSource = null;
+            RoutesDataGrid.ItemsSource = routeObjectsReady;
         }
 
         public void CloseAnimation()
@@ -110,28 +165,43 @@ namespace LogisticsClientsApp.Pages.Modal
             routeActions = await startWindow.client.GetListRouteActionsAsync(new Google.Protobuf.WellKnownTypes.Empty(), startWindow.headers);
             routes = await startWindow.client.GetListRouteAsync(new Google.Protobuf.WellKnownTypes.Empty(), startWindow.headers);
 
+            driversReady.Clear();
+            vehiclesReady.Clear();
+            drivers.Drivers.ToList().ForEach(x => driversReady.Add(new DriversObjectReady(x)));
+            vehicles.Vehicle.ToList().ForEach(x => vehiclesReady.Add(new VehiclesObjectReady(x)));
+
             TransporterComboBox.ItemsSource = transporters.Requisites;
             CustomerComboBox.ItemsSource = transporters.Requisites;
-            DriverComboBox.ItemsSource = drivers.Drivers;
+            DriverComboBox.ItemsSource = driversReady;
             CargoComboBox.ItemsSource = cargos.Cargo;
-            VehicleComboBox.ItemsSource = vehicles.Vehicle;
+            VehicleComboBox.ItemsSource = vehiclesReady;
 
             ActionsComboBox.ItemsSource = routeActions.RouteActionsObject;
-            RoutesDataGrid.ItemsSource = routes.RouteObjects;
+
 
             if (data != null)
             {
+                IsFinishedTextBox.IsChecked = data.IsFinished;
+                DocumentsTextBox.IsChecked = data.Documents;
                 if (data.TransporterReq != null)
                     TransporterComboBox.SelectedItem = transporters.Requisites.First(x => x.Id == data.TransporterReq.Id);
                 if (data.CustomerReq != null)
                     CustomerComboBox.SelectedItem = transporters.Requisites.First(x => x.Id == data.CustomerReq.Id);
                 if (data.Driver != null)
-                    DriverComboBox.SelectedItem = drivers.Drivers.First(x => x.Id == data.Driver.Id);
+                    DriverComboBox.SelectedItem = driversReady.First(x => x.Id == data.Driver.Id);
                 if (data.Vehicle != null)
-                    VehicleComboBox.SelectedItem = vehicles.Vehicle.First(x => x.Id == data.Vehicle.Id);
+                    VehicleComboBox.SelectedItem = vehiclesReady.First(x => x.Id == data.Vehicle.Id);
                 if (data.Cargo != null)
                     CargoComboBox.SelectedItem = cargos.Cargo.First(x => x.Id == data.Cargo.Id);
+                if (data.Routes != null)
+                {
+                    data.Routes.RouteObjects.ToList().ForEach(x => routeObjectsReady.Add(new RouteObjectReady(x)));
+                    RoutesDataGrid.ItemsSource = routeObjectsReady;
+                }
+                    
             }
+            if (data.Routes == null)
+                RoutesDataGrid.ItemsSource = routeObjectsReady;
         }
 
         public void UpdateDisplayedData(RequestsObject data)
@@ -159,63 +229,100 @@ namespace LogisticsClientsApp.Pages.Modal
 
         private async void UpdateData()
         {
-            /*            try
-                        {
-                            var reqResult = new RequisitesObject();
-                            if (mode == 0)
-                                reqResult = await startWindow.client.UpdateRequisiteAsync(new CreateOrUpdateRequisitesRequest { Requisite = data });
-                            if (mode == 1)
-                                reqResult = await startWindow.client.CreateRequisiteAsync(new CreateOrUpdateRequisitesRequest { Requisite = data });
-                            var tablePage = (TablePage)startWindow.MainFrameK.Content;
-                            var page = tablePage.DataGridFrame.Content as RequisitesTablePage;
-                            if (mode == 0)
-                            {
-                                var index = page.Requisites.FindIndex(t => t.Id == reqResult.Id);
-                                page.Requisites[index] = reqResult;
-                            }
-                            if (mode == 1)
-                                page.Requisites.Add(reqResult);
-                            page.dataGrid.ItemsSource = null;
-                            page.dataGrid.ItemsSource = page.Requisites;
-                        }
-                        catch (RpcException ex)
-                        {
-
-                        }*/
-
+            try
+            {
+                var reqResult = new RequestsObject();
+                if (mode == 0)
+                    reqResult = await startWindow.client.UpdateRequestAsync(new CreateOrUpdateRequestObjRequest { Requests = data });
+                if (mode == 1)
+                    reqResult = await startWindow.client.CreateRequestAsync(new CreateOrUpdateRequestObjRequest { Requests = data });
+                var tablePage = (TablePage)startWindow.MainFrameK.Content;
+                var page = tablePage.DataGridFrame.Content as RequestsTablePage;
+                if (mode == 0)
+                {
+                    var index = page.requests.FindIndex(t => t.Id == reqResult.Id);
+                    page.requests[index] = reqResult;
+                }
+                if (mode == 1)
+                    page.requests.Add(reqResult);
+                page.SetDataGridItems();
+            }
+            catch (RpcException ex)
+            {
+                MessageBox.Show($"Возникла ошибка: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void UpdateButton_Click(object sender, RoutedEventArgs e)
         {
-            /*            StringBuilder changedDataNotify = new StringBuilder();
+            StringBuilder changedDataNotify = new StringBuilder();
 
-                        if (mode == 0)
-                        {
-                            if (NameTextBox.Text != data.Name.ToString())
-                                changedDataNotify.Append($"Название: {data.Name} -> {NameTextBox.Text}\n");
-                            if (CeoTextBox.Text != data.Ceo.ToString())
-                                changedDataNotify.Append($"Владелец: {data.Ceo} -> {CeoTextBox.Text}\n");
-                            if (InnTextBox.Text != data.Inn)
-                                changedDataNotify.Append($"ИНН: {data.Inn} -> {InnTextBox.Text}\n");
-                            if (AddressTextBox.Text != data.LegalAddress.ToString())
-                                changedDataNotify.Append($"Юр. адрес: {data.LegalAddress} -> {AddressTextBox.Text}\n");
-                            if ((RoleComboBox.SelectedItem as RolesObject)!.Name != data.Role.Name)
-                                changedDataNotify.Append($"Роль: {data.Role.Name} -> {(RoleComboBox.SelectedItem as RolesObject)!.Name}\n");
-                            if ((TypeComboBox.SelectedItem as RequisiteTypeObject)!.Name != data.Type.Name)
-                                changedDataNotify.Append($"Роль: {data.Type.Name} -> {(TypeComboBox.SelectedItem as RequisiteTypeObject)!.Name}\n");
-                        }
+            if (mode == 0)
+            {
+                if (PriceTextBox.Text != data.Price.ToString())
+                    changedDataNotify.Append($"Цена: {data.Price} -> {PriceTextBox.Text}\n");
+                if (DatePicker.SelectedDate.Value.Date != data.CreationDate.ToDateTime().Date)
+                    changedDataNotify.Append($"Дата создания: {data.CreationDate.ToDateTime().Date} -> {DatePicker.SelectedDate.Value.Date}\n");
+                if (IsFinishedTextBox.IsChecked != data.IsFinished)
+                    changedDataNotify.Append($"Заявка завершена: {(IsFinishedTextBox.IsChecked == true ? "Да" : "Нет")}\n");
+                if (DocumentsTextBox.IsChecked != data.Documents)
+                    changedDataNotify.Append($"Оригинал документов: {(DocumentsTextBox.IsChecked == true ? "Да" : "Нет")}\n");
+                if ((VehicleComboBox.SelectedItem as VehiclesObjectReady)!.Id != data.Vehicle.Id)
+                    changedDataNotify.Append($"Номер тягача/номер прицепа: {data.Vehicle.Number}/{data.Vehicle.TrailerNumber} -> " +
+                        $"{(VehicleComboBox.SelectedItem as VehiclesObjectReady).NumberAndTrailer}\n");
+                if ((TransporterComboBox.SelectedItem as RequisitesObject)!.Id != data.TransporterReq.Id)
+                    changedDataNotify.Append($"Перевозчик: {data.TransporterReq.Name} -> {(TransporterComboBox.SelectedItem as RequisitesObject).Name}\n");
+                if ((DriverComboBox.SelectedItem as DriversObjectReady).Id != data.Driver.Id)
+                    changedDataNotify.Append($"Водитель: {data.Driver.Name}" +
+                        $" {data.Driver.Surname} {data.Driver.Patronymic}" +
+                        $" ({data.Driver.Licence.Series}/{data.Driver.Licence.Number})" +
+                        $" -> {(DriverComboBox.SelectedItem as DriversObjectReady)!.Name}" +
+                        $" {(DriverComboBox.SelectedItem as DriversObjectReady)!.Surname}" +
+                        $" {(DriverComboBox.SelectedItem as DriversObjectReady)!.Patronymic} " +
+                        $"({(DriverComboBox.SelectedItem as DriversObjectReady)!.Licence.Series}/" +
+                        $"{(DriverComboBox.SelectedItem as DriversObjectReady)!.Licence.Number})\n");
+                if ((CargoComboBox.SelectedItem as CargoObject)!.Id != data.Cargo.Id)
+                    changedDataNotify.Append($"Груз: {data.Cargo.Name} -> {(CargoComboBox.SelectedItem as CargoObject)!.Name}\n");
+                if ((CustomerComboBox.SelectedItem as RequisitesObject)!.Id != data.CustomerReq.Id)
+                    changedDataNotify.Append($"Заказчик: {data.CustomerReq.Name} -> {(CustomerComboBox.SelectedItem as RequisitesObject)!.Name}\n");
+            }
 
-                        var result = MessageBox.Show($"Применить изменения?\n {changedDataNotify}", "Обновление", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
-                        if (result == MessageBoxResult.Yes)
-                        {
-                            data.Name = NameTextBox.Text;
-                            data.Ceo = CeoTextBox.Text;
-                            data.Inn = InnTextBox.Text;
-                            data.LegalAddress = AddressTextBox.Text;
-                            data.Role = RoleComboBox.SelectedItem as RolesObject;
-                            data.Type = TypeComboBox.SelectedItem as RequisiteTypeObject;
-                            UpdateData();
-                        }*/
+            var result = MessageBox.Show($"Применить изменения?\n {changedDataNotify}", "Обновление", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
+            if (result == MessageBoxResult.Yes)
+            {
+                var listRoutes = new ListRouteObjects();
+                var routesItems = RoutesDataGrid.ItemsSource as List<RouteObjectReady>;
+                routesItems.ForEach(x => listRoutes.RouteObjects.Add((RouteObject)x));
+                
+                try
+                {
+                    data.Price = double.Parse(PriceTextBox.Text);
+                    data.CreationDate = Timestamp.FromDateTime(DatePicker.SelectedDate!.Value.AddDays(1).ToUniversalTime());
+                    data.Vehicle = vehicles.Vehicle.First(x => x.Id == (VehicleComboBox.SelectedItem as VehiclesObjectReady)!.Id);
+                    data.CustomerReq = CustomerComboBox.SelectedItem as RequisitesObject;
+                    data.TransporterReq = TransporterComboBox.SelectedItem as RequisitesObject;
+                    data.Driver = drivers.Drivers.First(x => x.Id == (DriverComboBox.SelectedItem as DriversObjectReady)!.Id);
+                    data.Cargo = CargoComboBox.SelectedItem as CargoObject;
+                    data.IsFinished = IsFinishedTextBox.IsChecked == null ? false : (bool)IsFinishedTextBox.IsChecked;
+                    data.Documents = DocumentsTextBox.IsChecked == null ? false : (bool)DocumentsTextBox.IsChecked;
+                    data.Routes = listRoutes;
+                    UpdateData();
+                }
+                catch (Exception ex)
+                {
+                    switch (ex)
+                    {
+                        case RpcException:
+                            MessageBox.Show($"Возникла ошибка. Обратитесь к администратору\n{ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                            break;
+                        default:
+                            MessageBox.Show("Проверьте заполненность всех полей. Удостоверьтесь, что численные значения введены верно", "Ошибка ввода", MessageBoxButton.OK, MessageBoxImage.Error);
+                            break;
+                    }
+                }
+
+                
+            }
         }
     }
 }

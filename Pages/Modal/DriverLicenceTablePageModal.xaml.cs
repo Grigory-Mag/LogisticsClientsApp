@@ -5,6 +5,7 @@ using LogisticsClientsApp.Pages.Tables;
 using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,6 +14,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
@@ -38,6 +40,9 @@ namespace LogisticsClientsApp.Pages.Modal
         private void ModalPageControl_Loaded(object sender, RoutedEventArgs e)
         {
             startWindow = (StartWindow)Window.GetWindow(this);
+            System.Threading.Thread.CurrentThread.CurrentUICulture = new CultureInfo("ru-RU");
+            System.Threading.Thread.CurrentThread.CurrentCulture = new CultureInfo("ru-RU");
+            Language = XmlLanguage.GetLanguage(CultureInfo.CurrentCulture.IetfLanguageTag);
             Locale locale = new Locale(startWindow.selectedLocale);
             locale.SetLocale(this);
         }
