@@ -24,6 +24,11 @@ namespace LogisticsClientsApp.Pages.Tables
     public partial class DriverLicenceTablePage : Page
     {
         public List<DriverLicenceObject> DriversLicence { get; set; }
+        public List<DriversLicenceReady> DriversLicenceReadies { get; set; }
+        public List<DriversLicenceReady> DriversLicenceOriginal { get; set; }
+
+        public int takePages = 10;
+        public int skipPages = 0;
         private Locale locale;
         string tableName = "водительские лицензии";
 
@@ -57,18 +62,68 @@ namespace LogisticsClientsApp.Pages.Tables
             startWindow = (StartWindow)Window.GetWindow(this);
             locale = new Locale(startWindow.selectedLocale);            
             var tablePage = startWindow.MainFrameK.Content as TablePage;
+            DriversLicenceOriginal = DriversLicenceReadies = new List<DriversLicenceReady>();
+
             tablePage.TextBlockTableName.Text = tableName;
             SetData();
+            startWindow.SizeChanged += (o, e) =>
+            {
+                ResizeDataGrid();
+            };
+        }
+
+        public void FastSearch(string text, string? param)
+        {
+            if (text != "")
+                switch (param)
+                {
+                    case "Серия/Номер":
+                        text = text.Trim();
+                        var data = text.Split('/');
+                        if (data.Length == 2)
+                        {
+                            DriversLicenceReadies = DriversLicenceOriginal
+                                        .Where(x => x.Series.ToString()!.Contains(data[0]) 
+                                        && x.Number.ToString()!.Contains(data[1]))
+                                        .ToList();
+                        }
+
+                        if (DriversLicenceReadies.Count == 0)
+                            DriversLicenceReadies = DriversLicenceOriginal;
+                        break;
+                }
+            else
+                DriversLicenceReadies = DriversLicenceOriginal;
+            dataGrid.ItemsSource = null;
+            dataGrid.ItemsSource = DriversLicenceReadies.Skip(skipPages).Take(takePages);
+            PaginationTextBlock.Text = $"{skipPages + 10} из {DriversLicence.Count}";
+        }
+
+        public void ResizeDataGrid()
+        {
+            dataGrid.MaxHeight = startWindow.Height / 2 - 40; ;
         }
 
         private void PrevTablePageButton_Click(object sender, RoutedEventArgs e)
         {
-
+            if (skipPages - 10 >= 0)
+            {
+                skipPages -= 10;
+                var skippedCargo = DriversLicenceReadies.Skip(skipPages).Take(takePages).ToList();
+                dataGrid.ItemsSource = skippedCargo;
+                PaginationTextBlock.Text = $"{skipPages + 10} из {DriversLicenceReadies.Count}";
+            }
         }
 
         private void NextTablePageButton_Click(object sender, RoutedEventArgs e)
         {
-
+            if (skipPages + 10 < DriversLicence.Count)
+            {
+                skipPages += 10;
+                var skippedCargo = DriversLicenceReadies.Skip(skipPages).Take(takePages).ToList();
+                dataGrid.ItemsSource = skippedCargo;
+                PaginationTextBlock.Text = $"{skipPages + 10} из {DriversLicenceReadies.Count}";
+            }
         }
 
         private void DeleteButton_Click(object sender, RoutedEventArgs e)
@@ -93,14 +148,15 @@ namespace LogisticsClientsApp.Pages.Tables
             try
             {
                 var item = await startWindow.client.GetListDriverLicencesAsync(new Google.Protobuf.WellKnownTypes.Empty(), startWindow.headers);
-                List<DriversLicenceReady> driversLicenceReadies = new List<DriversLicenceReady>();
+                
 
                 DriversLicence = new List<DriverLicenceObject>();
                 DriversLicence.AddRange(item.DriverLicence.ToList());
-                DriversLicence.ForEach(license => driversLicenceReadies.Add(new DriversLicenceReady(license.Id, license.Series, license.Number, license.Date)));
+                DriversLicence.ForEach(license => DriversLicenceReadies.Add(new DriversLicenceReady(license.Id, license.Series, license.Number, license.Date)));
                 
                 dataGrid.ItemsSource = null;
-                dataGrid.ItemsSource = driversLicenceReadies;
+                dataGrid.ItemsSource = DriversLicenceReadies.Skip(skipPages).Take(takePages);
+                PaginationTextBlock.Text = $"{skipPages + 10} из {DriversLicence.Count}";
                 locale.SetLocale(this);
             }
             catch (RpcException ex)
@@ -113,6 +169,19 @@ namespace LogisticsClientsApp.Pages.Tables
         {
             TablePage tablePage = (TablePage)startWindow.MainFrameK.Content;
             tablePage.ShowModalPage(0);
+        }
+
+        public void Dispose()
+        {
+            startWindow.SizeChanged -= (o, e) =>
+            {
+                ResizeDataGrid();
+            };
+            DriversLicence.Clear();
+            DriversLicenceOriginal.Clear();
+            DriversLicenceReadies.Clear();
+            dataGrid.ItemsSource = null;
+            BindingOperations.ClearAllBindings(dataGrid);
         }
     }
 }

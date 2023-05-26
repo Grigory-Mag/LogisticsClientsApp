@@ -26,7 +26,6 @@
                           IsReadOnly="True"
                           MaxHeight="600"
                           FontSize="18"
-                          ItemsSource="{Binding Source=objects}"
                           AutoGenerateColumns="False">
                     <DataGrid.Columns>
                         <DataGridTextColumn Width="Auto"

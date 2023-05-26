@@ -176,7 +176,7 @@ namespace LogisticsClientsApp
                     case var cls when cls == typeof(RequestsTablePage):
                         (MainFrameK.Content as RequestsTablePage)!.Dispose();
                         break;
-                    case var cls when cls == typeof(RolesTabePage):
+                    case var cls when cls == typeof(RolesTablePage):
 
                         break;
                     case var cls when cls == typeof(VehiclesTypesTablePage):
@@ -534,7 +534,7 @@ namespace LogisticsClientsApp
                             page!.ChangeSelectedTable(new RequisitesTablePage());
                             break;
                         case 5:
-                            page!.ChangeSelectedTable(new RolesTabePage());
+                            page!.ChangeSelectedTable(new RolesTablePage());
                             break;
                         case 6:
                             page!.ChangeSelectedTable(new RequisiteTypesTablePage());

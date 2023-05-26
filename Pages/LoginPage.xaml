@@ -155,7 +155,6 @@
                          materialDesign:HintAssist.HelperTextFontSize="14"
                          materialDesign:TextFieldAssist.TextFieldCornerRadius="10"
                          materialDesign:HintAssist.Hint="Login"
-                         IsEnabled="{Binding Path=IsChecked, ElementName=MaterialDesignOutlinedTextBoxEnabledComboBox}"
                          Style="{StaticResource MaterialDesignOutlinedTextBox}" />
                 <PasswordBox Width="400"
                              Grid.Row="3"
@@ -165,7 +164,6 @@
                              materialDesign:TextFieldAssist.TextFieldCornerRadius="10"
                              FontSize="18"
                              materialDesign:HintAssist.Hint="Password"
-                             IsEnabled="{Binding Path=IsChecked, ElementName=MaterialDesignOutlinedTextBoxEnabledComboBox}"
                              Style="{StaticResource MaterialDesignOutlinedRevealPasswordBox}" />
                 <ComboBox Grid.Row="4"
                           x:Name="RoleComboBox"
@@ -174,7 +172,6 @@
                           Margin="0,30,0,0"
                           FontSize="18"
                           materialDesign:HintAssist.Hint="Role"
-                          IsEnabled="{Binding Path=IsChecked, ElementName=FilledComboBoxEnabledCheckBox}"
                           Style="{StaticResource MaterialDesignFilledComboBox}">
                 </ComboBox>
                 <TextBlock FontSize="18"

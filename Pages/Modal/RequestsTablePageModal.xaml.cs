@@ -240,11 +240,11 @@ namespace LogisticsClientsApp.Pages.Modal
                 var page = tablePage.DataGridFrame.Content as RequestsTablePage;
                 if (mode == 0)
                 {
-                    var index = page.requests.FindIndex(t => t.Id == reqResult.Id);
-                    page.requests[index] = reqResult;
+                    var index = page.Requests.FindIndex(t => t.Id == reqResult.Id);
+                    page.Requests[index] = reqResult;
                 }
                 if (mode == 1)
-                    page.requests.Add(reqResult);
+                    page.Requests.Add(reqResult);
                 page.SetDataGridItems();
             }
             catch (RpcException ex)

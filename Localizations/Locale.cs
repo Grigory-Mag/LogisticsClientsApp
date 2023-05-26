@@ -92,15 +92,15 @@ namespace LogisticsClientsApp.Localizations
                             List<string> source = new List<string>();
                             for (int i = 0; i < table.Count - 2; i++)
                                 source.Add(table[i]);
-                            tablePage.SearchFilter.ItemsSource = source;
+                            //tablePage.SearchFilter.ItemsSource = source;
                             tablePage.TextBlockTableName.Text = RU.Cargo.ToLower();
                             break;
                         case CargoTypesPage:
-                            tablePage.SearchFilter.ItemsSource = new List<string>() { table[5] };
+                           // tablePage.SearchFilter.ItemsSource = new List<string>() { table[5] };
                             tablePage.TextBlockTableName.Text = RU.Cargo_Types.ToLower();
                             break;
                         default:
-                            tablePage.SearchFilter.ItemsSource = table;
+                            //tablePage.SearchFilter.ItemsSource = table;
                             tablePage.TextBlockTableName.Text = RU.Cargo.ToLower();
                             break;
                     }

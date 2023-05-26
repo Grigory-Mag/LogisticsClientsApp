@@ -24,6 +24,7 @@ using System.Reflection;
 using ExcelExportLib;
 using System.Threading;
 using static LogisticsClientsApp.Pages.Tables.RequestsTablePage;
+using System.Configuration;
 
 namespace LogisticsClientsApp.Pages
 {
@@ -74,6 +75,59 @@ namespace LogisticsClientsApp.Pages
             InnerInit();
         }
 
+        private void SetSelectedPageParams(Page page)
+        {
+            SearchFilter.ItemsSource = null;
+            switch (page)
+            {
+                case CargoTablePage:
+                    SearchFilter.ItemsSource = new List<string>() { "Номер", "Масса", "Цена" };
+                    AdvancedSearchButton.Visibility = Visibility.Visible;
+                    break;
+                case CargoTypesPage:
+                    SearchFilter.ItemsSource = new List<string>() { "Наименование" };
+                    AdvancedSearchButton.Visibility = Visibility.Collapsed;
+                    break;
+                case DriverLicenceTablePage:
+                    SearchFilter.ItemsSource = new List<string>() { "Серия/Номер" };
+                    AdvancedSearchButton.Visibility = Visibility.Collapsed;
+                    break;
+                case DriversTablePage:
+                    SearchFilter.ItemsSource = new List<string>() { "ФИО" };
+                    AdvancedSearchButton.Visibility = Visibility.Collapsed;
+                    break;
+                case RequisitesTablePage:
+                    SearchFilter.ItemsSource = new List<string>() { "Название", "ИНН" };
+                    AdvancedSearchButton.Visibility = Visibility.Visible;
+                    break;
+                case RequisiteTypesTablePage:
+                    SearchFilter.ItemsSource = new List<string>() { "Название" };
+                    AdvancedSearchButton.Visibility = Visibility.Collapsed;
+                    break;
+                case RolesTablePage:
+                    SearchFilter.ItemsSource = new List<string>() { "Название" };
+                    AdvancedSearchButton.Visibility = Visibility.Collapsed;
+                    break;
+                case VehiclesTablePage:
+                    SearchFilter.ItemsSource = new List<string>() { "Номер тягача", "Владелец" };
+                    AdvancedSearchButton.Visibility = Visibility.Visible;
+                    break;
+                case VehiclesTypesTablePage:
+                    SearchFilter.ItemsSource = new List<string>() { "Название" };
+                    AdvancedSearchButton.Visibility = Visibility.Collapsed;
+                    break;
+                case RequestsTablePage:
+                    SearchFilter.ItemsSource = new List<string> { "Номер", "Цена перевозки", "Груз" };
+                    AdvancedSearchButton.Visibility = Visibility.Visible;
+                    break;
+                case UsersTablePage:
+                    SearchFilter.ItemsSource = new List<string> { "Логин" };
+                    AdvancedSearchButton.Visibility = Visibility.Collapsed;
+                    break;
+            }
+            SearchFilter.SelectedIndex = 0;
+        }
+
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
             InnerInit();
@@ -81,6 +135,11 @@ namespace LogisticsClientsApp.Pages
                 ChangeSelectedTable(cargoTablePageInstance);
             else
                 ChangeSelectedTable(selectedPage);
+        }
+
+        public void SetFilter()
+        {
+            SetSelectedPageParams(selectedPage);
         }
 
         public string IdHeader;
@@ -107,15 +166,6 @@ namespace LogisticsClientsApp.Pages
             }
 
         }
-
-        private Dictionary<string, List<object>> buttonsReferences = new Dictionary<string, List<object>>();
-
-        private List<bool> selectedBtns = new List<bool>();
-        private List<TextBlock> textBlocks = new List<TextBlock>();
-        private List<PackIcon> packIcons = new List<PackIcon>();
-        private List<Button> buttons = new List<Button>();
-
-        private static Color PRIMARY_COLOR = Color.FromArgb(255, 33, 150, 243);
 
         private void button_Click(object sender, RoutedEventArgs e)
         {
@@ -181,6 +231,7 @@ namespace LogisticsClientsApp.Pages
         {
             DataGridFrame.Navigate(page);
             selectedPage = page;
+            SetSelectedPageParams(selectedPage);
             locale = new Locale(startWindow.selectedLocale);
             ModalPageFrame.Content = null;
             locale.SetLocale(this);
@@ -253,13 +304,13 @@ namespace LogisticsClientsApp.Pages
 
                     (requisite.Resources["OpenModal"] as Storyboard)!.Begin(ModalPageFrame);
                     break;
-                case RolesTabePage:
+                case RolesTablePage:
                     var role = new RolesTablePageModal();
                     ModalPageFrame.Content = role;
                     role.mode = mode;
                     if (mode == 0)
                     {
-                        var rolesTablePageModal = DataGridFrame.Content as RolesTabePage;
+                        var rolesTablePageModal = DataGridFrame.Content as RolesTablePage;
                         role.UpdateDisplayedData(rolesTablePageModal.dataGrid.SelectedItem as RolesObject);
                         rolesTablePageModal.dataGrid.SelectedItem = null;
                     }
@@ -340,16 +391,6 @@ namespace LogisticsClientsApp.Pages
         {
             ShowModalPage(1);
         }
-
-        private void copyAlltoClipboard()
-        {
-            //var datagrid = (DataGridFrame.Content as CargoTablePage).dataGrid;
-            //DataObject dataObj = datagrid.Items;
-            //if (dataObj != null)
-            //    Clipboard.SetDataObject(dataObj);
-        }
-
-
 
         public static DataTable ToDataTable<T>(List<T> items)
         {
@@ -439,13 +480,14 @@ namespace LogisticsClientsApp.Pages
                             item.IsFinished == true ? "Завершен" : "Не завершен"});
                     break;
                 case var cls when cls == typeof(RequisitesObject):
+                    dataReady.Columns.Add("Тип");
                     dataReady.Columns.Add("Название");
                     dataReady.Columns.Add("Юр. адрес");
                     dataReady.Columns.Add("ИНН");
                     dataReady.Columns.Add("Ген. директор");
                     dataReady.Columns.Add("Роль");
                     foreach (var item in items as List<RequisitesObject>)
-                        dataReady.Rows.Add(new object[5] { item.Name, item.LegalAddress, item.Inn,item.Ceo, item.Role.Name });
+                        dataReady.Rows.Add(new object[6] { item.Type.Name, item.Name, item.LegalAddress, item.Inn, item.Ceo, item.Role.Name });
                     break;
                 case var cls when cls == typeof(RolesObject):
                     dataReady.Columns.Add("Название");
@@ -468,22 +510,6 @@ namespace LogisticsClientsApp.Pages
             }
             return dataReady;
         }
-
-        /*        public void Excel()
-                {
-                    Microsoft.Office.Interop.Excel.Application xlexcel;
-                    Microsoft.Office.Interop.Excel.Workbook xlWorkBook;
-                    Microsoft.Office.Interop.Excel.Worksheet xlWorkSheet;
-                    object misValue = System.Reflection.Missing.Value;
-
-                    xlexcel = new Microsoft.Office.Interop.Excel.Application();
-                    xlexcel.Visible = true;
-                    xlWorkBook = xlexcel.Workbooks.Add(misValue);
-                    xlWorkSheet = (Microsoft.Office.Interop.Excel.Worksheet)xlWorkBook.Worksheets.get_Item(1);
-                    Microsoft.Office.Interop.Excel.Range CR = (Microsoft.Office.Interop.Excel.Range)xlWorkSheet.Cells[1, 1];
-                    CR.Select();
-                    xlWorkSheet.PasteSpecial(CR, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, true);
-                }*/
 
         private async void ExportButton_Click(object sender, RoutedEventArgs e)
         {
@@ -514,13 +540,13 @@ namespace LogisticsClientsApp.Pages
                             ExcelProvider.GenerateExcel(ToDataTableReady((content as DriversTablePage).Drivers), filename);
                             break;
                         case RequestsTablePage:
-                            ExcelProvider.GenerateExcel(ToDataTableReady((content as RequestsTablePage).requests), filename);
+                            ExcelProvider.GenerateExcel(ToDataTableReady((content as RequestsTablePage).Requests), filename);
                             break;
                         case RequisitesTablePage:
                             ExcelProvider.GenerateExcel(ToDataTableReady((content as RequisitesTablePage).Requisites), filename);
                             break;
-                        case RolesTabePage:
-                            ExcelProvider.GenerateExcel(ToDataTableReady((content as RolesTabePage).Roles), filename);
+                        case RolesTablePage:
+                            ExcelProvider.GenerateExcel(ToDataTableReady((content as RolesTablePage).Roles), filename);
                             break;
                         case VehiclesTypesTablePage:
                             ExcelProvider.GenerateExcel(ToDataTableReady((content as VehiclesTypesTablePage).Types), filename);
@@ -540,7 +566,7 @@ namespace LogisticsClientsApp.Pages
             {
                 Thread.Sleep(500);
             });
-            
+
         }
 
         private async void AdvancedSearchButton_Click(object sender, RoutedEventArgs e)
@@ -567,6 +593,58 @@ namespace LogisticsClientsApp.Pages
         private void SettingsButton_Click(object sender, RoutedEventArgs e)
         {
             startWindow.ChangePage(new SettingsPage());
+        }
+
+        private void FastSearchCall()
+        {
+            var text = SearchTextBox.Text;
+            if (SearchFilter.Items.Count > 0)
+                switch (DataGridFrame.Content)
+                {
+                    case CargoTablePage:
+
+                        break;
+                    case CargoTypesPage:
+                        (DataGridFrame.Content as CargoTypesPage)!.FastSearch(text, SearchFilter.SelectedItem.ToString());
+                        break;
+                    case DriverLicenceTablePage:
+                        (DataGridFrame.Content as DriverLicenceTablePage)!.FastSearch(text, SearchFilter.SelectedItem.ToString());
+                        break;
+                    case DriversTablePage:
+                        (DataGridFrame.Content as DriversTablePage)!.FastSearch(text, SearchFilter.SelectedItem.ToString());
+                        break;
+                    case RequisitesTablePage:
+                        (DataGridFrame.Content as RequisitesTablePage)!.FastSearch(text, SearchFilter.SelectedItem.ToString());
+                        break;
+                    case RequisiteTypesTablePage:
+                        (DataGridFrame.Content as RequisiteTypesTablePage)!.FastSearch(text, SearchFilter.SelectedItem.ToString());
+                        break;
+                    case RolesTablePage:
+                        (DataGridFrame.Content as RolesTablePage)!.FastSearch(text, SearchFilter.SelectedItem.ToString());
+                        break;
+                    case VehiclesTablePage:
+                        (DataGridFrame.Content as VehiclesTablePage)!.FastSearch(text, SearchFilter.SelectedItem.ToString());
+                        break;
+                    case VehiclesTypesTablePage:
+                        (DataGridFrame.Content as VehiclesTypesTablePage)!.FastSearch(text, SearchFilter.SelectedItem.ToString());
+                        break;
+                    case RequestsTablePage:
+                        (DataGridFrame.Content as RequestsTablePage)!.FastSearch(text, SearchFilter.SelectedItem.ToString());
+                        break;
+                    case UsersTablePage:
+
+                        break;
+                }
+        }
+
+        private void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            FastSearchCall();
+        }
+
+        private void SearchFilter_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            FastSearchCall();
         }
     }
 

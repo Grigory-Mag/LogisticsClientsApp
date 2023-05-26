@@ -1,6 +1,7 @@
 ﻿using ApiService;
 using Grpc.Core;
 using LogisticsClientsApp.Localizations;
+using MaterialDesignThemes.Wpf;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +16,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using static LogisticsClientsApp.Pages.Tables.RequestsTablePage;
 
 namespace LogisticsClientsApp.Pages.Tables
 {
@@ -24,31 +26,252 @@ namespace LogisticsClientsApp.Pages.Tables
     public partial class RequisitesTablePage : Page
     {
         public List<RequisitesObject> Requisites { get; set; }
+        public List<RequisitesObject> RequisitesOriginal { get; set; }
+
+        public List<RolesObject> Roles { get; set; }
+        public List<RequisiteTypeObject> RequisiteTypes { get; set; }
+
+        public List<string> SearchFields = new List<string>() { "Тип", "Роль", "Владелец", "Название", "Юр. адрес", "ИНН" };
+        public List<object> SearchItemsList = new List<object>();
+        public TablePage tablePage;
         private Locale locale;
+
+        public int takePages = 10;
+        public int skipPages = 0;
 
         StartWindow startWindow;
         public RequisitesTablePage()
         {
             InitializeComponent();
         }
+
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
             startWindow = (StartWindow)Window.GetWindow(this);
             locale = new Locale(startWindow.selectedLocale);
             string tableName = "организации";
-            var tablePage = startWindow.MainFrameK.Content as TablePage;
+            tablePage = startWindow.MainFrameK.Content as TablePage;
+
+            Roles = new List<RolesObject>();
+            RequisiteTypes = new List<RequisiteTypeObject>();
+
             tablePage.TextBlockTableName.Text = tableName;
             SetData();
+            ResizeDataGrid();
+            startWindow.SizeChanged += (o, e) =>
+            {
+                ResizeDataGrid();
+            };
+        }
+
+        public void FastSearch(string text, string? param)
+        {
+            if (text != "")
+                switch (param)
+                {
+                    case "Название":
+                        text = text.Trim();
+                        Requisites = RequisitesOriginal
+                            .Where(x => x.Name.Contains(text))
+                            .ToList();
+                        break;
+                    case "ИНН":
+                        text = text.Trim();
+                        Requisites = RequisitesOriginal
+                            .Where(x => x.Inn.ToString().Contains(text))
+                            .ToList();
+                        break;
+                }
+            else
+                Requisites = RequisitesOriginal;
+
+            if (Requisites.Count == 0)
+                Requisites = RequisitesOriginal;
+
+            dataGrid.ItemsSource = null;
+            dataGrid.ItemsSource = Requisites.Skip(skipPages).Take(takePages);
+            PaginationTextBlock.Text = $"{skipPages + 10} из {Requisites.Count}";
+        }
+
+        public void ResizeDataGrid()
+        {
+            dataGrid.MaxHeight = startWindow.Height / 2 - 40; ;
         }
 
         private void PrevTablePageButton_Click(object sender, RoutedEventArgs e)
         {
-
+            if (skipPages - 10 >= 0)
+            {
+                skipPages -= 10;
+                var skippedCargo = Requisites.Skip(skipPages).Take(takePages).ToList();
+                dataGrid.ItemsSource = skippedCargo;
+                PaginationTextBlock.Text = $"{skipPages + 10} из {Requisites.Count}";
+            }
         }
 
         private void NextTablePageButton_Click(object sender, RoutedEventArgs e)
         {
+            if (skipPages + 10 < Requisites.Count)
+            {
+                skipPages += 10;
+                var skippedCargo = Requisites.Skip(skipPages).Take(takePages).ToList();
+                dataGrid.ItemsSource = skippedCargo;
+                PaginationTextBlock.Text = $"{skipPages + 10} из {Requisites.Count}";
+            }
+        }
 
+        private async void CreateAdvancedSearchFields()
+        {
+            tablePage.AdvancedSearch.Children.Clear();
+
+            // typeItemsSource.Add(new CargoTypesObject { Id = -1, Name = "Все типы" });
+            foreach (var item in SearchFields)
+            {
+                var textBox = new TextBox();
+                var comboBox = new ComboBox();
+                var textBoxResource = new ResourceDictionary
+                {
+                    Source = new Uri("pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.TextBox.xaml", UriKind.RelativeOrAbsolute)
+                };
+                var comboBoxResource = new ResourceDictionary
+                {
+                    Source = new Uri("pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.ComboBox.xaml", UriKind.RelativeOrAbsolute)
+                };
+
+                HintAssist.SetHint(textBox, item);
+                textBox.Margin = new Thickness(0, 0, 20, 0);
+                textBox.Style = textBoxResource["MaterialDesignOutlinedTextBox"] as Style;
+                textBox.MaxWidth = 180;
+                textBox.MinWidth = 150;
+                textBox.FontSize = 16;
+                textBox.MaxLength = 30;
+                textBox.TextChanged += SearchTextBoxChanged;
+
+                HintAssist.SetHint(comboBox, item);
+                comboBox.Margin = new Thickness(0, 0, 20, 0);
+                comboBox.Style = comboBoxResource["MaterialDesignOutlinedComboBox"] as Style;
+                comboBox.MaxWidth = 180;
+                comboBox.MinWidth = 130;
+                comboBox.FontSize = 16;
+                comboBox.IsEditable = true;
+                comboBox.VerticalAlignment = VerticalAlignment.Bottom;
+                comboBox.SelectionChanged += SearchComboBox_SelectionChanged;
+
+
+                switch (item)
+                {
+                    case "Тип":
+                        comboBox.DisplayMemberPath = @"Name";
+                        comboBox.ItemsSource = RequisiteTypes;
+                        SearchItemsList.Add(comboBox);
+                        tablePage.AdvancedSearch.Children.Add(comboBox);
+                        break;
+                    case "Роль":
+                        comboBox.DisplayMemberPath = @"Name";
+                        comboBox.ItemsSource = Roles;
+                        SearchItemsList.Add(comboBox);
+                        tablePage.AdvancedSearch.Children.Add(comboBox);
+                        break;
+                    default:
+                        tablePage.AdvancedSearch.Children.Add(textBox);
+                        SearchItemsList.Add(textBox);
+                        break;
+                }
+            }
+            await SyncSearch();
+        }
+
+        /// <summary>
+        /// Async Search needed due to probably high amount of data to filter
+        /// </summary>
+        /// <returns>filters data in List of custom object and synchronize search parameters.
+        /// Requiring list of widgets</returns>
+        private async Task SyncSearch()
+        {
+            try
+            {
+                await Task.Run(() =>
+                {
+                    var emptyFields = 0;
+                    List<string> values = new List<string>();
+
+                    if (SearchItemsList.Count > 0)
+                    {
+                        var itemRole = new RolesObject();
+                        var itemType = new RequisiteTypeObject();
+                        Dispatcher.Invoke(() =>
+                        {
+                            itemType = (SearchItemsList[0] as ComboBox)!.SelectedItem as RequisiteTypeObject;
+                            itemRole = (SearchItemsList[1] as ComboBox)!.SelectedItem as RolesObject;                            
+                        });
+
+                        Dispatcher.Invoke(() =>
+                        {
+
+                            foreach (var value in SearchItemsList)
+                            {
+                                switch (value)
+                                {
+                                    case TextBox:
+                                        values.Add((value as TextBox).Text);
+                                        break;
+                                }
+                            }
+                        });
+
+                        Requisites = RequisitesOriginal
+                        .Where((x) =>
+                        {
+                            return itemType == null ? true : x.Type.Id == itemType.Id;
+                        })
+                        .Where((x) =>
+                        {
+                            return itemRole == null ? true : x.Role.Id == itemRole.Id;
+                        })
+                        .Where((x) =>
+                        {
+                            return values[0] == "" ? true : x.Ceo.Contains(values[0]);
+                        })
+                        .Where((x) =>
+                        {
+                            return values[1] == "" ? true : x.Name.Contains(values[1]);
+                        })
+                        .Where((x) =>
+                        {
+                            return values[2] == "" ? true : x.LegalAddress.Contains(values[2]);
+                        })
+                        .Where((x) =>
+                        {
+                            return values[3] == "" ? true : x.Inn.ToString().Contains(values[3]);
+                        })
+                        .ToList();
+
+
+                        if (Requisites.Count == 0)
+                            Requisites = RequisitesOriginal;
+                    }
+                });
+
+                dataGrid.ItemsSource = null;
+                if (Requisites.Count == 0)
+                    Requisites = RequisitesOriginal;
+                dataGrid.ItemsSource = Requisites.Skip(skipPages).Take(takePages);
+                PaginationTextBlock.Text = $"{skipPages + 10} из {Requisites.Count}";
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Произошла ошибка: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
+        }
+        private async void SearchTextBoxChanged(object sender, TextChangedEventArgs e)
+        {
+            await SyncSearch();
+        }
+
+        private async void SearchComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            await SyncSearch();
         }
 
         private void DeleteButton_Click(object sender, RoutedEventArgs e)
@@ -72,9 +295,22 @@ namespace LogisticsClientsApp.Pages.Tables
                 var item = await startWindow.client.GetListRequisitesAsync(new Google.Protobuf.WellKnownTypes.Empty(), startWindow.headers);
                 Requisites = new List<RequisitesObject>();
                 Requisites.AddRange(item.Requisites.ToList());
+                RequisitesOriginal = Requisites;
+                Requisites.ForEach(x =>
+                {
+                    Roles.Add(x.Role);
+                    RequisiteTypes.Add(x.Type);
+                }
+                );
+
+                Roles = Roles.Distinct().ToList();
+                RequisiteTypes = RequisiteTypes.Distinct().ToList();
+
                 dataGrid.ItemsSource = null;
-                dataGrid.ItemsSource = Requisites;
+                dataGrid.ItemsSource = Requisites.Skip(skipPages).Take(takePages);
+                PaginationTextBlock.Text = $"{skipPages + 10} из {Requisites.Count}";
                 locale.SetLocale(this);
+                CreateAdvancedSearchFields();
             }
             catch (RpcException ex)
             {
@@ -86,6 +322,19 @@ namespace LogisticsClientsApp.Pages.Tables
         {
             TablePage tablePage = (TablePage)startWindow.MainFrameK.Content;
             tablePage.ShowModalPage(0);
+        }
+
+        public void Dispose()
+        {
+            startWindow.SizeChanged -= (o, e) =>
+            {
+                ResizeDataGrid();
+            };
+            Requisites.Clear();
+            RequisitesOriginal.Clear();
+            RequisiteTypes.Clear();
+            dataGrid.ItemsSource = null;
+            BindingOperations.ClearAllBindings(dataGrid);
         }
     }
 }

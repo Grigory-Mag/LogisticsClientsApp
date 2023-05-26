@@ -26,7 +26,6 @@
                           IsReadOnly="True"
                           MaxHeight="600"
                           FontSize="18"
-                          ItemsSource="{Binding Source=objects}"
                           AutoGenerateColumns="False">
                     <DataGrid.Columns>
                         <DataGridTextColumn Width="Auto"
@@ -90,6 +89,7 @@
 
                 <TextBlock Text="1 - 10 of 20"
                            FontSize="18"
+                           Name="PaginationTextBlock"
                            VerticalAlignment="Bottom"
                            HorizontalAlignment="Right"
                            Margin="0,10,80,0" />

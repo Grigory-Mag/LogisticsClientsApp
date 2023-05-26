@@ -17,7 +17,6 @@
       Width="Auto"
       Title="RequestsTablePage"
       Loaded="Page_Loaded">
-
     <Grid>
 
         <materialDesign:DialogHost x:Name="OpenThisDialog">
@@ -163,11 +162,13 @@
                               IsReadOnly="True"
                               MaxHeight="450"
                               FontSize="18"
-                              ItemsSource="{Binding Source=objects}"
+                              MouseDoubleClick="dataGrid_MouseDoubleClick"
+                              FrozenColumnCount="1"
                               AutoGenerateColumns="False">
                         <DataGrid.Columns>
                             <DataGridTextColumn Width="Auto"
                                                 Header="Номер"
+                                                ScrollViewer.CanContentScroll="False"
                                                 Binding="{Binding Id}" />
                             <DataGridCheckBoxColumn Width="Auto"
                                                     Header="Закрыто"
@@ -195,7 +196,7 @@
                                 </DataGridTextColumn.Header>
                             </DataGridTextColumn>
                             <DataGridTextColumn Width="Auto"
-                                                Header="Машина"
+                                                Header="Тип машины"
                                                 Binding="{Binding Vehicle.Type.Name}" />
                             <DataGridTextColumn Width="Auto"
                                                 Binding="{Binding Vehicle.Number}">
@@ -211,13 +212,13 @@
                             <DataGridTextColumn Width="Auto"
                                                 Header="Водитель"
                                                 Binding="{Binding DriverFIO}" />
-                            <DataGridTextColumn Width="Auto"
+                            <DataGridTextColumn Width="150"
                                                 Header="Перевозчик"
                                                 Binding="{Binding TransporterReq.Name}" />
-                            <DataGridTextColumn Width="Auto"
+                            <DataGridTextColumn Width="150"
                                                 Header="Заказчик"
                                                 Binding="{Binding CustomerReq.Name}" />
-                            <DataGridTextColumn Width="Auto"
+                            <DataGridTextColumn Width="150"
                                                 Header="Груз"
                                                 Binding="{Binding Cargo.Name}" />
                             <DataGridCheckBoxColumn Header="Документы"
@@ -272,6 +273,7 @@
 
                     <TextBlock Text="10 из 20"
                                FontSize="18"
+                               Name="PaginationTextBlock"
                                VerticalAlignment="Bottom"
                                HorizontalAlignment="Right"
                                Margin="0,10,80,0" />

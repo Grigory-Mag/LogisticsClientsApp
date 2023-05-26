@@ -1,4 +1,4 @@
-﻿<Page x:Class="LogisticsClientsApp.Pages.Tables.RolesTabePage"
+﻿<Page x:Class="LogisticsClientsApp.Pages.Tables.RolesTablePage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -26,7 +26,6 @@
                           IsReadOnly="True"
                           MaxHeight="600"
                           FontSize="18"
-                          ItemsSource="{Binding Source=objects}"
                           AutoGenerateColumns="False">
                     <DataGrid.Columns>
                         <DataGridTextColumn Width="Auto"
@@ -81,6 +80,7 @@
 
                 <TextBlock Text="1 - 10 of 20"
                            FontSize="18"
+                           Name="PaginationTextBlock"
                            VerticalAlignment="Bottom"
                            HorizontalAlignment="Right"
                            Margin="0,10,80,0" />

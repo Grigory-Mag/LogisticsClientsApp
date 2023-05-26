@@ -24,8 +24,14 @@ namespace LogisticsClientsApp.Pages.Tables
     public partial class RequisiteTypesTablePage : Page
     {
         public List<RequisiteTypeObject> RequisitesTypes { get; set; }
+        public List<RequisiteTypeObject> RequisitesTypesOriginal { get; set; }
         private Locale locale;
         public byte mode = 0;
+
+        string tableName = "типы организаций";
+
+        public int takePages = 10;
+        public int skipPages = 0;
 
         StartWindow startWindow;
 
@@ -38,18 +44,63 @@ namespace LogisticsClientsApp.Pages.Tables
         {
             startWindow = (StartWindow)Window.GetWindow(this);
             locale = new Locale(startWindow.selectedLocale);
+            string tableName = "типы организаций";
+            var tablePage = startWindow.MainFrameK.Content as TablePage;
+            tablePage.TextBlockTableName.Text = tableName;
             SetData();
+            ResizeDataGrid();
+            startWindow.SizeChanged += (o, e) =>
+            {
+                ResizeDataGrid();
+            };
         }
 
+        public void FastSearch(string text, string? param)
+        {
+            if (text != "")
+                switch (param)
+                {
+                    case "Название":
+                        text = text.Trim();
+                        RequisitesTypes = RequisitesTypesOriginal
+                            .Where(x => x.Name.Contains(text))
+                            .ToList();
+                        if (RequisitesTypes.Count == 0)
+                            RequisitesTypes = RequisitesTypesOriginal;
+                        break;
+                }
+            else
+                RequisitesTypes = RequisitesTypesOriginal;
+            dataGrid.ItemsSource = null;
+            dataGrid.ItemsSource = RequisitesTypes.Skip(skipPages).Take(takePages);
+            PaginationTextBlock.Text = $"{skipPages + 10} из {RequisitesTypes.Count}";
+        }
+
+        public void ResizeDataGrid()
+        {
+            dataGrid.MaxHeight = startWindow.Height / 2 - 40; ;
+        }
 
         private void PrevTablePageButton_Click(object sender, RoutedEventArgs e)
         {
-
+            if (skipPages - 10 >= 0)
+            {
+                skipPages -= 10;
+                var skippedCargo = RequisitesTypes.Skip(skipPages).Take(takePages).ToList();
+                dataGrid.ItemsSource = skippedCargo;
+                PaginationTextBlock.Text = $"{skipPages + 10} из {RequisitesTypes.Count}";
+            }
         }
 
         private void NextTablePageButton_Click(object sender, RoutedEventArgs e)
         {
-
+            if (skipPages + 10 < RequisitesTypes.Count)
+            {
+                skipPages += 10;
+                var skippedCargo = RequisitesTypes.Skip(skipPages).Take(takePages).ToList();
+                dataGrid.ItemsSource = skippedCargo;
+                PaginationTextBlock.Text = $"{skipPages + 10} из {RequisitesTypes.Count}";
+            }
         }
 
         private void DeleteButton_Click(object sender, RoutedEventArgs e)
@@ -73,9 +124,13 @@ namespace LogisticsClientsApp.Pages.Tables
                 var item = await startWindow.client.GetListRequisiteTypesAsync(new Google.Protobuf.WellKnownTypes.Empty(), startWindow.headers);
                 RequisitesTypes = new List<RequisiteTypeObject>();
                 RequisitesTypes.AddRange(item.RequisiteType.ToList());
+
+                RequisitesTypesOriginal = RequisitesTypes;
+
                 dataGrid.ItemsSource = null;
-                dataGrid.ItemsSource = RequisitesTypes;
+                dataGrid.ItemsSource = RequisitesTypes.Skip(skipPages).Take(takePages);
                 locale.SetLocale(this);
+                PaginationTextBlock.Text = $"{skipPages + 10} из {RequisitesTypes.Count}";
             }
             catch (RpcException ex)
             {
@@ -87,6 +142,18 @@ namespace LogisticsClientsApp.Pages.Tables
         {
             TablePage tablePage = (TablePage)startWindow.MainFrameK.Content;
             tablePage.ShowModalPage(0);
+        }
+
+        public void Dispose()
+        {
+            startWindow.SizeChanged -= (o, e) =>
+            {
+                ResizeDataGrid();
+            };
+            RequisitesTypes.Clear();
+            RequisitesTypesOriginal.Clear();
+            dataGrid.ItemsSource = null;
+            BindingOperations.ClearAllBindings(dataGrid);
         }
     }
 }

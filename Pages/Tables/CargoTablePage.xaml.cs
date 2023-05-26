@@ -165,27 +165,6 @@ namespace LogisticsClientsApp.Pages.Tables
             //MessageBox.Show(box.Name);
         }
 
-        private async void SetData()
-        {
-            try
-            {
-                var item2 = await startWindow.client.GetListCargoAsync(new Google.Protobuf.WellKnownTypes.Empty(), startWindow.headers);
-                CargoTypes = await startWindow.client.GetListCargoTypesAsync(new Google.Protobuf.WellKnownTypes.Empty(), startWindow.headers);
-                CargoObjects = new List<CargoObject>();
-                CargoObjects.AddRange(item2.Cargo.ToList());
-                CargoObjectsOriginal = CargoObjects;
-
-                dataGrid.ItemsSource = null;
-                dataGrid.ItemsSource = CargoObjects;
-                locale.SetLocale(this);
-                CreateAdvancedSearchFields();
-            }
-            catch (RpcException ex)
-            {
-#warning TODO
-            }
-        }
-
         /// <summary>
         /// Async Search needed due to probably high amount of data to filter
         /// </summary>
@@ -211,8 +190,8 @@ namespace LogisticsClientsApp.Pages.Tables
                         searchCargoObjects = CargoObjectsOriginal.Where(x => x.CargoType.Id ==
                                 item!.Id).ToList();
                     else
-                        searchCargoObjects = CargoObjectsOriginal;                    
-                    
+                        searchCargoObjects = CargoObjectsOriginal;
+
                     Dispatcher.Invoke(() =>
                     {
 
@@ -265,64 +244,6 @@ namespace LogisticsClientsApp.Pages.Tables
                     .ToList();
                     if (CargoObjects.Count == 0)
                         CargoObjects = searchCargoObjects;
-
-
-
-
-
-
-
-                    /*                    CargoObjects = searchCargoObjects.Where((x) =>
-                                        {
-                                            string text;
-                                            List<string> values = new List<string>();
-                                            //List<object> objectValues = new List<object>();
-                                            CargoTypesObject selectedItem;
-                                            Dispatcher.Invoke(() =>
-                                            {
-                                                foreach (var item in SearchItemsList)
-                                                {
-                                                    switch (item)
-                                                    {
-                                                        case TextBox:
-                                                            values.Add((item as TextBox).Text);
-                                                            break;/*
-                                                    }
-                                                }
-                                            });
-
-                                            double weight;
-                                            double volume;
-                                            double price;
-
-                                            values[1] = values[1].Replace('.', ',');
-                                            values[2] = values[2].Replace('.', ',');
-                                            values[4] = values[4].Replace('.', ',');
-
-                                            var isWeightEmpty = double.TryParse(values[1], out weight);
-                                            var isVolumeEmpty = double.TryParse(values[2], out volume);
-                                            var isPriceEmpty = double.TryParse(values[4], out price);
-
-                                            *//*                        var cargoTypeSearch = (x.CargoType.Id == (objectValues[0] as CargoTypesObject)!.Id
-                                                                            && (objectValues[0] as CargoTypesObject)!.Id != -1);*//*
-                                            var paramsSearch = (x.Constraints.Contains(values[0]) && values[0] != "") ||
-                                                (x.Weight == weight && isWeightEmpty) ||
-                                                (x.Volume == volume && isVolumeEmpty) ||
-                                                (x.Name.Contains(values[3]) && values[3] != "") ||
-                                                (x.Price == price && isPriceEmpty);
-
-                                            //Debug.WriteLine($"============ \n c- {cargoTypeSearch} \n p- {paramsSearch} \n {!(cargoTypeSearch && paramsSearch)}");
-
-                                            return paramsSearch;
-
-                                            *//*                        if (cargoTypeSearch && paramsSearch)
-                                                                        return true;
-                                                                    else
-                                                                        return cargoTypeSearch;*//*
-
-                                            //return (cargoTypeSearch && paramsSearch);
-                                        }).ToList();*/
-
                 }
             });
 
@@ -345,6 +266,27 @@ namespace LogisticsClientsApp.Pages.Tables
         private async void SearchComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             await SyncSearch();
+        }
+
+        private async void SetData()
+        {
+            try
+            {
+                var item2 = await startWindow.client.GetListCargoAsync(new Google.Protobuf.WellKnownTypes.Empty(), startWindow.headers);
+                CargoTypes = await startWindow.client.GetListCargoTypesAsync(new Google.Protobuf.WellKnownTypes.Empty(), startWindow.headers);
+                CargoObjects = new List<CargoObject>();
+                CargoObjects.AddRange(item2.Cargo.ToList());
+                CargoObjectsOriginal = CargoObjects;
+
+                dataGrid.ItemsSource = null;
+                dataGrid.ItemsSource = CargoObjects;
+                locale.SetLocale(this);
+                CreateAdvancedSearchFields();
+            }
+            catch (RpcException ex)
+            {
+#warning TODO
+            }
         }
 
         private void OpenRowButton_Click(object sender, RoutedEventArgs e)

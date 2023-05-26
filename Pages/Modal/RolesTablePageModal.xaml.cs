@@ -74,7 +74,7 @@ namespace LogisticsClientsApp.Pages.Modal
                 if (mode == 1)
                     reqResult = await startWindow.client.CreateRoleAsync(new CreateOrUpdateRoleRequest { RoleObject = data });
                 var tablePage = (TablePage)startWindow.MainFrameK.Content;
-                var page = tablePage.DataGridFrame.Content as RolesTabePage;
+                var page = tablePage.DataGridFrame.Content as RolesTablePage;
                 if (mode == 0)
                 {
                     var index = page.Roles.FindIndex(t => t.Id == reqResult.Id);

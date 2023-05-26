@@ -110,7 +110,7 @@
                                      Style="{StaticResource MaterialDesignFloatingHintTextBox}"
                                      Margin="0,0,0,30" />
                             <DatePicker materialDesign:HintAssist.Hint="Дата выдачи"
-                                        Style="{StaticResource MaterialDesignFloatingHintDatePicker}"
+                                        Style="{StaticResource MaterialDesignOutlinedDatePicker}"
                                         Name="DatePicker"
                                         Margin="0,0,0,30" />
                         </StackPanel>
