@@ -31,6 +31,7 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace LogisticsClientsApp
 {
@@ -137,7 +138,7 @@ namespace LogisticsClientsApp
                 }
                 catch (Exception ex)
                 {
-
+                    MessageBox.Show("Изображение не найдено", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
 
             created = Uri.TryCreate(fileForegroundPath, UriKind.RelativeOrAbsolute, out uri);
@@ -152,7 +153,7 @@ namespace LogisticsClientsApp
                 }
                 catch (Exception ex)
                 {
-
+                    MessageBox.Show("Изображение не найдено", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
         }
 
@@ -202,17 +203,17 @@ namespace LogisticsClientsApp
 
         }
 
+        private void InstantiateNewControl()
+        {
+            Dispatcher.BeginInvoke(
+                DispatcherPriority.Background,
+                new Action(InstantiateNewControl));
+        }
+
         public void ClearFrameHistory()
         {
             MainFrameK.NavigationService.RemoveBackEntry();
             var data = MainFrameK.NavigationService;
-
-            //while (MainFrameK.NavigationService.RemoveBackEntry() != null) ;
-        }
-
-        private void DarkModeToggle_Checked(object sender, RoutedEventArgs e)
-        {
-
         }
 
         private void MainFrameK_Navigated(object sender, System.Windows.Navigation.NavigationEventArgs e)
@@ -549,7 +550,7 @@ namespace LogisticsClientsApp
                             page!.ChangeSelectedTable(new RequestsTablePage());
                             break;
                         case 10:
-
+                            page!.ChangeSelectedTable(new RouteActionsTablePage());
                             break;
                         case 11:
                             page!.ChangeSelectedTable(new UsersTablePage());

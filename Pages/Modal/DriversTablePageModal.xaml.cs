@@ -105,17 +105,20 @@ namespace LogisticsClientsApp.Pages.Modal
                 var page = tablePage.DataGridFrame.Content as DriversTablePage;
                 if (mode == 0)
                 {
-                    var index = page.Drivers.FindIndex(t => t.Id == reqResult.Id);
-                    page.Drivers[index] = reqResult;
+                    var index = page.DriversOriginal.FindIndex(t => t.Id == reqResult.Id);
+                    page.DriversOriginal[index] = reqResult;
                 }
                 if (mode == 1)
-                    page.Drivers.Add(reqResult);
+                    page.DriversOriginal.Add(reqResult);
 
                 page.dataGrid.ItemsSource = null;
-                page.dataGrid.ItemsSource = page.Drivers;
+                page.dataGrid.ItemsSource = page.DriversOriginal;
+
+                ShowToast(TablePage.Messages.Success);
             }
             catch (RpcException ex)
             {
+                ShowToast(TablePage.Messages.Error);
                 MessageBox.Show($"Произошла ошибка: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
@@ -141,13 +144,33 @@ namespace LogisticsClientsApp.Pages.Modal
             var result = MessageBox.Show($"Применить изменения?\n {changedDataNotify}", "Обновление", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
             if (result == MessageBoxResult.Yes)
             {
-                data.Name = NameTextBox.Text;
-                data.Surname = SurnameTextBox.Text;
-                data.Patronymic = PatrTextBox.Text;
-                data.Sanitation = (bool)SanCheckBox.IsChecked;
-                data.Licence = foundedData;
-                UpdateData();
+                try
+                {
+                    data.Name = NameTextBox.Text;
+                    data.Surname = SurnameTextBox.Text;
+                    data.Patronymic = PatrTextBox.Text;
+                    data.Sanitation = (bool)SanCheckBox.IsChecked;
+                    data.Licence = foundedData;
+                    UpdateData();
+                }
+                catch (Exception ex)
+                {
+                    switch (ex)
+                    {
+                        case RpcException:
+                            MessageBox.Show($"Возникла ошибка. Обратитесь к администратору\n{ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                            break;
+                        default:
+                            MessageBox.Show("Проверьте заполненность всех полей. Удостоверьтесь, что численные значения введены верно", "Ошибка ввода", MessageBoxButton.OK, MessageBoxImage.Error);
+                            break;
+                    }
+                }
             }
+        }
+
+        public void ShowToast(TablePage.Messages result)
+        {
+            ModalPageFrameNotification.Content = new ToastPage(result);
         }
     }
 }

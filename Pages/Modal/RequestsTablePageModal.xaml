@@ -37,7 +37,17 @@
         </Storyboard>
     </UserControl.Resources>
     <Grid Name="ModalPage">
+        <!-- MODAL PAGE NOTIFICATION -->
+        <Frame Name="ModalPageFrameNotification"
+               Width="Auto"
+               Height="Auto"
+               Margin="0,-120,0,0"
+               VerticalAlignment="Top"
+               Panel.ZIndex="1"/>
+        <!-- ### MODAL PAGE NOTIFICATION ### -->
+        
         <materialDesign:Card UniformCornerRadius="25"
+                             Panel.ZIndex="0"
                              materialDesign:ElevationAssist.Elevation="Dp16">
             <Grid>
                 <Grid.RowDefinitions>

@@ -166,8 +166,7 @@
                         <Rectangle Width="300"
                                    Height="240">
                             <Rectangle.Fill>
-                                <ImageBrush ImageSource="C:\Users\User\Desktop\background_image.png"
-                                            x:Name="ProfileBackgroundImage" />
+                                <ImageBrush x:Name="ProfileBackgroundImage" />
                             </Rectangle.Fill>
                         </Rectangle>
 
@@ -186,50 +185,12 @@
                                 <Ellipse>
                                     <Ellipse.Fill>
                                         <ImageBrush Stretch="UniformToFill"
-                                                    x:Name="UserProfileImage"
-                                                    ImageSource="C:\Users\User\Desktop\Всякое\Файлы\Снимок экрана 2021-12-14 202255.png" />
+                                                    x:Name="UserProfileImage" />
                                     </Ellipse.Fill>
                                 </Ellipse>
                             </Border>
 
                         </Border>
-
-
-                        <!-- <Border 
-                                Width="100"
-                                Height="100"
-                                Margin="0,-120,0,0"
-                                VerticalAlignment="Top"
-                                BorderBrush="#FF3B5998"
-                                BorderThickness=".5"
-                                CornerRadius="50">
-                            <Border.Effect>
-                                <DropShadowEffect BlurRadius="5"
-                                                  Opacity=".5"
-                                                  ShadowDepth="3" />
-                            </Border.Effect>
-                            <Border Name="ReceiverColor"
-                                    BorderBrush="White"
-                                    BorderThickness="2"
-                                    CornerRadius="50">
-                                <Grid>
-                                    <Border Name="Mask"
-                                            Background="White"
-                                            BorderBrush="#FF3B5998"
-                                            BorderThickness=".5"
-                                            CornerRadius="50">
-                                    </Border>
-                                    <StackPanel>
-                                        <Image 
-                                            Name="Receiver"
-                                               Source="C:\Users\User\Desktop\Всякое\Файлы\Снимок экрана 2021-12-14 202255.png" />
-                                        <StackPanel.OpacityMask>
-                                            <VisualBrush Visual="{Binding ElementName=Mask}" />
-                                        </StackPanel.OpacityMask>
-                                    </StackPanel>
-                                </Grid>
-                            </Border>
-                        </Border> -->
 
                         <!-- ACCOUNT INFO BLOCK -->
 

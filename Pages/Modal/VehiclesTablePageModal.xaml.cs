@@ -115,18 +115,21 @@ namespace LogisticsClientsApp.Pages.Modal
                 var page = tablePage.DataGridFrame.Content as VehiclesTablePage;
                 if (mode == 0)
                 {
-                    var index = page.Vehicles.FindIndex(t => t.Id == reqResult.Id);
-                    page.Vehicles[index] = reqResult;
+                    var index = page.VehiclesOriginal.FindIndex(t => t.Id == reqResult.Id);
+                    page.VehiclesOriginal[index] = reqResult;
                 }
                 if (mode == 1)
-                    page.Vehicles.Add(reqResult);
+                    page.VehiclesOriginal.Add(reqResult);
 
                 page.dataGrid.ItemsSource = null;
-                page.dataGrid.ItemsSource = page.Vehicles;
+                page.dataGrid.ItemsSource = page.VehiclesOriginal;
+
+                ShowToast(TablePage.Messages.Success);
             }
             catch (RpcException ex)
             {
-
+                ShowToast(TablePage.Messages.Error);
+                MessageBox.Show($"Произошла ошибка: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
         }
@@ -151,12 +154,32 @@ namespace LogisticsClientsApp.Pages.Modal
             var result = MessageBox.Show($"Применить изменения?\n {changedDataNotify}", "Обновление", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
             if (result == MessageBoxResult.Yes)
             {
-                data.Type = TypeComboBox.SelectedItem as VehiclesTypesObject;
-                data.Owner = CeoComboBox.SelectedItem as RequisitesObject;
-                data.Number = NumberTextBox.Text;
-                data.TrailerNumber = TrailerNumberTextBox.Text;
-                UpdateData();
+                try
+                {
+                    data.Type = TypeComboBox.SelectedItem as VehiclesTypesObject;
+                    data.Owner = CeoComboBox.SelectedItem as RequisitesObject;
+                    data.Number = NumberTextBox.Text;
+                    data.TrailerNumber = TrailerNumberTextBox.Text;
+                    UpdateData();
+                }
+                catch (Exception ex)
+                {
+                    switch (ex)
+                    {
+                        case RpcException:
+                            MessageBox.Show($"Возникла ошибка. Обратитесь к администратору\n{ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                            break;
+                        default:
+                            MessageBox.Show("Проверьте заполненность всех полей. Удостоверьтесь, что численные значения введены верно", "Ошибка ввода", MessageBoxButton.OK, MessageBoxImage.Error);
+                            break;
+                    }
+                }
             }
+        }
+
+        public void ShowToast(TablePage.Messages result)
+        {
+            ModalPageFrameNotification.Content = new ToastPage(result);
         }
     }
 }

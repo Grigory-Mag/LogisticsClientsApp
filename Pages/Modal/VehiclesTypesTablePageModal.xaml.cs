@@ -79,18 +79,21 @@ namespace LogisticsClientsApp.Pages.Modal
                 var page = tablePage.DataGridFrame.Content as VehiclesTypesTablePage;
                 if (mode == 0)
                 {
-                    var index = page.Types.FindIndex(t => t.Id == reqResult.Id);
-                    page.Types[index] = reqResult;
+                    var index = page.TypesOriginal.FindIndex(t => t.Id == reqResult.Id);
+                    page.TypesOriginal[index] = reqResult;
                 }
                 if (mode == 1)
-                    page.Types.Add(reqResult);
+                    page.TypesOriginal.Add(reqResult);
 
                 page.dataGrid.ItemsSource = null;
-                page.dataGrid.ItemsSource = page.Types;
+                page.dataGrid.ItemsSource = page.TypesOriginal;
+
+                ShowToast(TablePage.Messages.Success);
             }
             catch (RpcException ex)
             {
-
+                ShowToast(TablePage.Messages.Error);
+                MessageBox.Show($"Произошла ошибка: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             
         }
@@ -110,11 +113,31 @@ namespace LogisticsClientsApp.Pages.Modal
                 var result = MessageBox.Show($"Применить изменения?\n {changedDataNotify}", "Обновление", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
                 if (result == MessageBoxResult.Yes)
                 {
-                    data.Name = NameTextBox.Text;
-                    UpdateData();
+                    try
+                    {
+                        data.Name = NameTextBox.Text;
+                        UpdateData();
+                    }
+                    catch (Exception ex)
+                    {
+                        switch (ex)
+                        {
+                            case RpcException:
+                                MessageBox.Show($"Возникла ошибка. Обратитесь к администратору\n{ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                                break;
+                            default:
+                                MessageBox.Show("Проверьте заполненность всех полей. Удостоверьтесь, что численные значения введены верно", "Ошибка ввода", MessageBoxButton.OK, MessageBoxImage.Error);
+                                break;
+                        }
+                    }
                 }
 
             }            
+        }
+
+        public void ShowToast(TablePage.Messages result)
+        {
+            ModalPageFrameNotification.Content = new ToastPage(result);
         }
     }
 }

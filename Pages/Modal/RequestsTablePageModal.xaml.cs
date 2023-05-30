@@ -198,7 +198,7 @@ namespace LogisticsClientsApp.Pages.Modal
                     data.Routes.RouteObjects.ToList().ForEach(x => routeObjectsReady.Add(new RouteObjectReady(x)));
                     RoutesDataGrid.ItemsSource = routeObjectsReady;
                 }
-                    
+
             }
             if (data.Routes == null)
                 RoutesDataGrid.ItemsSource = routeObjectsReady;
@@ -246,9 +246,12 @@ namespace LogisticsClientsApp.Pages.Modal
                 if (mode == 1)
                     page.Requests.Add(reqResult);
                 page.SetDataGridItems();
+
+                ShowToast(TablePage.Messages.Success);
             }
             catch (RpcException ex)
             {
+                ShowToast(TablePage.Messages.Error);
                 MessageBox.Show($"Возникла ошибка: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -293,7 +296,7 @@ namespace LogisticsClientsApp.Pages.Modal
                 var listRoutes = new ListRouteObjects();
                 var routesItems = RoutesDataGrid.ItemsSource as List<RouteObjectReady>;
                 routesItems.ForEach(x => listRoutes.RouteObjects.Add((RouteObject)x));
-                
+
                 try
                 {
                     data.Price = double.Parse(PriceTextBox.Text);
@@ -321,8 +324,13 @@ namespace LogisticsClientsApp.Pages.Modal
                     }
                 }
 
-                
+
             }
+        }
+
+        public void ShowToast(TablePage.Messages result)
+        {
+            ModalPageFrameNotification.Content = new ToastPage(result);
         }
     }
 }

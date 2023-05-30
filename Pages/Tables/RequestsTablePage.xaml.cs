@@ -106,7 +106,7 @@ namespace LogisticsClientsApp.Pages.Tables
                 };
             }
         }
-
+  
         public class DriversReady
         {
             public int Id { get; set; }
@@ -157,7 +157,7 @@ namespace LogisticsClientsApp.Pages.Tables
             Cargo = new List<CargoObject>();
             Drivers = new List<DriversReady>();
             Customers = new List<RequisitesObject>();
-            Transporters = new List<RequisitesObject>();
+            Transporters = new List<RequisitesObject>();           
 
             SetData();
             startWindow.SizeChanged += (o, e) =>
@@ -203,8 +203,9 @@ namespace LogisticsClientsApp.Pages.Tables
         {
             var requestsReady = new List<RequestsReady>();
             Requests.ForEach(x => requestsReady.Add((RequestsReady)x));
+            RequestsReadyObjectsOriginal = requestsReady;
             dataGrid.ItemsSource = null;
-            dataGrid.ItemsSource = requestsReady;
+            dataGrid.ItemsSource = RequestsReadyObjectsOriginal;
         }
 
         private async void SetData()

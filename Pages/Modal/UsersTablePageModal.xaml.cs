@@ -101,10 +101,13 @@ namespace LogisticsClientsApp.Pages.Modal
 
                 page.dataGrid.ItemsSource = null;
                 page.dataGrid.ItemsSource = page.Users;
+
+                ShowToast(TablePage.Messages.Success);
             }
             catch (RpcException ex)
             {
-
+                ShowToast(TablePage.Messages.Error);
+                MessageBox.Show($"Произошла ошибка: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
         }
@@ -132,26 +135,47 @@ namespace LogisticsClientsApp.Pages.Modal
             var result = MessageBox.Show($"Применить изменения?\n {changedDataNotify}", "Обновление", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
             if (result == MessageBoxResult.Yes)
             {
-                data.Name = NameTextBox.Text;
-                data.Surname = SurnameTextBox.Text;
-                data.Patronymic = PatrTextBox.Text;
-                data.Login = LoginTextBox.Text;
-                data.UserRole = RoleComboBox.SelectedItem as UserRoleObject;
-
-                if (PasswordBox.Password != data.Password.ToString())
+                try
                 {
-                    SHA512 crypt = SHA512.Create();
-                    ASCIIEncoding encoding = new ASCIIEncoding();
-                    byte[] bytes = encoding.GetBytes(PasswordBox.Password);
-                    byte[] hash = crypt.ComputeHash(bytes);
-                    var output = Convert.ToHexString(hash);
-                    data.Password = output;
+                    data.Name = NameTextBox.Text;
+                    data.Surname = SurnameTextBox.Text;
+                    data.Patronymic = PatrTextBox.Text;
+                    data.Login = LoginTextBox.Text;
+                    data.UserRole = RoleComboBox.SelectedItem as UserRoleObject;
+
+                    if (PasswordBox.Password != data.Password.ToString())
+                    {
+                        SHA512 crypt = SHA512.Create();
+                        ASCIIEncoding encoding = new ASCIIEncoding();
+                        byte[] bytes = encoding.GetBytes(PasswordBox.Password);
+                        byte[] hash = crypt.ComputeHash(bytes);
+                        var output = Convert.ToHexString(hash);
+                        data.Password = output;
+                    }
+                    else
+                        data.Password = "Don't set";
+
+                    UpdateData();
                 }
-                else
-                    data.Password = "Don't set";
-                    
-                UpdateData();
+                catch (Exception ex)
+                {
+                    switch (ex)
+                    {
+                        case RpcException:
+                            MessageBox.Show($"Возникла ошибка. Обратитесь к администратору\n{ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                            break;
+                        default:
+                            MessageBox.Show("Проверьте заполненность всех полей. Удостоверьтесь, что численные значения введены верно", "Ошибка ввода", MessageBoxButton.OK, MessageBoxImage.Error);
+                            break;
+                    }
+                }
             }
+       
+        }
+
+        public void ShowToast(TablePage.Messages result)
+        {
+            ModalPageFrameNotification.Content = new ToastPage(result);
         }
     }
 }

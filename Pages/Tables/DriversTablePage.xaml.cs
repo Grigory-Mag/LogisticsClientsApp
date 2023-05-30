@@ -104,7 +104,7 @@ namespace LogisticsClientsApp.Pages.Tables
         {
             dataGrid.MaxHeight = startWindow.Height / 2 - 40; ;
         }
-
+        
         private void PrevTablePageButton_Click(object sender, RoutedEventArgs e)
         {
             if (skipPages - 10 >= 0)

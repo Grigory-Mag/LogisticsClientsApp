@@ -64,11 +64,60 @@ namespace LogisticsClientsApp.Pages.Tables
             SetData();
         }
 
+        public void FastSearch(string text, string? param)
+        {
+            if (text != "")
+                switch (param)
+                {
+                    case "Номер":
+                        text = text.Trim();
+                        int number;
+                        bool isNumber = int.TryParse(text, out number);
+                        if (isNumber)
+                            CargoObjects = CargoObjectsOriginal
+                                .Where(x => x.Id == number)
+                                .ToList();
+                        break;
+                    case "Масса":
+                        text = text.Trim();
+                        CargoObjects = CargoObjectsOriginal
+                            .Where(x => x.Weight.ToString().Contains(text))
+                            .ToList();
+                        break;
+                    case "Цена":
+                        text = text.Trim();
+                        CargoObjects = CargoObjectsOriginal
+                            .Where(x => x.Price.ToString().Contains(text))
+                            .ToList();
+                        break;
+                }
+
+            else
+                CargoObjects = CargoObjectsOriginal;
+            if (CargoObjects != null)
+            {
+                if (CargoObjects.Count == 0)
+                    CargoObjects = CargoObjectsOriginal;
+                dataGrid.ItemsSource = null;
+                dataGrid.ItemsSource = CargoObjects.Skip(skipPages).Take(takePages);
+                PaginationTextBlock.Text = $"{skipPages + 10} из {CargoObjects.Count}";
+            }
+
+        }
+
+        /// <summary>
+        /// Start window resize handler. Calculates an optimal size for a data grid with current size of window
+        /// </summary>
         public void ResizeDataGrid()
         {
             dataGrid.MaxHeight = startWindow.Height / 2 - 40; ;
         }
 
+        /// <summary>
+        /// Implementation of pagination for data in data grid
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void PrevTablePageButton_Click(object sender, RoutedEventArgs e)
         {
             if (skipPages - 10 >= 0)
@@ -105,6 +154,9 @@ namespace LogisticsClientsApp.Pages.Tables
 
         }
 
+        /// <summary>
+        /// Populate elements in AdvanceSearch field
+        /// </summary>
         private void CreateAdvancedSearchFields()
         {
             tablePage.AdvancedSearch.Children.Clear();
@@ -161,8 +213,6 @@ namespace LogisticsClientsApp.Pages.Tables
                 else
                     return false;
             }) as TextBox;
-
-            //MessageBox.Show(box.Name);
         }
 
         /// <summary>

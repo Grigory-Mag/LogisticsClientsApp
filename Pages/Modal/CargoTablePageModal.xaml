@@ -37,6 +37,14 @@
         </Storyboard>
     </UserControl.Resources>
     <Grid Name="ModalPage">
+        <!-- MODAL PAGE NOTIFICATION -->
+        <Frame Name="ModalPageFrameNotification"
+               Width="Auto"
+               Height="Auto"
+               Margin="0,-120,0,0"
+               VerticalAlignment="Top"
+               Panel.ZIndex="1" />
+        <!-- ### MODAL PAGE NOTIFICATION ### -->
         <materialDesign:Card UniformCornerRadius="25"
                              materialDesign:ElevationAssist.Elevation="Dp16">
             <Grid>
@@ -108,10 +116,12 @@
                             Margin="0,0,10,0">
                             <TextBox materialDesign:HintAssist.Hint="Weight"
                                      Name="WeightTextBox"
+                                     materialDesign:TextFieldAssist.SuffixText="кг"
                                      Style="{StaticResource MaterialDesignFloatingHintTextBox}"
                                      Margin="0,0,0,30" />
                             <TextBox materialDesign:HintAssist.Hint="Volume"
                                      Name="VolumeTextBox"
+                                     materialDesign:TextFieldAssist.SuffixText="м^3"
                                      Style="{StaticResource MaterialDesignFloatingHintTextBox}"
                                      Margin="0,0,0,30" />
                             <TextBox materialDesign:HintAssist.Hint="Name"

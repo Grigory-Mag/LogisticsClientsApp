@@ -30,10 +30,23 @@ namespace LogisticsClientsApp.Pages.Modal
         public CargoObject data = new CargoObject();
         public ListCargoType cargoTypes;
         public byte mode = 0;
+        string text = "обновить";
 
         public CargoTablePageModal()
         {
             InitializeComponent();
+        }
+
+        public void SetMode(byte mode)
+        {
+            this.mode = mode;
+            if (mode == 0)
+                UpdateButton.Content = "обновить";
+            else
+            {
+                UpdateButton.Content = "добавить";
+                text = "Добавить";
+            }                
         }
 
         private void ModalPageControl_Loaded(object sender, RoutedEventArgs e)
@@ -97,16 +110,19 @@ namespace LogisticsClientsApp.Pages.Modal
                     var index = page.CargoObjects.FindIndex(t => t.Id == reqResult.Id);
                     page.CargoObjects[index] = reqResult;
                 }
-                if (mode == 1)                
-                    page.CargoObjects.Add(reqResult);
-                
+                if (mode == 1)
+                    page.CargoObjectsOriginal.Add(reqResult);
+
                 page.dataGrid.ItemsSource = null;
-                page.dataGrid.ItemsSource = page.CargoObjects;
+                page.dataGrid.ItemsSource = page.CargoObjectsOriginal.OrderBy(x=> x.Id);
                 page.dataGrid.Items.Refresh();
+
+                ShowToast(TablePage.Messages.Success);
             }
             catch (RpcException ex)
             {
-
+                ShowToast(TablePage.Messages.Error);
+                MessageBox.Show($"Произошла ошибка: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
         }
@@ -130,17 +146,39 @@ namespace LogisticsClientsApp.Pages.Modal
                     changedDataNotify.Append($"Тип груза: {data.CargoType.Name} -> {(TypeComboBox.SelectedItem as CargoTypesObject).Name}\n");
             }
 
-            var result = MessageBox.Show($"Применить изменения?\n {changedDataNotify}", "Обновление", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
+            var result = MessageBox.Show($"Применить изменения?\n {changedDataNotify}", $"{text}", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
             if (result == MessageBoxResult.Yes)
             {
-                data.Weight = double.Parse(WeightTextBox.Text);
-                data.Volume = double.Parse(VolumeTextBox.Text);
-                data.Name = NameTextBox.Text;
-                data.Price = double.Parse(PriceTextBox.Text);
-                data.Constraints = ConstraintsTextBox.Text;
-                data.CargoType = TypeComboBox.SelectedItem as CargoTypesObject;
-                UpdateData();
+                try
+                {
+                    var weight = WeightTextBox.Text.Replace('.', ',');
+                    var volume = VolumeTextBox.Text.Replace(".", ",");
+                    data.Weight = double.Parse(weight);
+                    data.Volume = double.Parse(volume);
+                    data.Name = NameTextBox.Text;
+                    data.Price = double.Parse(PriceTextBox.Text);
+                    data.Constraints = ConstraintsTextBox.Text;
+                    data.CargoType = TypeComboBox.SelectedItem as CargoTypesObject;
+                    UpdateData();
+                }
+                catch (Exception ex)
+                {
+                    switch (ex)
+                    {
+                        case RpcException:
+                            MessageBox.Show($"Возникла ошибка. Обратитесь к администратору\n{ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                            break;
+                        default:
+                            MessageBox.Show("Проверьте заполненность всех полей. Удостоверьтесь, что численные значения введены верно", "Ошибка ввода", MessageBoxButton.OK, MessageBoxImage.Error);
+                            break;
+                    }
+                }
             }
+        }
+
+        public void ShowToast(TablePage.Messages result)
+        {
+            ModalPageFrameNotification.Content = new ToastPage(result);
         }
     }
 }

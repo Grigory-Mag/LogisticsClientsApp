@@ -25,6 +25,7 @@ using ExcelExportLib;
 using System.Threading;
 using static LogisticsClientsApp.Pages.Tables.RequestsTablePage;
 using System.Configuration;
+using System.Windows.Threading;
 
 namespace LogisticsClientsApp.Pages
 {
@@ -41,6 +42,12 @@ namespace LogisticsClientsApp.Pages
         ITheme theme = new PaletteHelper().GetTheme();
         static StartWindow startWindow;
         Excel ExcelProvider = new Excel();
+
+        public enum Messages
+        {
+            Success,
+            Error,
+        }
 
         public TablePage()
         {
@@ -119,6 +126,10 @@ namespace LogisticsClientsApp.Pages
                 case RequestsTablePage:
                     SearchFilter.ItemsSource = new List<string> { "Номер", "Цена перевозки", "Груз" };
                     AdvancedSearchButton.Visibility = Visibility.Visible;
+                    break;
+                case RouteActionsTablePage:
+                    SearchFilter.ItemsSource = new List<string> { "Название" };
+                    AdvancedSearchButton.Visibility = Visibility.Collapsed;
                     break;
                 case UsersTablePage:
                     SearchFilter.ItemsSource = new List<string> { "Логин" };
@@ -243,7 +254,7 @@ namespace LogisticsClientsApp.Pages
             {
                 case CargoTablePage:
                     CargoTablePageModal cargoTablePage = new CargoTablePageModal();
-                    cargoTablePage.mode = mode;
+                    cargoTablePage.SetMode(mode);
                     ModalPageFrame.Content = cargoTablePage;
                     if (mode == 0)
                     {
@@ -368,6 +379,19 @@ namespace LogisticsClientsApp.Pages
                     }
 
                     (request.Resources["OpenModal"] as Storyboard)!.Begin(ModalPageFrame);
+                    break;
+                case RouteActionsTablePage:
+                    var routeAction = new RouteActionsTablePageModal();
+                    ModalPageFrame.Content = routeAction;
+                    routeAction.mode = mode;
+                    if (mode == 0)
+                    {
+                        var routeActionModalPage = DataGridFrame.Content as RouteActionsTablePage;
+                        routeAction.UpdateDisplayedData(routeActionModalPage.dataGrid.SelectedItem as RouteActionsObject);
+                        routeActionModalPage.dataGrid.SelectedItem = null;
+                    }
+
+                    (routeAction.Resources["OpenModal"] as Storyboard)!.Begin(ModalPageFrame);
                     break;
                 case UsersTablePage:
                     var login = new UsersTablePageModal();
@@ -507,6 +531,11 @@ namespace LogisticsClientsApp.Pages
                     foreach (var item in items as List<VehiclesObject>)
                         dataReady.Rows.Add(new object[4] { item.Type.Name, item.Number, item.TrailerNumber, item.Owner.Name });
                     break;
+                case var cls when cls == typeof(VehiclesObject):
+                    dataReady.Columns.Add("Название");
+                    foreach (var item in items as List<RouteActionsObject>)
+                        dataReady.Rows.Add(new object[1] { item.Action });
+                    break;
             }
             return dataReady;
         }
@@ -550,6 +579,9 @@ namespace LogisticsClientsApp.Pages
                             break;
                         case VehiclesTypesTablePage:
                             ExcelProvider.GenerateExcel(ToDataTableReady((content as VehiclesTypesTablePage).Types), filename);
+                            break;
+                        case RouteActionsTablePage:
+                            ExcelProvider.GenerateExcel(ToDataTableReady((content as RouteActionsTablePage).RouteActions), filename);
                             break;
                         case VehiclesTablePage:
                             ExcelProvider.GenerateExcel(ToDataTableReady((content as VehiclesTablePage).Vehicles), filename);
@@ -602,7 +634,7 @@ namespace LogisticsClientsApp.Pages
                 switch (DataGridFrame.Content)
                 {
                     case CargoTablePage:
-
+                        (DataGridFrame.Content as CargoTablePage)!.FastSearch(text, SearchFilter.SelectedItem.ToString());
                         break;
                     case CargoTypesPage:
                         (DataGridFrame.Content as CargoTypesPage)!.FastSearch(text, SearchFilter.SelectedItem.ToString());
@@ -646,6 +678,7 @@ namespace LogisticsClientsApp.Pages
         {
             FastSearchCall();
         }
+        
     }
 
 }
