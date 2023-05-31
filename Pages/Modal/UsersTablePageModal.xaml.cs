@@ -19,6 +19,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace LogisticsClientsApp.Pages.Modal
 {
@@ -31,6 +32,7 @@ namespace LogisticsClientsApp.Pages.Modal
         public ListUserRoles roles;
         private Locale locale;
         public byte mode = 0;
+        public string text = "Обновить";
 
         StartWindow startWindow;
 
@@ -38,6 +40,22 @@ namespace LogisticsClientsApp.Pages.Modal
         {
             InitializeComponent();
         }
+
+        public void SetMode(byte mode)
+        {
+            this.mode = mode;
+            if (mode == 0)
+            {
+                UpdateButton.Content = "обновить";
+                text = "Обновить";
+            }
+            else
+            {
+                UpdateButton.Content = "добавить";
+                text = "Добавить";
+            }
+        }
+
         private void ModalPageControl_Loaded(object sender, RoutedEventArgs e)
         {
             startWindow = (StartWindow)Window.GetWindow(this);
@@ -93,14 +111,15 @@ namespace LogisticsClientsApp.Pages.Modal
                 var page = tablePage.DataGridFrame.Content as UsersTablePage;
                 if (mode == 0)
                 {
-                    var index = page.Users.FindIndex(t => t.Id == reqResult.Id);
-                    page.Users[index] = reqResult;
+                    var index = page.UsersOriginal.FindIndex(t => t.Id == reqResult.Id);
+                    page.UsersOriginal[index] = reqResult;
                 }
                 if (mode == 1)
-                    page.Users.Add(reqResult);
+                    page.UsersOriginal.Add(reqResult);
 
                 page.dataGrid.ItemsSource = null;
-                page.dataGrid.ItemsSource = page.Users;
+                page.dataGrid.ItemsSource = page.Users.Skip(page.skipPages).Take(page.takePages);
+                page.PaginationTextBlock.Text = $"{page.skipPages + 10} из {page.UsersOriginal.Count}";
 
                 ShowToast(TablePage.Messages.Success);
             }
@@ -132,7 +151,7 @@ namespace LogisticsClientsApp.Pages.Modal
                     changedDataNotify.Append($"Название: {data.UserRole.Name} -> {(RoleComboBox.SelectedItem as UserRoleObject).Name}");
             }
 
-            var result = MessageBox.Show($"Применить изменения?\n {changedDataNotify}", "Обновление", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
+            var result = MessageBox.Show($"Применить изменения?\n {changedDataNotify}", $"{text}", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
             if (result == MessageBoxResult.Yes)
             {
                 try

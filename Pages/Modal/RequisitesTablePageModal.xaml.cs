@@ -19,6 +19,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace LogisticsClientsApp.Pages.Modal
 {
@@ -33,10 +34,26 @@ namespace LogisticsClientsApp.Pages.Modal
         private Locale locale;
         public byte mode = 0;
         StartWindow startWindow;
+        public string text = "Обновить";
 
         public RequisitesTablePageModal()
         {
             InitializeComponent();
+        }
+
+        public void SetMode(byte mode)
+        {
+            this.mode = mode;
+            if (mode == 0)
+            {
+                UpdateButton.Content = "обновить";
+                text = "Обновить";
+            }
+            else
+            {
+                UpdateButton.Content = "добавить";
+                text = "Добавить";
+            }
         }
 
         private void ModalPageControl_Loaded(object sender, RoutedEventArgs e)
@@ -88,10 +105,7 @@ namespace LogisticsClientsApp.Pages.Modal
 
         private void LicenceComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var comboBox = (sender as ComboBox);
-            //var number = comboBox.SelectedItem.ToString();
-            //var numberSeries = number.Split("/");
-            //var foundedData = licenses.DriverLicence.Where(item => item.Series == int.Parse(numberSeries[0].ToString()) && item.Number == int.Parse(numberSeries[1].ToString())).ToList();
+
         }
 
         private async void UpdateData()
@@ -100,9 +114,9 @@ namespace LogisticsClientsApp.Pages.Modal
             {
                 var reqResult = new RequisitesObject();
                 if (mode == 0)
-                    reqResult = await startWindow.client.UpdateRequisiteAsync(new CreateOrUpdateRequisitesRequest { Requisite = data });
+                    reqResult = await startWindow.client.UpdateRequisiteAsync(new CreateOrUpdateRequisitesRequest { Requisite = data }, startWindow.headers);
                 if (mode == 1)
-                    reqResult = await startWindow.client.CreateRequisiteAsync(new CreateOrUpdateRequisitesRequest { Requisite = data });
+                    reqResult = await startWindow.client.CreateRequisiteAsync(new CreateOrUpdateRequisitesRequest { Requisite = data }, startWindow.headers);
                 var tablePage = (TablePage)startWindow.MainFrameK.Content;
                 var page = tablePage.DataGridFrame.Content as RequisitesTablePage;
                 if (mode == 0)
@@ -113,7 +127,8 @@ namespace LogisticsClientsApp.Pages.Modal
                 if (mode == 1)
                     page.RequisitesOriginal.Add(reqResult);
                 page.dataGrid.ItemsSource = null;
-                page.dataGrid.ItemsSource = page.RequisitesOriginal;
+                page.dataGrid.ItemsSource = page.RequisitesOriginal.Skip(page.skipPages).Take(page.takePages);
+                page.PaginationTextBlock.Text = $"{page.skipPages + 10} из {page.RequisitesOriginal.Count}";
 
                 ShowToast(TablePage.Messages.Success);
             }
@@ -145,7 +160,7 @@ namespace LogisticsClientsApp.Pages.Modal
                     changedDataNotify.Append($"Тип: {data.Type.Name} -> {(TypeComboBox.SelectedItem as RequisiteTypeObject)!.Name}\n");
             }
 
-            var result = MessageBox.Show($"Применить изменения?\n {changedDataNotify}", "Обновление", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
+            var result = MessageBox.Show($"Применить изменения?\n {changedDataNotify}", $"{text}", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
             if (result == MessageBoxResult.Yes)
             {
                 try

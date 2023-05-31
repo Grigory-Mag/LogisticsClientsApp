@@ -22,7 +22,7 @@
     <UserControl.Resources>
         <Storyboard x:Key="OpenModal">
             <ThicknessAnimation Storyboard.TargetProperty="Margin"
-                                From="0,-1600,0,0"
+                                From="0,-1800,0,0"
                                 To="0,0,0,0"
                                 DecelerationRatio="0.5"
                                 Duration="0:0:1.5" />
@@ -30,7 +30,7 @@
         <Storyboard x:Key="CloseModal">
             <ThicknessAnimation Storyboard.TargetProperty="Margin"
                                 From="0,0,0,0"
-                                To="0,-1600,0,0"
+                                To="0,-1800,0,0"
                                 DecelerationRatio="0.5"
                                 Duration="0:0:1.5" />
         </Storyboard>

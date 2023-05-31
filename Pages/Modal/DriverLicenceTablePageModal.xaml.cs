@@ -21,6 +21,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using static LogisticsClientsApp.Pages.Tables.DriverLicenceTablePage;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace LogisticsClientsApp.Pages.Modal
 {
@@ -32,9 +33,25 @@ namespace LogisticsClientsApp.Pages.Modal
         public StartWindow startWindow;
         public DriversLicenceReady data = new DriversLicenceReady();
         public byte mode = 0;
+        public string text = "Обновить";
         public DriverLicenceTablePageModal()
         {
             InitializeComponent();
+        }
+
+        public void SetMode(byte mode)
+        {
+            this.mode = mode;
+            if (mode == 0)
+            {
+                UpdateButton.Content = "обновить";
+                text = "Обновить";
+            }
+            else
+            {
+                UpdateButton.Content = "добавить";
+                text = "Добавить";
+            }
         }
 
         private void ModalPageControl_Loaded(object sender, RoutedEventArgs e)
@@ -78,9 +95,9 @@ namespace LogisticsClientsApp.Pages.Modal
             {
                 var reqResult = new DriverLicenceObject();
                 if (mode == 0)
-                    reqResult = await startWindow.client.UpdateDriverLicenceAsync(new CreateOrUpdateDriverLicenceRequest { DriverLicence = new DriverLicenceObject { Id = (int)data.Id, Date = Google.Protobuf.WellKnownTypes.Timestamp.FromDateTime(data.Date.ToUniversalTime()), Number = data.Number, Series = data.Series } });
+                    reqResult = await startWindow.client.UpdateDriverLicenceAsync(new CreateOrUpdateDriverLicenceRequest { DriverLicence = new DriverLicenceObject { Id = (int)data.Id, Date = Google.Protobuf.WellKnownTypes.Timestamp.FromDateTime(data.Date.ToUniversalTime()), Number = data.Number, Series = data.Series } }, startWindow.headers);
                 if (mode == 1)
-                    reqResult = await startWindow.client.CreateDriverLicenceAsync(new CreateOrUpdateDriverLicenceRequest { DriverLicence = new DriverLicenceObject { Date = Google.Protobuf.WellKnownTypes.Timestamp.FromDateTime(data.Date.ToUniversalTime()), Number = data.Number, Series = data.Series } });
+                    reqResult = await startWindow.client.CreateDriverLicenceAsync(new CreateOrUpdateDriverLicenceRequest { DriverLicence = new DriverLicenceObject { Date = Google.Protobuf.WellKnownTypes.Timestamp.FromDateTime(data.Date.ToUniversalTime()), Number = data.Number, Series = data.Series } }, startWindow.headers);
                 
                 var tablePage = (TablePage)startWindow.MainFrameK.Content;
                 var page = tablePage.DataGridFrame.Content as DriverLicenceTablePage;
@@ -97,8 +114,9 @@ namespace LogisticsClientsApp.Pages.Modal
                 page.DriversLicenceOriginal = driversLicenceReadies;
 
                 page.dataGrid.ItemsSource = null;
-                page.dataGrid.ItemsSource = page.DriversLicenceOriginal;
+                page.dataGrid.ItemsSource = page.DriversLicenceOriginal.Skip(page.skipPages).Take(page.takePages);
                 page.dataGrid.Items.Refresh();
+                page.PaginationTextBlock.Text = $"{page.skipPages + 10} из {page.DriversLicenceOriginal.Count}";
 
                 ShowToast(TablePage.Messages.Success);
             }
@@ -123,7 +141,7 @@ namespace LogisticsClientsApp.Pages.Modal
                     changedDataNotify.Append($"Дата выдачи: {data.Date.Date.ToShortDateString()} -> {DatePicker.SelectedDate.Value.Date.ToShortDateString()}\n");
             }
 
-            var result = MessageBox.Show($"Применить изменения?\n {changedDataNotify}", "Обновление", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
+            var result = MessageBox.Show($"Применить изменения?\n {changedDataNotify}", $"{text}", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
             if (result == MessageBoxResult.Yes)
             {
                 try

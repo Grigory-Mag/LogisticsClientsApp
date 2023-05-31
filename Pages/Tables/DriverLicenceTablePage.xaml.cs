@@ -131,15 +131,27 @@ namespace LogisticsClientsApp.Pages.Tables
             var result = MessageBox.Show($"Вы действительно хотите удалить запись?", "Удаление", MessageBoxButton.OKCancel, MessageBoxImage.Warning, MessageBoxResult.No);
             if (result == MessageBoxResult.OK)
             {
-                var item = dataGrid.SelectedItem as DriversLicenceReady;
-                startWindow.client.DeleteDriverLicenceAsync(new GetOrDeleteDriverLicenceRequest { Id = (int)item.Id}, startWindow.headers);
-                DriversLicence.Remove(DriversLicence.First(x=> x.Id == item.Id));
+                try
+                {
+                    var item = dataGrid.SelectedItem as DriversLicenceReady;
+                    startWindow.client.DeleteDriverLicenceAsync(new GetOrDeleteDriverLicenceRequest { Id = (int)item.Id }, startWindow.headers);
+                    DriversLicence.Remove(DriversLicence.First(x => x.Id == item.Id));
 
-                List<DriversLicenceReady> driversLicenceReadies = new List<DriversLicenceReady>();
-                DriversLicence.ForEach(license => driversLicenceReadies.Add(new DriversLicenceReady(license.Id, license.Series, license.Number, license.Date)));
+                    List<DriversLicenceReady> driversLicenceReadies = new List<DriversLicenceReady>();
+                    DriversLicence.ForEach(license => driversLicenceReadies.Add(new DriversLicenceReady(license.Id, license.Series, license.Number, license.Date)));
+                    DriversLicenceOriginal = driversLicenceReadies;
 
-                dataGrid.ItemsSource = null;
-                dataGrid.ItemsSource = driversLicenceReadies;
+                    dataGrid.ItemsSource = null;
+                    dataGrid.ItemsSource = driversLicenceReadies;
+                }
+                catch (RpcException ex)
+                {
+                    if (ex.StatusCode == StatusCode.Unauthenticated)
+                        MessageBox.Show("Ваше время сессии истекло. Перезайдите в аккаунт", "Сессия", MessageBoxButton.OK, MessageBoxImage.Error);
+                    else
+                        MessageBox.Show($"Возникла ошибка: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+
             }
         }
 

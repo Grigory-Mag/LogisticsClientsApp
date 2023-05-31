@@ -205,7 +205,8 @@ namespace LogisticsClientsApp.Pages.Tables
             Requests.ForEach(x => requestsReady.Add((RequestsReady)x));
             RequestsReadyObjectsOriginal = requestsReady;
             dataGrid.ItemsSource = null;
-            dataGrid.ItemsSource = RequestsReadyObjectsOriginal;
+            dataGrid.ItemsSource = RequestsReadyObjectsOriginal.Skip(skipPages).Take(takePages);
+            PaginationTextBlock.Text = $"{skipPages + 10} из {RequestsReadyObjectsOriginal.Count}";
         }
 
         private async void SetData()
@@ -263,10 +264,17 @@ namespace LogisticsClientsApp.Pages.Tables
             try
             {
                 await startWindow.client.DeleteRequestAsync(new GetOrDeleteRequestObjRequest { Id = item.Id }, startWindow.headers);
+                RequestsReadyObjectsOriginal.Remove(item);
+
+                dataGrid.ItemsSource = null;
+                dataGrid.ItemsSource = RequestsReadyObjectsOriginal.Skip(skipPages).Take(takePages);
             }
             catch (RpcException ex)
             {
-                MessageBox.Show(ex.Message);
+                if (ex.StatusCode == StatusCode.Unauthenticated)
+                    MessageBox.Show("Ваше время сессии истекло. Перезайдите в аккаунт", "Сессия", MessageBoxButton.OK, MessageBoxImage.Error);
+                else
+                    MessageBox.Show($"Возникла ошибка: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
             Requests.Remove(Requests.First(x => x.Id == item.Id));

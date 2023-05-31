@@ -17,6 +17,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace LogisticsClientsApp.Pages.Modal
 {
@@ -30,12 +31,28 @@ namespace LogisticsClientsApp.Pages.Modal
         public ListVehiclesTypes types;
         private Locale locale;
         public byte mode = 0;
+        public string text = "Обновить";
 
         StartWindow startWindow;
 
         public VehiclesTablePageModal()
         {
             InitializeComponent();
+        }
+
+        public void SetMode(byte mode)
+        {
+            this.mode = mode;
+            if (mode == 0)
+            {
+                UpdateButton.Content = "обновить";
+                text = "Обновить";
+            }
+            else
+            {
+                UpdateButton.Content = "добавить";
+                text = "Добавить";
+            }
         }
 
         private void ModalPageControl_Loaded(object sender, RoutedEventArgs e)
@@ -59,14 +76,25 @@ namespace LogisticsClientsApp.Pages.Modal
 
         public async void SetLinkedData()
         {
-            requisites = await startWindow.client.GetListRequisitesAsync(new Google.Protobuf.WellKnownTypes.Empty());
-            CeoComboBox.ItemsSource = requisites.Requisites;
-            if (data.Id != 0)
-                CeoComboBox.SelectedItem = requisites.Requisites.First(x => x.Id == data.Owner.Id);
-            types = await startWindow.client.GetListVehiclesTypesAsync(new Google.Protobuf.WellKnownTypes.Empty());
-            TypeComboBox.ItemsSource = types.VehiclesTypes;
-            if (data.Type != null)
-                TypeComboBox.SelectedItem = types.VehiclesTypes.First(x => x.Id == data.Type.Id);
+            try
+            {
+                requisites = await startWindow.client.GetListRequisitesAsync(new Google.Protobuf.WellKnownTypes.Empty(), startWindow.headers);
+                CeoComboBox.ItemsSource = requisites.Requisites;
+                if (data.Id != 0)
+                    CeoComboBox.SelectedItem = requisites.Requisites.First(x => x.Id == data.Owner.Id);
+                types = await startWindow.client.GetListVehiclesTypesAsync(new Google.Protobuf.WellKnownTypes.Empty(), startWindow.headers);
+                TypeComboBox.ItemsSource = types.VehiclesTypes;
+                if (data.Type != null)
+                    TypeComboBox.SelectedItem = types.VehiclesTypes.First(x => x.Id == data.Type.Id);
+            }
+            catch (RpcException ex)
+            {
+                if (ex.StatusCode == StatusCode.Unauthenticated)
+                    MessageBox.Show("Ваше время сессии истекло. Перезайдите в аккаунт", "Сессия", MessageBoxButton.OK, MessageBoxImage.Error);
+                else
+                    MessageBox.Show($"Возникла ошибка: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
         }
 
         public void UpdateDisplayedData(VehiclesObject data)
@@ -108,9 +136,9 @@ namespace LogisticsClientsApp.Pages.Modal
             {
                 var reqResult = new VehiclesObject();
                 if (mode == 0)
-                    reqResult = await startWindow.client.UpdateVehicleAsync(new CreateOrUpdateVehiclesRequest { Vehicle = data });
+                    reqResult = await startWindow.client.UpdateVehicleAsync(new CreateOrUpdateVehiclesRequest { Vehicle = data }, startWindow.headers);
                 if (mode == 1)
-                    reqResult = await startWindow.client.CreateVehicleAsync(new CreateOrUpdateVehiclesRequest { Vehicle = data });
+                    reqResult = await startWindow.client.CreateVehicleAsync(new CreateOrUpdateVehiclesRequest { Vehicle = data }, startWindow.headers);
                 var tablePage = (TablePage)startWindow.MainFrameK.Content;
                 var page = tablePage.DataGridFrame.Content as VehiclesTablePage;
                 if (mode == 0)
@@ -122,7 +150,8 @@ namespace LogisticsClientsApp.Pages.Modal
                     page.VehiclesOriginal.Add(reqResult);
 
                 page.dataGrid.ItemsSource = null;
-                page.dataGrid.ItemsSource = page.VehiclesOriginal;
+                page.dataGrid.ItemsSource = page.VehiclesOriginal.Skip(page.skipPages).Take(page.takePages);
+                page.PaginationTextBlock.Text = $"{page.skipPages + 10} из {page.VehiclesOriginal.Count}";
 
                 ShowToast(TablePage.Messages.Success);
             }
@@ -151,7 +180,7 @@ namespace LogisticsClientsApp.Pages.Modal
             }
 
 
-            var result = MessageBox.Show($"Применить изменения?\n {changedDataNotify}", "Обновление", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
+            var result = MessageBox.Show($"Применить изменения?\n {changedDataNotify}", $"{text}", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
             if (result == MessageBoxResult.Yes)
             {
                 try

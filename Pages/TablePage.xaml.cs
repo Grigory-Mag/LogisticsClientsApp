@@ -267,7 +267,7 @@ namespace LogisticsClientsApp.Pages
                     break;
                 case CargoTypesPage:
                     var cargoType = new CargoTypesTablePageModal();
-                    cargoType.mode = mode;
+                    cargoType.SetMode(mode);
                     ModalPageFrame.Content = cargoType;
                     if (mode == 0)
                     {
@@ -280,7 +280,7 @@ namespace LogisticsClientsApp.Pages
                     break;
                 case DriverLicenceTablePage:
                     var driverLicence = new DriverLicenceTablePageModal();
-                    driverLicence.mode = mode;
+                    driverLicence.SetMode(mode);
                     ModalPageFrame.Content = driverLicence;
                     if (mode == 0)
                     {
@@ -293,7 +293,7 @@ namespace LogisticsClientsApp.Pages
                 case DriversTablePage:
                     var driver = new DriversTablePageModal();
                     ModalPageFrame.Content = driver;
-                    driver.mode = mode;
+                    driver.SetMode(mode);
                     if (mode == 0)
                     {
                         var driverTableModalPage = DataGridFrame.Content as DriversTablePage;
@@ -305,7 +305,7 @@ namespace LogisticsClientsApp.Pages
                 case RequisitesTablePage:
                     var requisite = new RequisitesTablePageModal();
                     ModalPageFrame.Content = requisite;
-                    requisite.mode = mode;
+                    requisite.SetMode(mode);
                     if (mode == 0)
                     {
                         var requisitesTableModalPage = DataGridFrame.Content as RequisitesTablePage;
@@ -318,7 +318,7 @@ namespace LogisticsClientsApp.Pages
                 case RolesTablePage:
                     var role = new RolesTablePageModal();
                     ModalPageFrame.Content = role;
-                    role.mode = mode;
+                    role.SetMode(mode);
                     if (mode == 0)
                     {
                         var rolesTablePageModal = DataGridFrame.Content as RolesTablePage;
@@ -331,7 +331,7 @@ namespace LogisticsClientsApp.Pages
                 case VehiclesTablePage:
                     var vehicle = new VehiclesTablePageModal();
                     ModalPageFrame.Content = vehicle;
-                    vehicle.mode = mode;
+                    vehicle.SetMode(mode);
                     if (mode == 0)
                     {
                         var vehiclesTableModalPage = DataGridFrame.Content as VehiclesTablePage;
@@ -344,7 +344,7 @@ namespace LogisticsClientsApp.Pages
                 case VehiclesTypesTablePage:
                     var vehicleType = new VehiclesTypesTablePageModal();
                     ModalPageFrame.Content = vehicleType;
-                    vehicleType.mode = mode;
+                    vehicleType.SetMode(mode);
                     if (mode == 0)
                     {
                         var vehiclesTypeTableModalPage = DataGridFrame.Content as VehiclesTypesTablePage;
@@ -357,7 +357,7 @@ namespace LogisticsClientsApp.Pages
                 case RequisiteTypesTablePage:
                     var requisiteType = new RequisitesTypeTablePageModal();
                     ModalPageFrame.Content = requisiteType;
-                    requisiteType.mode = mode;
+                    requisiteType.SetMode(mode);
                     if (mode == 0)
                     {
                         var requisiteTypeModalPage = DataGridFrame.Content as RequisiteTypesTablePage;
@@ -370,7 +370,7 @@ namespace LogisticsClientsApp.Pages
                 case RequestsTablePage:
                     var request = new RequestsTablePageModal();
                     ModalPageFrame.Content = request;
-                    request.mode = mode;
+                    request.SetMode(mode);
                     if (mode == 0)
                     {
                         var requestModalPage = DataGridFrame.Content as RequestsTablePage;
@@ -383,7 +383,7 @@ namespace LogisticsClientsApp.Pages
                 case RouteActionsTablePage:
                     var routeAction = new RouteActionsTablePageModal();
                     ModalPageFrame.Content = routeAction;
-                    routeAction.mode = mode;
+                    routeAction.SetMode(mode);
                     if (mode == 0)
                     {
                         var routeActionModalPage = DataGridFrame.Content as RouteActionsTablePage;
@@ -396,7 +396,7 @@ namespace LogisticsClientsApp.Pages
                 case UsersTablePage:
                     var login = new UsersTablePageModal();
                     ModalPageFrame.Content = login;
-                    login.mode = mode;
+                    login.SetMode(mode);
                     if (mode == 0)
                     {
                         var loginModalPage = DataGridFrame.Content as UsersTablePage;
@@ -664,7 +664,7 @@ namespace LogisticsClientsApp.Pages
                         (DataGridFrame.Content as RequestsTablePage)!.FastSearch(text, SearchFilter.SelectedItem.ToString());
                         break;
                     case UsersTablePage:
-
+                        (DataGridFrame.Content as UsersTablePage)!.FastSearch(text, SearchFilter.SelectedItem.ToString());
                         break;
                 }
         }

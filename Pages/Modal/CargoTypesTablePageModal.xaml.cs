@@ -17,6 +17,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace LogisticsClientsApp.Pages.Modal
 {
@@ -28,9 +29,25 @@ namespace LogisticsClientsApp.Pages.Modal
         public StartWindow startWindow;
         public CargoTypesObject data = new CargoTypesObject();
         public byte mode = 0;
+        public string text = "Обновить";
         public CargoTypesTablePageModal()
         {
             InitializeComponent();
+        }
+
+        public void SetMode(byte mode)
+        {
+            this.mode = mode;
+            if (mode == 0)
+            {
+                UpdateButton.Content = "обновить";
+                text = "Обновить";
+            }                
+            else
+            {
+                UpdateButton.Content = "добавить";
+                text = "Добавить";
+            }
         }
 
         private void ModalPageControl_Loaded(object sender, RoutedEventArgs e)
@@ -83,8 +100,9 @@ namespace LogisticsClientsApp.Pages.Modal
                 if (mode == 1)
                     page.CargoTypes.Add(reqResult);
                 page.dataGrid.ItemsSource = null;
-                page.dataGrid.ItemsSource = page.CargoTypesOriginal;
+                page.dataGrid.ItemsSource = page.CargoTypesOriginal.Skip(page.skipPages).Take(page.takePages);
                 page.dataGrid.Items.Refresh();
+                page.PaginationTextBlock.Text = $"{page.skipPages + 10} из {page.CargoTypesOriginal.Count}";
 
                 ShowToast(TablePage.Messages.Success);
             }
@@ -105,7 +123,7 @@ namespace LogisticsClientsApp.Pages.Modal
                     changedDataNotify.Append($"Серия: {data.Name} -> {NameTextBox.Text}\n");
             }
 
-            var result = MessageBox.Show($"Применить изменения?\n {changedDataNotify}", "Обновление", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
+            var result = MessageBox.Show($"Применить изменения?\n {changedDataNotify}", $"{text}", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
             if (result == MessageBoxResult.Yes)
             {
                 try

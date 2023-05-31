@@ -18,6 +18,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using static LogisticsClientsApp.Pages.Tables.DriverLicenceTablePage;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace LogisticsClientsApp.Pages.Modal
 {
@@ -29,8 +30,24 @@ namespace LogisticsClientsApp.Pages.Modal
         public DriversObject data = new DriversObject();
         public ListDriverLicence licenses;
         private Locale locale;
+        public string text = "Обновить";
         public byte mode = 0;
         StartWindow startWindow;
+
+        public void SetMode(byte mode)
+        {
+            this.mode = mode;
+            if (mode == 0)
+            {
+                UpdateButton.Content = "обновить";
+                text = "Обновить";
+            }
+            else
+            {
+                UpdateButton.Content = "добавить";
+                text = "Добавить";
+            }
+        }
 
         public DriversTablePageModal()
         {
@@ -58,7 +75,7 @@ namespace LogisticsClientsApp.Pages.Modal
 
         public async void SetDriverLicences()
         {
-            licenses = await startWindow.client.GetListDriverLicencesAsync(new Google.Protobuf.WellKnownTypes.Empty());
+            licenses = await startWindow.client.GetListDriverLicencesAsync(new Google.Protobuf.WellKnownTypes.Empty(), startWindow.headers);
             List<string> stringLicenses = new List<string>();
             licenses.DriverLicence.ToList().ForEach(item => stringLicenses.Add($"{item.Series}/{item.Number}"));
             LicenceComboBox.ItemsSource = stringLicenses;
@@ -98,9 +115,9 @@ namespace LogisticsClientsApp.Pages.Modal
             {
                 var reqResult = new DriversObject();
                 if (mode == 0)
-                    reqResult = await startWindow.client.UpdateDriverAsync(new CreateOrUpdateDriversRequest { Driver = data });
+                    reqResult = await startWindow.client.UpdateDriverAsync(new CreateOrUpdateDriversRequest { Driver = data }, startWindow.headers);
                 if (mode == 1)
-                    reqResult = await startWindow.client.CreateDriverAsync(new CreateOrUpdateDriversRequest { Driver = data });
+                    reqResult = await startWindow.client.CreateDriverAsync(new CreateOrUpdateDriversRequest { Driver = data }, startWindow.headers);
                 var tablePage = (TablePage)startWindow.MainFrameK.Content;
                 var page = tablePage.DataGridFrame.Content as DriversTablePage;
                 if (mode == 0)
@@ -112,7 +129,8 @@ namespace LogisticsClientsApp.Pages.Modal
                     page.DriversOriginal.Add(reqResult);
 
                 page.dataGrid.ItemsSource = null;
-                page.dataGrid.ItemsSource = page.DriversOriginal;
+                page.dataGrid.ItemsSource = page.DriversOriginal.Skip(page.skipPages).Take(page.takePages);
+                page.PaginationTextBlock.Text = $"{page.skipPages + 10} из {page.DriversOriginal.Count}";
 
                 ShowToast(TablePage.Messages.Success);
             }
@@ -141,7 +159,7 @@ namespace LogisticsClientsApp.Pages.Modal
                     changedDataNotify.Append($"Роль: {data.Licence.Series}/{data.Licence.Number} -> {foundedData.Series}/{foundedData.Number}\n");
             }
 
-            var result = MessageBox.Show($"Применить изменения?\n {changedDataNotify}", "Обновление", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
+            var result = MessageBox.Show($"Применить изменения?\n {changedDataNotify}", $"{text}", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
             if (result == MessageBoxResult.Yes)
             {
                 try

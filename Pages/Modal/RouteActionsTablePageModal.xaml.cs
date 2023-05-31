@@ -17,6 +17,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace LogisticsClientsApp.Pages.Modal
 {
@@ -29,11 +30,27 @@ namespace LogisticsClientsApp.Pages.Modal
 
         private Locale locale;
         public byte mode = 0;
+        public string text = "Обновить";
 
         StartWindow startWindow;
         public RouteActionsTablePageModal()
         {
             InitializeComponent();
+        }
+
+        public void SetMode(byte mode)
+        {
+            this.mode = mode;
+            if (mode == 0)
+            {
+                UpdateButton.Content = "обновить";
+                text = "Обновить";
+            }
+            else
+            {
+                UpdateButton.Content = "добавить";
+                text = "Добавить";
+            }
         }
 
         private void ModalPageControl_Loaded(object sender, RoutedEventArgs e)
@@ -70,9 +87,9 @@ namespace LogisticsClientsApp.Pages.Modal
             {
                 var reqResult = new RouteActionsObject();
                 if (mode == 0)
-                    reqResult = await startWindow.client.UpdateRouteActionAsync(new CreateOrUpdateRouteActionsRequest { RouteAction = data });
+                    reqResult = await startWindow.client.UpdateRouteActionAsync(new CreateOrUpdateRouteActionsRequest { RouteAction = data }, startWindow.headers);
                 if (mode == 1)
-                    reqResult = await startWindow.client.CreateRouteActionAsync(new CreateOrUpdateRouteActionsRequest { RouteAction = data });
+                    reqResult = await startWindow.client.CreateRouteActionAsync(new CreateOrUpdateRouteActionsRequest { RouteAction = data }, startWindow.headers);
                 var tablePage = (TablePage)startWindow.MainFrameK.Content;
                 var page = tablePage.DataGridFrame.Content as RouteActionsTablePage;
                 if (mode == 0)
@@ -84,7 +101,8 @@ namespace LogisticsClientsApp.Pages.Modal
                     page.RouteActionsOriginal.Add(reqResult);
 
                 page.dataGrid.ItemsSource = null;
-                page.dataGrid.ItemsSource = page.RouteActionsOriginal;
+                page.dataGrid.ItemsSource = page.RouteActionsOriginal.Skip(page.skipPages).Take(page.takePages);
+                page.PaginationTextBlock.Text = $"{page.skipPages + 10} из {page.RouteActionsOriginal.Count}";
 
                 ShowToast(TablePage.Messages.Success);
             }
@@ -106,7 +124,7 @@ namespace LogisticsClientsApp.Pages.Modal
                     changedDataNotify.Append($"Название: {data.Action} -> {NameTextBox.Text}");
             }
 
-            var result = MessageBox.Show($"Применить изменения?\n {changedDataNotify}", "Обновление", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
+            var result = MessageBox.Show($"Применить изменения?\n {changedDataNotify}", $"{text}", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
             if (result == MessageBoxResult.Yes)
             {
                 try

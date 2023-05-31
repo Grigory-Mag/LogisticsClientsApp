@@ -145,11 +145,23 @@ namespace LogisticsClientsApp.Pages.Tables
             var result = MessageBox.Show($"Вы действительно хотите удалить запись?", "Удаление", MessageBoxButton.OKCancel, MessageBoxImage.Warning, MessageBoxResult.No);
             if (result == MessageBoxResult.OK)
             {
-                var item = dataGrid.SelectedItem as CargoObject;
-                startWindow.client.DeleteCargoAsync(new GetOrDeleteCargoRequest { Id = item.Id });
-                CargoObjects.Remove(item);
-                dataGrid.ItemsSource = null;
-                dataGrid.ItemsSource = CargoObjects;
+                try
+                {
+                    var item = dataGrid.SelectedItem as CargoObject;
+                    startWindow.client.DeleteCargoAsync(new GetOrDeleteCargoRequest { Id = item.Id }, startWindow.headers);
+                    CargoObjectsOriginal.Remove(item);
+
+                    dataGrid.ItemsSource = null;
+                    dataGrid.ItemsSource = CargoObjectsOriginal.Skip(skipPages).Take(takePages);
+                }
+                catch (RpcException ex)
+                {
+                    if (ex.StatusCode == StatusCode.Unauthenticated)
+                        MessageBox.Show("Ваше время сессии истекло. Перезайдите в аккаунт", "Сессия", MessageBoxButton.OK, MessageBoxImage.Error);
+                    else
+                        MessageBox.Show($"Возникла ошибка: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+
             }
 
         }

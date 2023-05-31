@@ -21,6 +21,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using static LogisticsClientsApp.Pages.Tables.RequestsTablePage;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace LogisticsClientsApp.Pages.Modal
 {
@@ -44,6 +45,7 @@ namespace LogisticsClientsApp.Pages.Modal
 
         private Locale locale;
         public byte mode = 0;
+        public string text = "Обновить";
         StartWindow startWindow;
 
         public class DriversObjectReady
@@ -117,6 +119,21 @@ namespace LogisticsClientsApp.Pages.Modal
                     ActionDate = Timestamp.FromDateTime(item.ActionDate.ToUniversalTime()),
                     Address = item.Address,
                 };
+            }
+        }
+
+        public void SetMode(byte mode)
+        {
+            this.mode = mode;
+            if (mode == 0)
+            {
+                UpdateButton.Content = "обновить";
+                text = "Обновить";
+            }
+            else
+            {
+                UpdateButton.Content = "добавить";
+                text = "Добавить";
             }
         }
 
@@ -233,9 +250,9 @@ namespace LogisticsClientsApp.Pages.Modal
             {
                 var reqResult = new RequestsObject();
                 if (mode == 0)
-                    reqResult = await startWindow.client.UpdateRequestAsync(new CreateOrUpdateRequestObjRequest { Requests = data });
+                    reqResult = await startWindow.client.UpdateRequestAsync(new CreateOrUpdateRequestObjRequest { Requests = data }, startWindow.headers);
                 if (mode == 1)
-                    reqResult = await startWindow.client.CreateRequestAsync(new CreateOrUpdateRequestObjRequest { Requests = data });
+                    reqResult = await startWindow.client.CreateRequestAsync(new CreateOrUpdateRequestObjRequest { Requests = data }, startWindow.headers);
                 var tablePage = (TablePage)startWindow.MainFrameK.Content;
                 var page = tablePage.DataGridFrame.Content as RequestsTablePage;
                 if (mode == 0)
@@ -290,7 +307,7 @@ namespace LogisticsClientsApp.Pages.Modal
                     changedDataNotify.Append($"Заказчик: {data.CustomerReq.Name} -> {(CustomerComboBox.SelectedItem as RequisitesObject)!.Name}\n");
             }
 
-            var result = MessageBox.Show($"Применить изменения?\n {changedDataNotify}", "Обновление", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
+            var result = MessageBox.Show($"Применить изменения?\n {changedDataNotify}", $"{text}", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
             if (result == MessageBoxResult.Yes)
             {
                 var listRoutes = new ListRouteObjects();

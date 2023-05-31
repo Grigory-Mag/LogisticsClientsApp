@@ -30,7 +30,7 @@ namespace LogisticsClientsApp.Pages.Modal
         public CargoObject data = new CargoObject();
         public ListCargoType cargoTypes;
         public byte mode = 0;
-        string text = "обновить";
+        string text = "Обновить";
 
         public CargoTablePageModal()
         {
@@ -41,7 +41,10 @@ namespace LogisticsClientsApp.Pages.Modal
         {
             this.mode = mode;
             if (mode == 0)
+            {
                 UpdateButton.Content = "обновить";
+                text = "Обновить";
+            }                
             else
             {
                 UpdateButton.Content = "добавить";
@@ -114,8 +117,9 @@ namespace LogisticsClientsApp.Pages.Modal
                     page.CargoObjectsOriginal.Add(reqResult);
 
                 page.dataGrid.ItemsSource = null;
-                page.dataGrid.ItemsSource = page.CargoObjectsOriginal.OrderBy(x=> x.Id);
+                page.dataGrid.ItemsSource = page.CargoObjectsOriginal.Skip(page.skipPages).Take(page.takePages).OrderBy(x=> x.Id);
                 page.dataGrid.Items.Refresh();
+                page.PaginationTextBlock.Text = $"{page.skipPages + 10} из {page.CargoObjectsOriginal.Count}";
 
                 ShowToast(TablePage.Messages.Success);
             }

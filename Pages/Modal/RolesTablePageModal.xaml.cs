@@ -17,6 +17,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace LogisticsClientsApp.Pages.Modal
 {
@@ -29,11 +30,27 @@ namespace LogisticsClientsApp.Pages.Modal
         public ListRoles roles;
         private Locale locale;
         public byte mode = 0;
+        public string text = "Обновить";
 
         StartWindow startWindow;
         public RolesTablePageModal()
         {
             InitializeComponent();
+        }
+
+        public void SetMode(byte mode)
+        {
+            this.mode = mode;
+            if (mode == 0)
+            {
+                UpdateButton.Content = "обновить";
+                text = "Обновить";
+            }
+            else
+            {
+                UpdateButton.Content = "добавить";
+                text = "Добавить";
+            }
         }
 
         private void ModalPageControl_Loaded(object sender, RoutedEventArgs e)
@@ -84,7 +101,8 @@ namespace LogisticsClientsApp.Pages.Modal
                     page.RolesOriginal.Add(reqResult);
 
                 page.dataGrid.ItemsSource = null;
-                page.dataGrid.ItemsSource = page.RolesOriginal;
+                page.dataGrid.ItemsSource = page.RolesOriginal.Skip(page.skipPages).Take(page.takePages);
+                page.PaginationTextBlock.Text = $"{page.skipPages + 10} из {page.RolesOriginal.Count}";
 
                 ShowToast(TablePage.Messages.Success);
             }
@@ -106,7 +124,7 @@ namespace LogisticsClientsApp.Pages.Modal
                     changedDataNotify.Append($"Название: {data.Name} -> {NameTextBox.Text}");
             }
             
-            var result = MessageBox.Show($"Применить изменения?\n {changedDataNotify}", "Обновление", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
+            var result = MessageBox.Show($"Применить изменения?\n {changedDataNotify}", $"{text}", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
             if (result == MessageBoxResult.Yes)
             {
                 try

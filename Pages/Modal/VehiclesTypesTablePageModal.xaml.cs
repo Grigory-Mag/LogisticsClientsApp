@@ -18,6 +18,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace LogisticsClientsApp.Pages.Modal
 {
@@ -29,12 +30,28 @@ namespace LogisticsClientsApp.Pages.Modal
         public VehiclesTypesObject data = new VehiclesTypesObject();
         private Locale locale;
         public byte mode = 0;
+        public string text = "Обновить";
 
         StartWindow startWindow;
 
         public VehiclesTypesTablePageModal()
         {
             InitializeComponent();
+        }
+
+        public void SetMode(byte mode)
+        {
+            this.mode = mode;
+            if (mode == 0)
+            {
+                UpdateButton.Content = "обновить";
+                text = "Обновить";
+            }
+            else
+            {
+                UpdateButton.Content = "добавить";
+                text = "Добавить";
+            }
         }
 
         private void ModalPageControl_Loaded(object sender, RoutedEventArgs e)
@@ -72,9 +89,9 @@ namespace LogisticsClientsApp.Pages.Modal
             {
                 var reqResult = new VehiclesTypesObject();
                 if (mode == 0)
-                    reqResult = await startWindow.client.UpdateVehiclesTypeAsync(new CreateOrUpdateVehiclesTypesRequest { VehiclesTypes = data });
+                    reqResult = await startWindow.client.UpdateVehiclesTypeAsync(new CreateOrUpdateVehiclesTypesRequest { VehiclesTypes = data }, startWindow.headers);
                 if (mode == 1)
-                    reqResult = await startWindow.client.CreateVehiclesTypeAsync(new CreateOrUpdateVehiclesTypesRequest { VehiclesTypes = data });
+                    reqResult = await startWindow.client.CreateVehiclesTypeAsync(new CreateOrUpdateVehiclesTypesRequest { VehiclesTypes = data }, startWindow.headers);
                 var tablePage = (TablePage)startWindow.MainFrameK.Content;
                 var page = tablePage.DataGridFrame.Content as VehiclesTypesTablePage;
                 if (mode == 0)
@@ -86,7 +103,8 @@ namespace LogisticsClientsApp.Pages.Modal
                     page.TypesOriginal.Add(reqResult);
 
                 page.dataGrid.ItemsSource = null;
-                page.dataGrid.ItemsSource = page.TypesOriginal;
+                page.dataGrid.ItemsSource = page.TypesOriginal.Skip(page.skipPages).Take(page.takePages);
+                page.PaginationTextBlock.Text = $"{page.skipPages + 10} из {page.TypesOriginal.Count}";
 
                 ShowToast(TablePage.Messages.Success);
             }
@@ -110,7 +128,7 @@ namespace LogisticsClientsApp.Pages.Modal
                         changedDataNotify.Append($"Название: {data.Name} -> {NameTextBox.Text}");
                 }
 
-                var result = MessageBox.Show($"Применить изменения?\n {changedDataNotify}", "Обновление", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
+                var result = MessageBox.Show($"Применить изменения?\n {changedDataNotify}", $"{text}", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
                 if (result == MessageBoxResult.Yes)
                 {
                     try
