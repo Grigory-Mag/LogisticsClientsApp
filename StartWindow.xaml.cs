@@ -186,6 +186,10 @@ namespace LogisticsClientsApp
                     case var cls when cls == typeof(VehiclesTablePage):
 
                         break;
+
+                    case var cls when cls == typeof(RouteActionsTablePage):
+                        (MainFrameK.Content as RouteActionsTablePage)!.Dispose();
+                        break;
                 }
             }
             MainFrameK.Content = null;

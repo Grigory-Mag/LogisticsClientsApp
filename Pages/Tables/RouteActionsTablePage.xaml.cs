@@ -99,7 +99,7 @@ namespace LogisticsClientsApp.Pages.Tables
             }
         }
 
-        private void DeleteButton_Click(object sender, RoutedEventArgs e)
+        private async void DeleteButton_Click(object sender, RoutedEventArgs e)
         {
             var result = MessageBox.Show($"Вы действительно хотите удалить запись?", "Удаление", MessageBoxButton.OKCancel, MessageBoxImage.Warning, MessageBoxResult.No);
             if (result == MessageBoxResult.OK)
@@ -107,7 +107,7 @@ namespace LogisticsClientsApp.Pages.Tables
                 try
                 {
                     var item = dataGrid.SelectedItem as RouteActionsObject;
-                    startWindow.client.DeleteRouteActionAsync(new GetOrDeleteRouteActionsRequest { Id = item.Id }, startWindow.headers);
+                    var resultLocal = await startWindow.client.DeleteRouteActionAsync(new GetOrDeleteRouteActionsRequest { Id = item.Id }, startWindow.headers);
                     RouteActionsOriginal.Remove(item);
 
                     dataGrid.ItemsSource = null;
@@ -160,7 +160,7 @@ namespace LogisticsClientsApp.Pages.Tables
             RouteActions.Clear();
             RouteActionsOriginal.Clear();
             dataGrid.ItemsSource = null;
-            BindingOperations.ClearAllBindings(dataGrid);
+            BindingOperations.ClearAllBindings(this);
         }
     }
 }

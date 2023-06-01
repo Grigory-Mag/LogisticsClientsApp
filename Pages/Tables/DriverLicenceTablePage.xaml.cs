@@ -126,7 +126,7 @@ namespace LogisticsClientsApp.Pages.Tables
             }
         }
 
-        private void DeleteButton_Click(object sender, RoutedEventArgs e)
+        private async void DeleteButton_Click(object sender, RoutedEventArgs e)
         {
             var result = MessageBox.Show($"Вы действительно хотите удалить запись?", "Удаление", MessageBoxButton.OKCancel, MessageBoxImage.Warning, MessageBoxResult.No);
             if (result == MessageBoxResult.OK)
@@ -134,7 +134,7 @@ namespace LogisticsClientsApp.Pages.Tables
                 try
                 {
                     var item = dataGrid.SelectedItem as DriversLicenceReady;
-                    startWindow.client.DeleteDriverLicenceAsync(new GetOrDeleteDriverLicenceRequest { Id = (int)item.Id }, startWindow.headers);
+                    var resultLocal = await startWindow.client.DeleteDriverLicenceAsync(new GetOrDeleteDriverLicenceRequest { Id = (int)item.Id }, startWindow.headers);
                     DriversLicence.Remove(DriversLicence.First(x => x.Id == item.Id));
 
                     List<DriversLicenceReady> driversLicenceReadies = new List<DriversLicenceReady>();
@@ -149,7 +149,7 @@ namespace LogisticsClientsApp.Pages.Tables
                     if (ex.StatusCode == StatusCode.Unauthenticated)
                         MessageBox.Show("Ваше время сессии истекло. Перезайдите в аккаунт", "Сессия", MessageBoxButton.OK, MessageBoxImage.Error);
                     else
-                        MessageBox.Show($"Возникла ошибка: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show($"Возникла ошибка: {ex.StatusCode}. Проверьте, что данная запись нигде более не используется", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
 
             }

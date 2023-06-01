@@ -263,7 +263,7 @@ namespace LogisticsClientsApp.Pages.Tables
             var item = dataGrid.SelectedItem as RequestsReady;
             try
             {
-                await startWindow.client.DeleteRequestAsync(new GetOrDeleteRequestObjRequest { Id = item.Id }, startWindow.headers);
+                var result = await startWindow.client.DeleteRequestAsync(new GetOrDeleteRequestObjRequest { Id = item.Id }, startWindow.headers);
                 RequestsReadyObjectsOriginal.Remove(item);
 
                 dataGrid.ItemsSource = null;
@@ -274,7 +274,7 @@ namespace LogisticsClientsApp.Pages.Tables
                 if (ex.StatusCode == StatusCode.Unauthenticated)
                     MessageBox.Show("Ваше время сессии истекло. Перезайдите в аккаунт", "Сессия", MessageBoxButton.OK, MessageBoxImage.Error);
                 else
-                    MessageBox.Show($"Возникла ошибка: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show($"Возникла ошибка: {ex.StatusCode}. Проверьте, что данная запись нигде более не используется", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
             Requests.Remove(Requests.First(x => x.Id == item.Id));
