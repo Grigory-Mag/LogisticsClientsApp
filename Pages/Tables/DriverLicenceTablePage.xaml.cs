@@ -32,7 +32,8 @@ namespace LogisticsClientsApp.Pages.Tables
         private Locale locale;
         string tableName = "водительские лицензии";
 
-        StartWindow startWindow;
+        public static DriverLicenceTablePage PageInstance;
+        static StartWindow startWindow;
 
         public class DriversLicenceReady
         {
@@ -57,6 +58,13 @@ namespace LogisticsClientsApp.Pages.Tables
             InitializeComponent();
         }
 
+        public static DriverLicenceTablePage CreateInstance()
+        {
+            if (PageInstance == null)
+                PageInstance = new DriverLicenceTablePage();
+            return PageInstance;
+        }
+
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
             startWindow = (StartWindow)Window.GetWindow(this);
@@ -66,6 +74,7 @@ namespace LogisticsClientsApp.Pages.Tables
 
             tablePage.TextBlockTableName.Text = tableName;
             SetData();
+            ResizeDataGrid();
             startWindow.SizeChanged += (o, e) =>
             {
                 ResizeDataGrid();
@@ -164,15 +173,26 @@ namespace LogisticsClientsApp.Pages.Tables
 
                 DriversLicence = new List<DriverLicenceObject>();
                 DriversLicence.AddRange(item.DriverLicence.ToList());
+                DriversLicence = DriversLicence.OrderBy(x => x.Id).ToList();
                 DriversLicence.ForEach(license => DriversLicenceReadies.Add(new DriversLicenceReady(license.Id, license.Series, license.Number, license.Date)));
                 
                 dataGrid.ItemsSource = null;
                 dataGrid.ItemsSource = DriversLicenceReadies.Skip(skipPages).Take(takePages);
                 PaginationTextBlock.Text = $"{skipPages + 10} из {DriversLicence.Count}";
                 locale.SetLocale(this);
+                startWindow.IsConnected = true;
             }
             catch (RpcException ex)
             {
+                switch (ex.StatusCode)
+                {
+                    case StatusCode.Unavailable:
+                        startWindow.IsConnected = false;
+                        MessageBox.Show($"Возникли проблемы с соединением, обратитесь к администратору: {ex.StatusCode}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                        break;
+                    case StatusCode.Unauthenticated:
+                        break;
+                }
 #warning TODO
             }
         }

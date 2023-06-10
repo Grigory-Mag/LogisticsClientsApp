@@ -30,10 +30,18 @@ namespace LogisticsClientsApp.Pages.Tables
         public int skipPages = 0;
         private Locale locale;
 
-        StartWindow startWindow;
+        public static RolesTablePage PageInstance;
+        static StartWindow startWindow;
         public RolesTablePage()
         {
             InitializeComponent();
+        }
+
+        public static RolesTablePage CreateInstance()
+        {
+            if (PageInstance == null)
+                PageInstance = new RolesTablePage();
+            return PageInstance;
         }
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
@@ -130,6 +138,7 @@ namespace LogisticsClientsApp.Pages.Tables
                 var item = await startWindow.client.GetListRolesAsync(new Google.Protobuf.WellKnownTypes.Empty(), startWindow.headers);
                 Roles = new List<RolesObject>();
                 Roles.AddRange(item.RolesObject.ToList());
+                Roles = Roles.OrderBy(x => x.Id).ToList();
 
                 RolesOriginal = Roles;
 
@@ -137,9 +146,19 @@ namespace LogisticsClientsApp.Pages.Tables
                 dataGrid.ItemsSource = Roles.Skip(skipPages).Take(takePages);
                 locale.SetLocale(this);
                 PaginationTextBlock.Text = $"{skipPages + 10} из {Roles.Count}";
+                startWindow.IsConnected = true;
             }
             catch (RpcException ex)
             {
+                switch (ex.StatusCode)
+                {
+                    case StatusCode.Unavailable:
+                        startWindow.IsConnected = false;
+                        MessageBox.Show($"Возникли проблемы с соединением, обратитесь к администратору: {ex.StatusCode}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                        break;
+                    case StatusCode.Unauthenticated:
+                        break;
+                }
 #warning TODO
             }
         }

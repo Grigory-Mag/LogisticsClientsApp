@@ -40,6 +40,8 @@ namespace LogisticsClientsApp.Pages
         Locale locale;
         public CargoTablePage cargoTablePageInstance = new CargoTablePage();
         ITheme theme = new PaletteHelper().GetTheme();
+
+        public static TablePage PageInstance;
         static StartWindow startWindow;
         Excel ExcelProvider = new Excel();
 
@@ -60,9 +62,31 @@ namespace LogisticsClientsApp.Pages
             ChangeSelectedTable(page);
         }
 
+        public static TablePage CreateInstance()
+        {
+            if (PageInstance == null)
+            {
+                PageInstance = new TablePage();
+                PageInstance.SetData();
+            }
+            return PageInstance;
+        }
+
+        public static TablePage CreateInstance(Page page)
+        {
+            if (PageInstance == null)
+            {
+                PageInstance = new TablePage();
+                PageInstance.ChangeSelectedTable(page);
+                page = null;
+                PageInstance.SetData();
+            }
+            return PageInstance;
+        }
+
 
         private void InnerInit()
-        {
+        {            
             startWindow = (StartWindow)Window.GetWindow(this);
             //cargoTablePageInstance = new CargoTablePage();
 
@@ -240,6 +264,11 @@ namespace LogisticsClientsApp.Pages
 
         public void ChangeSelectedTable(Page page)
         {
+            if (page is UsersTablePage)
+                ExportButton.Visibility = Visibility.Hidden;
+            else
+                ExportButton.Visibility = Visibility.Visible;
+            DataGridFrame.Content = null;
             DataGridFrame.Navigate(page);
             selectedPage = page;
             SetSelectedPageParams(selectedPage);
@@ -554,38 +583,45 @@ namespace LogisticsClientsApp.Pages
                 filename = dlg.FileName;
                 await Task.Run(() =>
                 {
-                    switch (content)
+                    try
                     {
-                        case CargoTablePage:
-                            ExcelProvider.GenerateExcel(ToDataTableReady((content as CargoTablePage).CargoObjects), filename);
-                            break;
-                        case CargoTypesPage:
-                            ExcelProvider.GenerateExcel(ToDataTableReady((content as CargoTypesPage).CargoTypes), filename);
-                            break;
-                        case DriverLicenceTablePage:
-                            ExcelProvider.GenerateExcel(ToDataTableReady((content as DriverLicenceTablePage).DriversLicence), filename);
-                            break;
-                        case DriversTablePage:
-                            ExcelProvider.GenerateExcel(ToDataTableReady((content as DriversTablePage).Drivers), filename);
-                            break;
-                        case RequestsTablePage:
-                            ExcelProvider.GenerateExcel(ToDataTableReady((content as RequestsTablePage).Requests), filename);
-                            break;
-                        case RequisitesTablePage:
-                            ExcelProvider.GenerateExcel(ToDataTableReady((content as RequisitesTablePage).Requisites), filename);
-                            break;
-                        case RolesTablePage:
-                            ExcelProvider.GenerateExcel(ToDataTableReady((content as RolesTablePage).Roles), filename);
-                            break;
-                        case VehiclesTypesTablePage:
-                            ExcelProvider.GenerateExcel(ToDataTableReady((content as VehiclesTypesTablePage).Types), filename);
-                            break;
-                        case RouteActionsTablePage:
-                            ExcelProvider.GenerateExcel(ToDataTableReady((content as RouteActionsTablePage).RouteActions), filename);
-                            break;
-                        case VehiclesTablePage:
-                            ExcelProvider.GenerateExcel(ToDataTableReady((content as VehiclesTablePage).Vehicles), filename);
-                            break;
+                        switch (content)
+                        {
+                            case CargoTablePage:
+                                ExcelProvider.GenerateExcel(ToDataTableReady((content as CargoTablePage).CargoObjects), filename);
+                                break;
+                            case CargoTypesPage:
+                                ExcelProvider.GenerateExcel(ToDataTableReady((content as CargoTypesPage).CargoTypes), filename);
+                                break;
+                            case DriverLicenceTablePage:
+                                ExcelProvider.GenerateExcel(ToDataTableReady((content as DriverLicenceTablePage).DriversLicence), filename);
+                                break;
+                            case DriversTablePage:
+                                ExcelProvider.GenerateExcel(ToDataTableReady((content as DriversTablePage).Drivers), filename);
+                                break;
+                            case RequestsTablePage:
+                                ExcelProvider.GenerateExcel(ToDataTableReady((content as RequestsTablePage).Requests), filename);
+                                break;
+                            case RequisitesTablePage:
+                                ExcelProvider.GenerateExcel(ToDataTableReady((content as RequisitesTablePage).Requisites), filename);
+                                break;
+                            case RolesTablePage:
+                                ExcelProvider.GenerateExcel(ToDataTableReady((content as RolesTablePage).Roles), filename);
+                                break;
+                            case VehiclesTypesTablePage:
+                                ExcelProvider.GenerateExcel(ToDataTableReady((content as VehiclesTypesTablePage).Types), filename);
+                                break;
+                            case RouteActionsTablePage:
+                                ExcelProvider.GenerateExcel(ToDataTableReady((content as RouteActionsTablePage).RouteActions), filename);
+                                break;
+                            case VehiclesTablePage:
+                                ExcelProvider.GenerateExcel(ToDataTableReady((content as VehiclesTablePage).Vehicles), filename);
+                                break;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Возникла ошибка {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                 });
 
@@ -630,7 +666,7 @@ namespace LogisticsClientsApp.Pages
         private void FastSearchCall()
         {
             var text = SearchTextBox.Text;
-            if (SearchFilter.Items.Count > 0)
+            if (SearchFilter.Items.Count > 0 && startWindow.IsConnected == true)
                 switch (DataGridFrame.Content)
                 {
                     case CargoTablePage:

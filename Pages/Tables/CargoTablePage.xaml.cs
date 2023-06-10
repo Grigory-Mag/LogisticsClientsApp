@@ -44,10 +44,27 @@ namespace LogisticsClientsApp.Pages.Tables
         public int skipPages = 0;
         private Locale locale;
 
-        StartWindow startWindow;
+        public static ResourceDictionary textBoxResource = new ResourceDictionary
+        {
+            Source = new Uri("pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.TextBox.xaml", UriKind.RelativeOrAbsolute)
+        };
+        public static ResourceDictionary comboBoxResource = new ResourceDictionary
+        {
+            Source = new Uri("pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.ComboBox.xaml", UriKind.RelativeOrAbsolute)
+        };
+        public static CargoTablePage PageInstance;
+
+        static StartWindow startWindow;
         public CargoTablePage()
         {
             InitializeComponent();
+        }
+
+        public static CargoTablePage CreateInstance()
+        {
+            if (PageInstance == null)
+                PageInstance = new CargoTablePage();
+            return PageInstance;
         }
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
@@ -57,6 +74,7 @@ namespace LogisticsClientsApp.Pages.Tables
             CargoTypes = new ListCargoType();
             CargoTypes.CargoType.Add(new CargoTypesObject { Id = 0, Name = "Base" });
             locale = new Locale(startWindow.selectedLocale);
+            ResizeDataGrid();
             startWindow.SizeChanged += (o, e) =>
             {
                 ResizeDataGrid();
@@ -177,21 +195,15 @@ namespace LogisticsClientsApp.Pages.Tables
             foreach (var item in SearchFields)
             {
                 var textBox = new TextBox();
-                var textBoxResource = new ResourceDictionary
-                {
-                    Source = new Uri("pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.TextBox.xaml", UriKind.RelativeOrAbsolute)
-                };
-                var comboBoxResource = new ResourceDictionary
-                {
-                    Source = new Uri("pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.ComboBox.xaml", UriKind.RelativeOrAbsolute)
-                };
+
                 HintAssist.SetHint(textBox, item);
                 textBox.Margin = new Thickness(0, 0, 20, 0);
                 textBox.Style = textBoxResource["MaterialDesignOutlinedTextBox"] as Style;
                 textBox.MaxWidth = 130;
                 textBox.MinWidth = 130;
-                textBox.FontSize = 16;
-                textBox.MaxLength = 30;
+                textBox.FontSize = 14;
+                textBox.Height = 55;
+                //textBox.MaxLength = 30;
                 textBox.TextChanged += SearchTextBoxChanged;
                 textBox.Name = item;
                 if (item == "Тип")
@@ -202,7 +214,8 @@ namespace LogisticsClientsApp.Pages.Tables
                     comboBox.Style = comboBoxResource["MaterialDesignOutlinedComboBox"] as Style;
                     comboBox.MaxWidth = 130;
                     comboBox.MinWidth = 130;
-                    comboBox.FontSize = 16;
+                    comboBox.Height = 55;
+                    comboBox.FontSize = 14;
                     comboBox.VerticalAlignment = VerticalAlignment.Bottom;
                     comboBox.DisplayMemberPath = @"Name";
                     comboBox.SelectionChanged += SearchComboBox_SelectionChanged;
@@ -338,15 +351,27 @@ namespace LogisticsClientsApp.Pages.Tables
                 CargoTypes = await startWindow.client.GetListCargoTypesAsync(new Google.Protobuf.WellKnownTypes.Empty(), startWindow.headers);
                 CargoObjects = new List<CargoObject>();
                 CargoObjects.AddRange(item2.Cargo.ToList());
+                CargoObjects = CargoObjects.OrderBy(x => x.Id).ToList();
                 CargoObjectsOriginal = CargoObjects;
 
                 dataGrid.ItemsSource = null;
-                dataGrid.ItemsSource = CargoObjects;
+                dataGrid.ItemsSource = CargoObjects.Skip(skipPages).Take(takePages);
+                PaginationTextBlock.Text = $"{skipPages + 10} из {CargoObjects.Count}";
                 locale.SetLocale(this);
                 CreateAdvancedSearchFields();
+                startWindow.IsConnected = true;
             }
             catch (RpcException ex)
             {
+                switch (ex.StatusCode)
+                {
+                    case StatusCode.Unavailable:
+                        startWindow.IsConnected = false;
+                        MessageBox.Show($"Возникли проблемы с соединением, обратитесь к администратору: {ex.StatusCode}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                        break;
+                    case StatusCode.Unauthenticated:
+                        break;
+                }
 #warning TODO
             }
         }
@@ -356,6 +381,18 @@ namespace LogisticsClientsApp.Pages.Tables
 
             TablePage tablePage = (TablePage)startWindow.MainFrameK.Content;
             tablePage.ShowModalPage(0);
+        }
+
+        public void Dispose()
+        {
+            startWindow.SizeChanged -= (o, e) =>
+            {
+                ResizeDataGrid();
+            };
+            CargoObjects.Clear();
+            CargoObjectsOriginal.Clear();
+            dataGrid.ItemsSource = null;
+            BindingOperations.ClearAllBindings(dataGrid);
         }
 
     }

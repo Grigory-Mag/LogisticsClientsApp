@@ -27,9 +27,10 @@
         <materialDesign:Card Grid.Row="0">
             <StackPanel>
                 <DataGrid x:Name="dataGrid"
+                          RowHeight="47"
                           IsReadOnly="True"
-                          FontSize="18"
-                          MaxHeight="450"
+                          FontSize="16"
+                          MaxHeight="600"
                           Style="{StaticResource MaterialDesignDataGrid}"
                           AutoGenerateColumns="False">
 
@@ -59,16 +60,16 @@
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel>
-                                        <Button Width="40"
+                                        <Button Width="30"
                                                 x:Name="OpenRowButton"
                                                 Click="OpenRowButton_Click"
-                                                Height="40">
+                                                Height="30">
                                             <StackPanel Width="Auto"
                                                         Height="Auto"
-                                                        Margin="-22,-5,-20,0">
+                                                        Margin="-22,0,-20,0">
                                                 <ContentControl ContentTemplate="{StaticResource OpenButton}"
-                                                                Width="40"
-                                                                Height="40" />
+                                                                Width="20"
+                                                                Height="20" />
                                             </StackPanel>
                                         </Button>
                                     </StackPanel>
@@ -79,8 +80,8 @@
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel>
-                                        <Button Width="40"
-                                                Height="40"
+                                        <Button Width="30"
+                                                Height="30"
                                                 x:Name="DeleteButton"
                                                 Click="DeleteButton_Click"
                                                 Style="{StaticResource MaterialDesignFlatSecondaryLightBgButton}"
@@ -88,10 +89,10 @@
                                                 SnapsToDevicePixels="True">
                                             <StackPanel Width="Auto"
                                                         Height="Auto"
-                                                        Margin="-22,-5,-20,0">
+                                                        Margin="-22,0,-20,0">
                                                 <ContentControl ContentTemplate="{StaticResource DeleteButton}"
-                                                                Width="40"
-                                                                Height="40" />
+                                                                Width="20"
+                                                                Height="20" />
                                             </StackPanel>
                                         </Button>
                                     </StackPanel>
@@ -102,8 +103,8 @@
                     </DataGrid.Columns>
                 </DataGrid>
 
-                <TextBlock Text="1 - 10 of 20"
-                           FontSize="18"
+                <TextBlock Text="N из N"
+                           FontSize="16"
                            Name="PaginationTextBlock"
                            VerticalAlignment="Bottom"
                            HorizontalAlignment="Right"

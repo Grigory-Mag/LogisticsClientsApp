@@ -48,6 +48,7 @@ namespace LogisticsClientsApp
         public List<string> tablesList = new List<string>();
         public double windowSize = 0;
         public int role = 0;
+        public bool IsConnected = true;
 
         public string userName { get; set; }
         public string userSurname { get; set; }
@@ -78,8 +79,16 @@ namespace LogisticsClientsApp
             //Properties.Default.Address = "http://185.248.101.68:8008";
             //Properties.Default.Save();
 
-            Uri path = new Uri(Directory.GetCurrentDirectory() + @"\Resources\Images\loginBackground.jpg");
-            MainGrid.Background = new ImageBrush(new BitmapImage(path));
+            try
+            {
+                Uri path = new Uri(Directory.GetCurrentDirectory() + @"\Resources\Images\loginBackground.jpg");
+                MainGrid.Background = new ImageBrush(new BitmapImage(path));
+            }
+            catch (Exception ex)
+            {
+
+            }
+
             MenuOpenBtn.Click += Button_Click_1;
             MenuCloseBtn.Click += btnclose_Click;
 
@@ -94,15 +103,20 @@ namespace LogisticsClientsApp
             PaletteHelper palette = new PaletteHelper(); ;
 
             var SelectedTheme = Properties.Default.SelectedTheme;
-            if (SelectedTheme == "Light")
+            switch (SelectedTheme)
             {
-                theme.SetBaseTheme(Theme.Light);
-                palette.SetTheme(theme);
-            }
-            else
-            {
-                theme.SetBaseTheme(Theme.Dark);
-                palette.SetTheme(theme);
+                case "Light":
+                    theme.SetBaseTheme(Theme.Light);
+                    palette.SetTheme(theme);
+                    break;
+                case "Dark":
+                    theme.SetBaseTheme(Theme.Dark);
+                    palette.SetTheme(theme);
+                    break;
+                default:
+                    theme.SetBaseTheme(Theme.Light);
+                    palette.SetTheme(theme);
+                    break;
             }
             IconImage.Source = LoadLogo();
 
@@ -138,7 +152,21 @@ namespace LogisticsClientsApp
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Изображение не найдено", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                    try
+                    {
+                        var path = Directory.GetCurrentDirectory() + @"\Resources\Images\background_image.png";
+                        BitmapImage background = new BitmapImage();
+                        background.BeginInit();
+                        background.UriSource = new Uri(path);
+                        background.EndInit();
+                        ProfileBackgroundImage.ImageSource = background;
+                    }
+                    catch (Exception ex2)
+                    {
+
+                    }
+
+                    //MessageBox.Show("Изображение не найдено", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
 
             created = Uri.TryCreate(fileForegroundPath, UriKind.RelativeOrAbsolute, out uri);
@@ -153,7 +181,21 @@ namespace LogisticsClientsApp
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Изображение не найдено", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                    try
+                    {
+                        var path = Directory.GetCurrentDirectory() + @"\Resources\Images\employee.png";
+                        BitmapImage background = new BitmapImage();
+                        background.BeginInit();
+                        background.UriSource = new Uri(path);
+                        background.EndInit();
+                        UserProfileImage.ImageSource = background;
+                    }
+                    catch (Exception ex2)
+                    {
+
+                    }
+
+                    //MessageBox.Show("Изображение не найдено", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
         }
 
@@ -164,27 +206,28 @@ namespace LogisticsClientsApp
                 switch (MainFrameK.Content) 
                 {
                     case var cls when cls == typeof(CargoTablePage):
-
+                        (MainFrameK.Content as CargoTablePage)!.Dispose();
                         break;
                     case var cls when cls == typeof(CargoTypesPage):
-
+                        (MainFrameK.Content as CargoTypesPage)!.Dispose();
                         break;
                     case var cls when cls == typeof(DriverLicenceTablePage):
-
+                        (MainFrameK.Content as DriverLicenceTablePage)!.Dispose();
                         break;
                     case var cls when cls == typeof(DriversTablePage):
+                        (MainFrameK.Content as DriversTablePage)!.Dispose();
                         break;
                     case var cls when cls == typeof(RequestsTablePage):
                         (MainFrameK.Content as RequestsTablePage)!.Dispose();
                         break;
                     case var cls when cls == typeof(RolesTablePage):
-
+                        (MainFrameK.Content as RolesTablePage)!.Dispose();
                         break;
                     case var cls when cls == typeof(VehiclesTypesTablePage):
-
+                        (MainFrameK.Content as VehiclesTypesTablePage)!.Dispose();
                         break;
                     case var cls when cls == typeof(VehiclesTablePage):
-
+                        (MainFrameK.Content as VehiclesTablePage)!.Dispose();
                         break;
 
                     case var cls when cls == typeof(RouteActionsTablePage):
@@ -434,7 +477,7 @@ namespace LogisticsClientsApp
             MenuOpenBtn.Visibility = Visibility.Collapsed;
 
             LeftMenu.Visibility = Visibility.Collapsed;
-            LoginPage.ErrorStackPanel.Visibility = Visibility.Collapsed;
+            LoginPage.ErrorStackPanel.Visibility = Visibility.Hidden;
 
             foreach (KeyValuePair<string, List<object>> entry in buttonsReferences)
                 (buttonsReferences[entry.Key][4] as Button)!.Visibility = Visibility.Collapsed;
@@ -494,7 +537,7 @@ namespace LogisticsClientsApp
             {
                 Application.Current.Dispatcher.Invoke(() =>
                 {
-                    ChangePage(new TablePage());
+                    ChangePage(TablePage.CreateInstance());
                 });
             });
         }
@@ -524,40 +567,40 @@ namespace LogisticsClientsApp
                     switch (i)
                     {
                         case 0:
-                            page!.ChangeSelectedTable(new CargoTablePage());
+                            page!.ChangeSelectedTable(CargoTablePage.CreateInstance());
                             break;
                         case 1:
-                            page!.ChangeSelectedTable(new CargoTypesPage());
+                            page!.ChangeSelectedTable(CargoTypesPage.CreateInstance());
                             break;
                         case 2:
-                            page!.ChangeSelectedTable(new DriversTablePage());
+                            page!.ChangeSelectedTable(DriversTablePage.CreateInstance());
                             break;
                         case 3:
-                            page!.ChangeSelectedTable(new DriverLicenceTablePage());
+                            page!.ChangeSelectedTable(DriverLicenceTablePage.CreateInstance());
                             break;
                         case 4:
-                            page!.ChangeSelectedTable(new RequisitesTablePage());
+                            page!.ChangeSelectedTable(RequisitesTablePage.CreateInstance());
                             break;
                         case 5:
-                            page!.ChangeSelectedTable(new RolesTablePage());
+                            page!.ChangeSelectedTable(RolesTablePage.CreateInstance());
                             break;
                         case 6:
-                            page!.ChangeSelectedTable(new RequisiteTypesTablePage());
+                            page!.ChangeSelectedTable(RequisiteTypesTablePage.CreateInstance());
                             break;
                         case 7:
-                            page!.ChangeSelectedTable(new VehiclesTablePage());
+                            page!.ChangeSelectedTable(VehiclesTablePage.CreateInstance());
                             break;
                         case 8:
-                            page!.ChangeSelectedTable(new VehiclesTypesTablePage());
+                            page!.ChangeSelectedTable(VehiclesTypesTablePage.CreateInstance());
                             break;
                         case 9:
-                            page!.ChangeSelectedTable(new RequestsTablePage());
+                            page!.ChangeSelectedTable(RequestsTablePage.CreateInstance());
                             break;
                         case 10:
-                            page!.ChangeSelectedTable(new RouteActionsTablePage());
+                            page!.ChangeSelectedTable(RouteActionsTablePage.CreateInstance());
                             break;
                         case 11:
-                            page!.ChangeSelectedTable(new UsersTablePage());
+                            page!.ChangeSelectedTable(UsersTablePage.CreateInstance());
                             break;
                     }
                 }

@@ -316,6 +316,8 @@ namespace LogisticsClientsApp.Pages.Modal
 
                 try
                 {
+                    if ((CustomerComboBox.SelectedItem as RequisitesObject)!.Id == (TransporterComboBox.SelectedItem as RequisitesObject)!.Id)
+                        throw new InvalidOperationException();
                     data.Price = double.Parse(PriceTextBox.Text);
                     data.CreationDate = Timestamp.FromDateTime(DatePicker.SelectedDate!.Value.AddDays(1).ToUniversalTime());
                     data.Vehicle = vehicles.Vehicle.First(x => x.Id == (VehicleComboBox.SelectedItem as VehiclesObjectReady)!.Id);
@@ -334,6 +336,9 @@ namespace LogisticsClientsApp.Pages.Modal
                     {
                         case RpcException:
                             MessageBox.Show($"Возникла ошибка. Обратитесь к администратору\n{ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                            break;
+                        case InvalidOperationException:
+                            MessageBox.Show($"Проверьте, что заказчик и перевозчик не являеются одной и той же организацией", "Внимание", MessageBoxButton.OK, MessageBoxImage.Warning);
                             break;
                         default:
                             MessageBox.Show("Проверьте заполненность всех полей. Удостоверьтесь, что численные значения введены верно", "Ошибка ввода", MessageBoxButton.OK, MessageBoxImage.Error);

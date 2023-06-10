@@ -29,11 +29,20 @@ namespace LogisticsClientsApp.Pages.Tables
         public int takePages = 10;
         public int skipPages = 0;
 
-        StartWindow startWindow;
+        public static UsersTablePage PageInstance;
+        static StartWindow startWindow;
 
         public UsersTablePage()
         {
             InitializeComponent();
+        }
+
+        public static UsersTablePage CreateInstance()
+        {
+            if (PageInstance == null)            
+                PageInstance = new UsersTablePage();
+            
+            return PageInstance;
         }
 
         public void FastSearch(string text, string? param)
@@ -64,7 +73,17 @@ namespace LogisticsClientsApp.Pages.Tables
             string tableName = "пользователи";
             var tablePage = startWindow.MainFrameK.Content as TablePage;
             tablePage.TextBlockTableName.Text = tableName;
+            ResizeDataGrid();
+            startWindow.SizeChanged += (o, e) =>
+            {
+                ResizeDataGrid();
+            };
             SetData();
+        }
+
+        public void ResizeDataGrid()
+        {
+            dataGrid.MaxHeight = startWindow.Height / 2 - 40; ;
         }
 
         private void PrevTablePageButton_Click(object sender, RoutedEventArgs e)
@@ -120,14 +139,25 @@ namespace LogisticsClientsApp.Pages.Tables
                 var item = await startWindow.client.GetListUsersAsync(new Google.Protobuf.WellKnownTypes.Empty(), startWindow.headers);
                 Users = new List<LoginObject>();
                 Users.AddRange(item.Logins.ToList());
+                Users = Users.OrderBy(x => x.Id).ToList();
                 UsersOriginal = Users;
                 dataGrid.ItemsSource = null;
                 dataGrid.ItemsSource = Users.Skip(skipPages).Take(takePages);
                 locale.SetLocale(this);
                 PaginationTextBlock.Text = $"{skipPages + 10} из {Users.Count}";
+                startWindow.IsConnected = true;
             }
             catch (RpcException ex)
             {
+                switch (ex.StatusCode)
+                {
+                    case StatusCode.Unavailable:
+                        startWindow.IsConnected = false;
+                        MessageBox.Show($"Возникли проблемы с соединением, обратитесь к администратору: {ex.StatusCode}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                        break;
+                    case StatusCode.Unauthenticated:
+                        break;
+                }
 #warning TODO
             }
         }

@@ -104,9 +104,9 @@ namespace LogisticsClientsApp.Pages.Modal
             {
                 var reqResult = new LoginObject();
                 if (mode == 0)
-                    reqResult = await startWindow.client.UpdateUserAsync(new LoginRequest { Data = data });
+                    reqResult = await startWindow.client.UpdateUserAsync(new LoginRequest { Data = data }, startWindow.headers);
                 if (mode == 1)
-                    reqResult = await startWindow.client.CreateUserAsync(new LoginRequest { Data = data });
+                    reqResult = await startWindow.client.CreateUserAsync(new LoginRequest { Data = data }, startWindow.headers);
                 var tablePage = (TablePage)startWindow.MainFrameK.Content;
                 var page = tablePage.DataGridFrame.Content as UsersTablePage;
                 if (mode == 0)

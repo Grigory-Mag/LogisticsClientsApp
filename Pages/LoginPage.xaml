@@ -39,8 +39,8 @@
 
 
                 <StackPanel Grid.Row="0"
-                            Margin="0,0,0,80">
-                    <TextBlock FontSize="22"
+                            Margin="0,0,0,30">
+                    <TextBlock FontSize="20"
                                TextAlignment="Left"
                                Margin="0,0,0,10"
                                Name="WelcomeBackTextBlock"
@@ -54,10 +54,11 @@
                                TextWrapping="Wrap"
                                HorizontalAlignment="Left"
                                Foreground="{Binding RelativeSource={RelativeSource AncestorType={x:Type FrameworkElement}}, Path=(TextElement.Foreground)}"
-                               FontSize="18" />
+                               FontSize="16" />
                 </StackPanel>
 
-                <Canvas Margin="250,-70,0,0"
+                <Canvas Margin="250,-60,0,0"
+                        Grid.Row="0"
                         Name="CanvasItem"
                         MouseEnter="Canvas_MouseEnter">
                     <Path Fill="#2196F3"
@@ -115,15 +116,15 @@
                             HorizontalAlignment="Center">
                     <StackPanel Orientation="Horizontal"
                                 Name="ErrorStackPanel"
-                                Visibility="Collapsed"
+                                Visibility="Hidden"
                                 HorizontalAlignment="Center">
 
                         <materialDesign:PackIcon Kind="Warning"
                                                  Foreground="{StaticResource AccentCustomColor}"
-                                                 Width="70"
-                                                 Height="70"
+                                                 Width="60"
+                                                 Height="60"
                                                  Margin="0,0,30,0" />
-                        <TextBlock FontSize="20"
+                        <TextBlock FontSize="18"
                                    Name="ErrorTextBlock"
                                    FontWeight="Bold"
                                    Foreground="{StaticResource AccentCustomColor}"
@@ -145,24 +146,24 @@
                                  Value="0" />
                 </StackPanel>             
                 
-                <TextBox Width="400"
+                <TextBox Width="350"
                          Grid.Row="2"
-                         Height="60"
+                         Height="55"
                          Name="LoginTextBox"
                          TextChanged="LoginTextBox_TextChanged"
-                         FontSize="18"
+                         FontSize="16"
                          Margin="0,10,0,30"
                          materialDesign:HintAssist.HelperTextFontSize="14"
                          materialDesign:TextFieldAssist.TextFieldCornerRadius="10"
                          materialDesign:HintAssist.Hint="Login"
                          Style="{StaticResource MaterialDesignOutlinedTextBox}" />
-                <PasswordBox Width="400"
+                <PasswordBox Width="350"
                              Grid.Row="3"
-                             Height="60"
+                             Height="55"
                              PasswordChanged="PasswordTextBox_PasswordChanged"
                              Name="PasswordTextBox"
                              materialDesign:TextFieldAssist.TextFieldCornerRadius="10"
-                             FontSize="18"
+                             FontSize="16"
                              materialDesign:HintAssist.Hint="Password"
                              Style="{StaticResource MaterialDesignOutlinedRevealPasswordBox}" />
                 <ComboBox Grid.Row="4"
@@ -189,7 +190,7 @@
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         Margin="0,30,0,30"
-                        FontSize="22"
+                        FontSize="18"
                         Typography.Capitals="SmallCaps"
                         Style="{StaticResource MaterialDesignRaisedButton}"
                         Foreground="White"

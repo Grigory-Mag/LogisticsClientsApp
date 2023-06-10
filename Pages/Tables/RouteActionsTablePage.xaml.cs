@@ -30,10 +30,18 @@ namespace LogisticsClientsApp.Pages.Tables
         public int skipPages = 0;
         private Locale locale;
 
-        StartWindow startWindow;
+        public static RouteActionsTablePage PageInstance;
+        static StartWindow startWindow;
         public RouteActionsTablePage()
         {
             InitializeComponent();
+        }
+
+        public static RouteActionsTablePage CreateInstance()
+        {
+            if (PageInstance == null)
+                PageInstance = new RouteActionsTablePage();
+            return PageInstance;
         }
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
@@ -131,6 +139,7 @@ namespace LogisticsClientsApp.Pages.Tables
                 var item = await startWindow.client.GetListRouteActionsAsync(new Google.Protobuf.WellKnownTypes.Empty(), startWindow.headers);
                 RouteActions = new List<RouteActionsObject>();
                 RouteActions.AddRange(item.RouteActionsObject.ToList());
+                RouteActions = RouteActions.OrderBy(x => x.Id).ToList();
 
                 RouteActionsOriginal = RouteActions;
 
@@ -138,9 +147,19 @@ namespace LogisticsClientsApp.Pages.Tables
                 dataGrid.ItemsSource = RouteActions.Skip(skipPages).Take(takePages);
                 locale.SetLocale(this);
                 PaginationTextBlock.Text = $"{skipPages + 10} из {RouteActions.Count}";
+                startWindow.IsConnected = true;
             }
             catch (RpcException ex)
             {
+                switch (ex.StatusCode)
+                {
+                    case StatusCode.Unavailable:
+                        startWindow.IsConnected = false;
+                        MessageBox.Show($"Возникли проблемы с соединением, обратитесь к администратору: {ex.StatusCode}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                        break;
+                    case StatusCode.Unauthenticated:
+                        break;
+                }
 #warning TODO
             }
         }

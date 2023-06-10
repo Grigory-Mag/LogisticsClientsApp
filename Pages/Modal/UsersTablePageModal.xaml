@@ -115,12 +115,12 @@
                                      Name="LoginTextBox"
                                      Style="{StaticResource MaterialDesignFloatingHintTextBox}"
                                      Margin="0,0,0,30" />
-                            <TextBox materialDesign:HintAssist.Hint="Имя"
-                                     Name="NameTextBox"
-                                     Style="{StaticResource MaterialDesignFloatingHintTextBox}"
-                                     Margin="0,0,0,30" />
                             <TextBox materialDesign:HintAssist.Hint="Фамилия"
                                      Name="SurnameTextBox"
+                                     Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                                     Margin="0,0,0,30" />
+                            <TextBox materialDesign:HintAssist.Hint="Имя"
+                                     Name="NameTextBox"
                                      Style="{StaticResource MaterialDesignFloatingHintTextBox}"
                                      Margin="0,0,0,30" />
                             <TextBox materialDesign:HintAssist.Hint="Отчество"

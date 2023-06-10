@@ -83,8 +83,9 @@
                                 Grid.Column="1">
 
                         <ComboBox x:Name="SearchFilter"
-                                  FontSize="18"
-                                  MinWidth="200"
+                                  FontSize="14"
+                                  MinWidth="150"
+                                  Height="50"
                                   Width="Auto"
                                   Margin="0,0,40,0"
                                   SelectionChanged="SearchFilter_SelectionChanged"
@@ -92,13 +93,14 @@
                                   Style="{StaticResource MaterialDesignOutlinedComboBox}">
                         </ComboBox>
 
-                        <materialDesign:PackIcon Width="50"
-                                                 Height="50"
+                        <materialDesign:PackIcon Width="40"
+                                                 Height="40"
                                                  HorizontalAlignment="Left"
                                                  Foreground="#7c767e"
                                                  Grid.Column="1"
+                                                 Margin="0,5,0,0"
                                                  Kind="Search" />
-                        <TextBox MaxWidth="400"
+                        <TextBox MaxWidth="300"
                                  MaxHeight="100"
                                  MaxLength="30"
                                  MaxLines="1"
@@ -108,7 +110,9 @@
                                  TextChanged="SearchTextBox_TextChanged"
                                  VerticalAlignment="Top"
                                  HorizontalAlignment="Center"
-                                 FontSize="20"
+                                 FontSize="14"
+                                 MinWidth="150"
+                                 Height="51"
                                  materialDesign:HintAssist.Hint="Поиск"
                                  AcceptsReturn="True"
                                  Style="{StaticResource MaterialDesignOutlinedTextBox}"
@@ -162,7 +166,7 @@
                                    Typography.Capitals="SmallCaps"
                                    Grid.Row="0"
                                    FontWeight="Medium"
-                                   FontSize="18" />
+                                   FontSize="15" />
                         <Rectangle Fill="Transparent"
                                    Height="40"
                                    Grid.Row="1"
@@ -202,7 +206,7 @@
                            Typography.Capitals="SmallCaps"
                            FontWeight="SemiBold"
                            Foreground="{StaticResource PrimaryCustomColor}"
-                           FontSize="24"
+                           FontSize="20"
                            VerticalAlignment="Center"
                            Grid.Column="0" />
 
@@ -211,12 +215,12 @@
                            Height="5"
                            RadiusX="2"
                            RadiusY="2"
-                           Margin="0,20,0,20" />
+                           Margin="0,10,0,10" />
             </StackPanel>
 
             <!-- ### DIVIDER ### -->
 
-            <Grid Margin="0,0,0,20">
+            <Grid Margin="0,0,0,5">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="1*" />
@@ -227,11 +231,11 @@
                             Orientation="Horizontal">
                     <Button x:Name="ExportButton"
                             Typography.Capitals="SmallCaps"
-                            FontSize="18"
-                            MinHeight="40"
+                            FontSize="14"
+                            MinHeight="30"
                             Style="{StaticResource MaterialDesignPaperButton}"
                             BorderBrush="#9CCC65"
-                            materialDesign:RippleAssist.Feedback="DarkGreen"
+                            materialDesign:RippleAssist.Feedback="LightGreen"
                             Margin="0,0,100,0"
                             Click="ExportButton_Click">
                         <StackPanel>
@@ -242,7 +246,7 @@
                     <Button Width="Auto"
                             Name="AddButton"
                             FontSize="18"
-                            MinHeight="40"
+                            MinHeight="30"
                             Style="{StaticResource MaterialDesignRaisedButton}"
                             materialDesign:ColorZoneAssist.Mode="SecondaryDark"
                             Foreground="White"
@@ -254,7 +258,7 @@
                                        Name="AddRecordBtn"
                                        TextWrapping="Wrap"
                                        Margin="10,0,0,0"
-                                       FontSize="18"
+                                       FontSize="14"
                                        FontStyle="Normal" />
                             <materialDesign:PackIcon Kind="Plus"
                                                      Height="20"

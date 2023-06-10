@@ -14,7 +14,8 @@
       FontSize="20"
       Background="Transparent"
       FontFamily="{DynamicResource MaterialDesignFont}"
-      Height="700"
+      MaxHeight="700"
+      Height="600"
       Width="700"
       Loaded="SettingsPage_Loaded"
       Title="SettingsPage">
@@ -43,7 +44,7 @@
                                Grid.Column="0"
                                Grid.ColumnSpan="2"
                                Text="настройки"
-                               FontSize="26"
+                               FontSize="22"
                                HorizontalAlignment="Center"
                                Typography.Capitals="SmallCaps"
                                FontWeight="SemiBold" />
@@ -54,20 +55,20 @@
                                Typography.Capitals="SmallCaps"
                                Margin="0,30,0,0">
                     <Run Text="тема"
-                         FontSize="26" />
+                         FontSize="22" />
                     <LineBreak />
                     <LineBreak />
                     <Run Text="Выбрать светлую или темную тему"
                          Typography.Capitals="Normal"
                          FontWeight="Normal"
                          Foreground="{StaticResource LightGrayColor}"
-                         FontSize="22" />
+                         FontSize="16" />
                     </TextBlock>
 
                     <ToggleButton Name="ToggleDarkMode"
                                   Grid.Row="1"
                                   Grid.Column="1"
-                                  Width="60"
+                                  Width="40"
                                   HorizontalAlignment="Center"
                                   Margin="0,0,0,0"
                                   Checked="ToggleDarkMode_Checked"
@@ -83,27 +84,27 @@
                                Typography.Capitals="SmallCaps"
                                Margin="0,40,0,0">
                     <Run Text="язык"
-                         FontSize="26" />
+                         FontSize="22" />
                     <LineBreak />
                     <LineBreak />
                     <Run Text="Выбрать язык приложения"
                          Typography.Capitals="Normal"
                          FontWeight="Normal"
                          Foreground="{StaticResource LightGrayColor}"
-                         FontSize="22" />
+                         FontSize="16" />
                         <LineBreak />
                                             <Run Text=" *недоступно на данный момент"
                                                  Typography.Capitals="Normal"
                                                  FontWeight="Normal"
                                                  Foreground="{StaticResource AccentCustomColor}"
-                                                 FontSize="22" />
+                                                 FontSize="16" />
                     </TextBlock>
 
                     <ComboBox Grid.Row="2"
                               Grid.Column="1"
                               MinWidth="250"
-                              FontSize="18"
-                              Height="70"
+                              FontSize="16"
+                              Height="60"
                               IsEnabled="False"
                               VerticalAlignment="Bottom"
                               x:Name="LanguagesComboBox"
@@ -117,14 +118,14 @@
                                Typography.Capitals="SmallCaps"
                                Margin="0,40,0,0">
                     <Run Text="фон"
-                         FontSize="26" />
+                         FontSize="22" />
                     <LineBreak />
                     <LineBreak />
                     <Run Text="Выбрать фоновое изображение профиля"
                          Typography.Capitals="Normal"
                          FontWeight="Normal"
                          Foreground="{StaticResource LightGrayColor}"
-                         FontSize="22" />
+                         FontSize="16" />
                         <LineBreak />
                     </TextBlock>
 
@@ -145,7 +146,7 @@
                                  MaxWidth="250"
                                  MaxLength="256"
                                  TextWrapping="Wrap"
-                                 FontSize="18"
+                                 FontSize="16"
                                  Grid.Row="1"
                                  Grid.Column="0"
                                  Name="FilePathTextBox"
@@ -199,14 +200,14 @@
                                Typography.Capitals="SmallCaps"
                                Margin="0,40,0,0">
                     <Run Text="профиль"
-                         FontSize="26" />
+                         FontSize="22" />
                     <LineBreak />
                     <LineBreak />
                     <Run Text="Выбрать изображение профиля"
                          Typography.Capitals="Normal"
                          FontWeight="Normal"
                          Foreground="{StaticResource LightGrayColor}"
-                         FontSize="22" />
+                         FontSize="16" />
                         <LineBreak />
                     </TextBlock>
 
@@ -226,7 +227,7 @@
                                  MaxWidth="250"
                                  MaxLength="256"
                                  TextWrapping="Wrap"
-                                 FontSize="18"
+                                 FontSize="16"
                                  Grid.Row="1"
                                  Grid.Column="0"
                                  Name="MainFilePathTextBox"

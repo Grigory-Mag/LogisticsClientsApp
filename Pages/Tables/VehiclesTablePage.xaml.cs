@@ -26,22 +26,42 @@ namespace LogisticsClientsApp.Pages.Tables
     {
         public List<VehiclesObject> Vehicles { get; set; }
         public List<VehiclesObject> VehiclesOriginal { get; set; }
-        public List<VehiclesTypesObject> VehiclesTypes{ get; set; }
+        public List<VehiclesTypesObject> VehiclesTypes { get; set; }
         private Locale locale;
 
-        public List<string> SearchFields = new List<string>() { "Тип", "Номер тягача", "Владелец", "Номер прицепа"};
+        public List<string> SearchFields = new List<string>() { "Тип", "Номер тягача", "Владелец", "Номер прицепа" };
         public List<object> SearchItemsList = new List<object>();
+        bool isFirst = true;
 
         public TablePage tablePage;
+
+        public static ResourceDictionary textBoxResource = new ResourceDictionary
+        {
+            Source = new Uri("pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.TextBox.xaml", UriKind.RelativeOrAbsolute)
+        };
+        public static ResourceDictionary comboBoxResource = new ResourceDictionary
+        {
+            Source = new Uri("pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.ComboBox.xaml", UriKind.RelativeOrAbsolute)
+        };
 
         public int takePages = 10;
         public int skipPages = 0;
 
-        StartWindow startWindow;
+        public static VehiclesTablePage PageInstance;
+        static StartWindow startWindow;
+
         public VehiclesTablePage()
         {
             InitializeComponent();
         }
+
+        public static VehiclesTablePage CreateInstance()
+        {
+            if (PageInstance == null)
+                PageInstance = new VehiclesTablePage();
+            return PageInstance;
+        }
+
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
             startWindow = (StartWindow)Window.GetWindow(this);
@@ -113,31 +133,38 @@ namespace LogisticsClientsApp.Pages.Tables
             }
         }
 
-        private async void CreateAdvancedSearchFields()
+        private void CreateAdvancedSearchFields()
         {
+            SearchItemsList.ForEach(x =>
+            {
+                switch (x)
+                {
+                    case TextBox:
+                        (x as TextBox).TextChanged -= SearchTextBoxChanged;
+                        break;
+                    case ComboBox:
+                        (x as ComboBox).SelectionChanged -= SearchComboBox_SelectionChanged;
+                        break;
+                }
+            });
             tablePage.AdvancedSearch.Children.Clear();
+
+            BindingOperations.ClearAllBindings(tablePage.AdvancedSearch);
+            SearchItemsList.Clear();
 
             // typeItemsSource.Add(new CargoTypesObject { Id = -1, Name = "Все типы" });
             foreach (var item in SearchFields)
             {
                 var textBox = new TextBox();
                 var comboBox = new ComboBox();
-                var textBoxResource = new ResourceDictionary
-                {
-                    Source = new Uri("pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.TextBox.xaml", UriKind.RelativeOrAbsolute)
-                };
-                var comboBoxResource = new ResourceDictionary
-                {
-                    Source = new Uri("pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.ComboBox.xaml", UriKind.RelativeOrAbsolute)
-                };
 
                 HintAssist.SetHint(textBox, item);
                 textBox.Margin = new Thickness(0, 0, 20, 0);
                 textBox.Style = textBoxResource["MaterialDesignOutlinedTextBox"] as Style;
                 textBox.MaxWidth = 180;
                 textBox.MinWidth = 150;
-                textBox.FontSize = 16;
-                textBox.MaxLength = 30;
+                textBox.FontSize = 14;
+                textBox.Height = 55;
                 textBox.TextChanged += SearchTextBoxChanged;
 
                 HintAssist.SetHint(comboBox, item);
@@ -145,7 +172,8 @@ namespace LogisticsClientsApp.Pages.Tables
                 comboBox.Style = comboBoxResource["MaterialDesignOutlinedComboBox"] as Style;
                 comboBox.MaxWidth = 180;
                 comboBox.MinWidth = 130;
-                comboBox.FontSize = 16;
+                comboBox.FontSize = 14;
+                comboBox.Height = 55;
                 comboBox.IsEditable = true;
                 comboBox.VerticalAlignment = VerticalAlignment.Bottom;
                 comboBox.SelectionChanged += SearchComboBox_SelectionChanged;
@@ -164,7 +192,7 @@ namespace LogisticsClientsApp.Pages.Tables
                         break;
                 }
             }
-            await SyncSearch();
+            SyncSearch();
         }
 
         private async void DeleteButton_Click(object sender, RoutedEventArgs e)
@@ -278,14 +306,17 @@ namespace LogisticsClientsApp.Pages.Tables
         {
             try
             {
+                BindingOperations.ClearAllBindings(dataGrid);
                 var item = await startWindow.client.GetListVehiclesAsync(new Google.Protobuf.WellKnownTypes.Empty(), startWindow.headers);
                 Vehicles = new List<VehiclesObject>();
                 Vehicles.AddRange(item.Vehicle.ToList());
+                Vehicles = Vehicles.OrderBy(x => x.Id).ToList();
                 VehiclesOriginal = Vehicles;
 
                 VehiclesTypes = new List<VehiclesTypesObject>();
                 Vehicles.ForEach(x => VehiclesTypes.Add(x.Type));
                 VehiclesTypes = VehiclesTypes.Distinct().ToList();
+
 
                 dataGrid.ItemsSource = null;
                 dataGrid.ItemsSource = Vehicles.Skip(skipPages).Take(takePages);
@@ -295,7 +326,11 @@ namespace LogisticsClientsApp.Pages.Tables
             }
             catch (RpcException ex)
             {
-#warning TODO
+                MessageBox.Show($"Возникла ошибка: {ex.StatusCode}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Возникла непредвиденная ошибка: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 

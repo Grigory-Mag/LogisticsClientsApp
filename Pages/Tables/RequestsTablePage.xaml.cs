@@ -50,7 +50,23 @@ namespace LogisticsClientsApp.Pages.Tables
         public int takePages = 10;
         public int skipPages = 0;
 
-        StartWindow startWindow;
+        public static ResourceDictionary textBoxResource = new ResourceDictionary
+        {
+            Source = new Uri("pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.TextBox.xaml", UriKind.RelativeOrAbsolute)
+        };
+        public static ResourceDictionary comboBoxResource = new ResourceDictionary
+        {
+            Source = new Uri("pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.ComboBox.xaml", UriKind.RelativeOrAbsolute)
+        };
+        public static ResourceDictionary datePickerResource = new ResourceDictionary
+        {
+            Source = new Uri("pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.DatePicker.xaml", UriKind.RelativeOrAbsolute)
+        };
+        
+        public static int count = 0;
+
+        public static RequestsTablePage PageInstance;
+        static StartWindow startWindow;
 
         public class RequestsReady
         {
@@ -143,6 +159,13 @@ namespace LogisticsClientsApp.Pages.Tables
             InitializeComponent();
         }
 
+        public static RequestsTablePage CreateInstance()
+        {
+            if (PageInstance == null)
+                PageInstance = new RequestsTablePage();
+            return PageInstance;
+        }
+
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
             System.Threading.Thread.CurrentThread.CurrentUICulture = new CultureInfo("ru-RU");
@@ -157,14 +180,14 @@ namespace LogisticsClientsApp.Pages.Tables
             Cargo = new List<CargoObject>();
             Drivers = new List<DriversReady>();
             Customers = new List<RequisitesObject>();
-            Transporters = new List<RequisitesObject>();           
-
+            Transporters = new List<RequisitesObject>();
+                        
             SetData();
+            ResizeDataGrid();
             startWindow.SizeChanged += (o, e) =>
             {
                 ResizeDataGrid();
             };
-            GC.Collect();
         }
 
         public void ResizeDataGrid()
@@ -217,6 +240,7 @@ namespace LogisticsClientsApp.Pages.Tables
                 var vehiclesTypes = await startWindow.client.GetListVehiclesTypesAsync(new Empty(), startWindow.headers);
                 Requests = new List<RequestsObject>();
                 Requests.AddRange(item.Requests.ToList());
+                Requests = Requests.OrderBy(x => x.Id).ToList();
                 var requestsReady = new List<RequestsReady>();
                 Requests.ForEach(val => requestsReady.Add((RequestsReady)val));
 
@@ -240,9 +264,19 @@ namespace LogisticsClientsApp.Pages.Tables
                 dataGrid.ItemsSource = requestsReady;
                 locale.SetLocale(this);
                 CreateAdvancedSearchFields();
+                startWindow.IsConnected = true;
             }
             catch (RpcException ex)
             {
+                switch (ex.StatusCode)
+                {
+                    case StatusCode.Unavailable:
+                        startWindow.IsConnected = false;
+                        MessageBox.Show($"Возникли проблемы с соединением, обратитесь к администратору: {ex.StatusCode}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                        break;
+                    case StatusCode.Unauthenticated:
+                        break;
+                }
 #warning TODO
             }
         }
@@ -329,26 +363,14 @@ namespace LogisticsClientsApp.Pages.Tables
                 var textBox = new TextBox();
                 var comboBox = new ComboBox();
                 var datePicker = new DatePicker();
-                var textBoxResource = new ResourceDictionary
-                {
-                    Source = new Uri("pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.TextBox.xaml", UriKind.RelativeOrAbsolute)
-                };
-                var comboBoxResource = new ResourceDictionary
-                {
-                    Source = new Uri("pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.ComboBox.xaml", UriKind.RelativeOrAbsolute)
-                };
-                var datePickerResource = new ResourceDictionary
-                {
-                    Source = new Uri("pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.DatePicker.xaml", UriKind.RelativeOrAbsolute)
-                };
 
                 HintAssist.SetHint(textBox, item);
                 textBox.Margin = new Thickness(0, 0, 20, 0);
                 textBox.Style = textBoxResource["MaterialDesignOutlinedTextBox"] as Style;
                 textBox.MaxWidth = 180;
                 textBox.MinWidth = 150;
-                textBox.FontSize = 16;
-                textBox.MaxLength = 30;
+                textBox.FontSize = 14;
+                textBox.Height = 55;
                 textBox.TextChanged += SearchTextBoxChanged;
                 //textBox.Name = item;
 
@@ -357,8 +379,9 @@ namespace LogisticsClientsApp.Pages.Tables
                 comboBox.Margin = new Thickness(0, 0, 20, 0);
                 comboBox.Style = comboBoxResource["MaterialDesignOutlinedComboBox"] as Style;
                 comboBox.MaxWidth = 180;
-                comboBox.MinWidth = 130;
-                comboBox.FontSize = 16;
+                comboBox.MinWidth = 150;
+                comboBox.FontSize = 14;
+                comboBox.Height = 55;
                 comboBox.IsEditable = true;
                 comboBox.VerticalAlignment = VerticalAlignment.Bottom;
                 comboBox.SelectionChanged += SearchComboBox_SelectionChanged;

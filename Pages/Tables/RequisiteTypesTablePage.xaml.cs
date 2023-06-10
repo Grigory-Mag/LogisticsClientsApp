@@ -33,11 +33,19 @@ namespace LogisticsClientsApp.Pages.Tables
         public int takePages = 10;
         public int skipPages = 0;
 
-        StartWindow startWindow;
+        public static RequisiteTypesTablePage PageInstance;
+        static StartWindow startWindow;
 
         public RequisiteTypesTablePage()
         {
             InitializeComponent();
+        }
+
+        public static RequisiteTypesTablePage CreateInstance()
+        {
+            if (PageInstance == null)
+                PageInstance = new RequisiteTypesTablePage();
+            return PageInstance;
         }
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
@@ -135,6 +143,7 @@ namespace LogisticsClientsApp.Pages.Tables
                 var item = await startWindow.client.GetListRequisiteTypesAsync(new Google.Protobuf.WellKnownTypes.Empty(), startWindow.headers);
                 RequisitesTypes = new List<RequisiteTypeObject>();
                 RequisitesTypes.AddRange(item.RequisiteType.ToList());
+                RequisitesTypes = RequisitesTypes.OrderBy(x => x.Id).ToList();
 
                 RequisitesTypesOriginal = RequisitesTypes;
 
@@ -142,9 +151,19 @@ namespace LogisticsClientsApp.Pages.Tables
                 dataGrid.ItemsSource = RequisitesTypes.Skip(skipPages).Take(takePages);
                 locale.SetLocale(this);
                 PaginationTextBlock.Text = $"{skipPages + 10} из {RequisitesTypes.Count}";
+                startWindow.IsConnected = true;
             }
             catch (RpcException ex)
             {
+                switch (ex.StatusCode)
+                {
+                    case StatusCode.Unavailable:
+                        startWindow.IsConnected = false;
+                        MessageBox.Show($"Возникли проблемы с соединением, обратитесь к администратору: {ex.StatusCode}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                        break;
+                    case StatusCode.Unauthenticated:
+                        break;
+                }
 #warning TODO
             }
         }

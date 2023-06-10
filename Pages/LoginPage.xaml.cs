@@ -40,7 +40,7 @@ namespace LogisticsClientsApp.Pages
             Locale locale = new Locale("ru");
             locale.SetLocale(this);
 
-            ErrorStackPanel.Visibility = Visibility.Collapsed;
+            ErrorStackPanel.Visibility = Visibility.Hidden;
         }
 
         private async void LoginHandler()
@@ -90,7 +90,7 @@ namespace LogisticsClientsApp.Pages
 
         private void UnSetErrorWhileLogin()
         {
-            ErrorStackPanel.Visibility = Visibility.Collapsed;
+            ErrorStackPanel.Visibility = Visibility.Hidden;
         }
 
         private void LoginTextBox_TextChanged(object sender, TextChangedEventArgs e)

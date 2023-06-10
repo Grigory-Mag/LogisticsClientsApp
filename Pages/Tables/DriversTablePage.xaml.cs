@@ -32,12 +32,20 @@ namespace LogisticsClientsApp.Pages.Tables
 
         public int takePages = 10;
         public int skipPages = 0;
+        public static DriversTablePage PageInstance;
 
-        StartWindow startWindow;
+        static StartWindow startWindow;
 
         public DriversTablePage()
         {
             InitializeComponent();
+        }
+
+        public static DriversTablePage CreateInstance()
+        {
+            if (PageInstance == null)
+                PageInstance = new DriversTablePage();
+            return PageInstance;
         }
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
@@ -47,7 +55,7 @@ namespace LogisticsClientsApp.Pages.Tables
             var tablePage = startWindow.MainFrameK.Content as TablePage;
             tablePage.TextBlockTableName.Text = tableName;
             Drivers = new List<DriversObject>();
-
+            ResizeDataGrid();
             SetData();
             startWindow.SizeChanged += (o, e) =>
             {
@@ -102,9 +110,9 @@ namespace LogisticsClientsApp.Pages.Tables
 
         public void ResizeDataGrid()
         {
-            dataGrid.MaxHeight = startWindow.Height / 2 - 40; ;
+            dataGrid.MaxHeight = startWindow.Height / 2 - 40;
         }
-        
+
         private void PrevTablePageButton_Click(object sender, RoutedEventArgs e)
         {
             if (skipPages - 10 >= 0)
@@ -158,6 +166,7 @@ namespace LogisticsClientsApp.Pages.Tables
                 var item = await startWindow.client.GetListDriversAsync(new Google.Protobuf.WellKnownTypes.Empty(), startWindow.headers);
                 Drivers = new List<DriversObject>();
                 Drivers.AddRange(item.Drivers.ToList());
+                Drivers = Drivers.OrderBy(x => x.Id).ToList();
 
                 DriversOriginal = Drivers;
 
@@ -167,9 +176,19 @@ namespace LogisticsClientsApp.Pages.Tables
                 dataGrid.ItemsSource = null;
                 dataGrid.ItemsSource = selectedDrivers;
                 locale.SetLocale(this);
+                startWindow.IsConnected = true;
             }
             catch (RpcException ex)
             {
+                switch (ex.StatusCode)
+                {
+                    case StatusCode.Unavailable:
+                        startWindow.IsConnected = false;
+                        MessageBox.Show($"Возникли проблемы с соединением, обратитесь к администратору: {ex.StatusCode}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                        break;
+                    case StatusCode.Unauthenticated:
+                        break;
+                }
 #warning TODO
             }
         }

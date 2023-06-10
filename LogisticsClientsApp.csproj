@@ -10,6 +10,8 @@
   
   <ItemGroup>
     <None Remove="abobus.png" />
+    <None Remove="Resources\Images\background_image.png" />
+    <None Remove="Resources\Images\employee.png" />
     <None Remove="Resources\Images\loginBackground.jpg" />
     <None Remove="truck.png" />
   </ItemGroup>
@@ -36,6 +38,15 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\Images\truck.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Resources\Images\background_image.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Images\employee.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

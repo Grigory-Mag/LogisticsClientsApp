@@ -31,10 +31,20 @@ namespace LogisticsClientsApp.Pages.Tables
         public int takePages = 10;
         public int skipPages = 0;
 
-        StartWindow startWindow;
+        public static CargoTypesPage PageInstance;
+        static StartWindow startWindow;
+
         public CargoTypesPage()
         {
             InitializeComponent();
+        }
+
+        public static CargoTypesPage CreateInstance()
+        {
+            if (PageInstance == null)            
+                PageInstance = new CargoTypesPage();
+            
+            return PageInstance;
         }
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
@@ -131,16 +141,26 @@ namespace LogisticsClientsApp.Pages.Tables
                 var item = await startWindow.client.GetListCargoTypesAsync(new Google.Protobuf.WellKnownTypes.Empty(), startWindow.headers);
                 CargoTypes = new List<CargoTypesObject>();
                 CargoTypes.AddRange(item.CargoType.ToList());
-
+                CargoTypes = CargoTypes.OrderBy(x => x.Id).ToList();
                 CargoTypesOriginal = CargoTypes;
 
                 dataGrid.ItemsSource = null;
                 dataGrid.ItemsSource = CargoTypes.Skip(skipPages).Take(takePages);
                 PaginationTextBlock.Text = $"{skipPages + 10} из {CargoTypes.Count}";
                 locale.SetLocale(this);
+                startWindow.IsConnected = true;
             }
             catch (RpcException ex)
             {
+                switch (ex.StatusCode)
+                {
+                    case StatusCode.Unavailable:
+                        startWindow.IsConnected = false;
+                        MessageBox.Show($"Возникли проблемы с соединением, обратитесь к администратору: {ex.StatusCode}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                        break;
+                    case StatusCode.Unauthenticated:
+                        break;
+                }
 #warning TODO
             }
         }

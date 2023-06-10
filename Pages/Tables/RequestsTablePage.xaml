@@ -18,7 +18,6 @@
       Title="RequestsTablePage"
       Loaded="Page_Loaded">
     <Grid>
-
         <materialDesign:DialogHost x:Name="OpenThisDialog">
             <materialDesign:DialogHost.DialogContent>
                 <StackPanel Margin="20"
@@ -161,7 +160,7 @@
                     <DataGrid x:Name="dataGrid"
                               IsReadOnly="True"
                               MaxHeight="450"
-                              FontSize="18"
+                              FontSize="16"
                               MouseDoubleClick="dataGrid_MouseDoubleClick"
                               FrozenColumnCount="1"
                               AutoGenerateColumns="False">
@@ -271,8 +270,8 @@
                         </DataGrid.Columns>
                     </DataGrid>
 
-                    <TextBlock Text="10 из 20"
-                               FontSize="18"
+                    <TextBlock Text="N из N"
+                               FontSize="16"
                                Name="PaginationTextBlock"
                                VerticalAlignment="Bottom"
                                HorizontalAlignment="Right"
@@ -281,7 +280,7 @@
                     <StackPanel Orientation="Horizontal"
                                 HorizontalAlignment="Right"
                                 VerticalAlignment="Bottom"
-                                Margin="0,20,70,0"
+                                Margin="0,0,70,0"
                                 Grid.Row="1">
 
                         <Button Width="40"

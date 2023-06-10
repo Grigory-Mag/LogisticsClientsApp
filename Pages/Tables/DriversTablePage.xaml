@@ -25,7 +25,7 @@
                 <DataGrid x:Name="dataGrid"
                           IsReadOnly="True"
                           MaxHeight="600"
-                          FontSize="18"
+                          FontSize="16"
                           AutoGenerateColumns="False">
                     <DataGrid.Columns>
                         <DataGridTextColumn Width="Auto"
@@ -87,8 +87,8 @@
                     </DataGrid.Columns>
                 </DataGrid>
 
-                <TextBlock Text="1 - 10 of 20"
-                           FontSize="18"
+                <TextBlock Text="N из N"
+                           FontSize="16"
                            x:Name="PaginationTextBlock"
                            VerticalAlignment="Bottom"
                            HorizontalAlignment="Right"
@@ -97,7 +97,7 @@
                 <StackPanel Orientation="Horizontal"
                             HorizontalAlignment="Right"
                             VerticalAlignment="Bottom"
-                            Margin="0,20,70,0"
+                            Margin="0,0,70,0"
                             Grid.Row="1">
 
                     <Button Width="40"
