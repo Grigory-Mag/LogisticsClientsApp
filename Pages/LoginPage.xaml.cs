@@ -68,14 +68,22 @@ namespace LogisticsClientsApp.Pages
             }
             catch (RpcException ex)
             {
-                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                switch (ex.StatusCode)
+                {
+                    case StatusCode.Unavailable:
+                        MessageBox.Show($"Возникли проблемы с интернет-соединением, обратитесь к администратору: {ex.StatusCode}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                        break;
+                    default:
+                        MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                        break;
+                }
                 LoginInProcess.Visibility = Visibility.Hidden;
             }
         }
 
         private void LoginButton_Click(object sender, RoutedEventArgs e)
         {
-            LoginInProcess.Visibility  = Visibility.Visible;
+            LoginInProcess.Visibility = Visibility.Visible;
             //Thread.Sleep(5000);
             LoginHandler();
         }

@@ -98,7 +98,10 @@ namespace LogisticsClientsApp.Pages.Modal
                     page.CargoTypesOriginal[index] = reqResult;
                 }
                 if (mode == 1)
-                    page.CargoTypes.Add(reqResult);
+                {
+                    page.CargoTypesOriginal.Add(reqResult);
+                    page.CargoTypes = page.CargoTypesOriginal;
+                }
                 page.dataGrid.ItemsSource = null;
                 page.dataGrid.ItemsSource = page.CargoTypesOriginal.Skip(page.skipPages).Take(page.takePages);
                 page.dataGrid.Items.Refresh();

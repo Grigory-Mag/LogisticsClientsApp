@@ -38,7 +38,7 @@ namespace LogisticsClientsApp.Pages
         public PaletteHelper palette;
         public Page selectedPage { get; set; }
         Locale locale;
-        public CargoTablePage cargoTablePageInstance = new CargoTablePage();
+        public CargoTablePage cargoTablePageInstance = CargoTablePage.CreateInstance();
         ITheme theme = new PaletteHelper().GetTheme();
 
         public static TablePage PageInstance;
@@ -490,12 +490,12 @@ namespace LogisticsClientsApp.Pages
                     foreach (var item in items as List<CargoTypesObject>)
                         dataReady.Rows.Add(new object[1] { item.Name });
                     break;
-                case var cls when cls == typeof(DriverLicenceObject):
+                case var cls when cls == typeof(DriversLicenceReady):
                     dataReady.Columns.Add("Серия");
                     dataReady.Columns.Add("Номер");
                     dataReady.Columns.Add("Дата выдачи");
-                    foreach (var item in items as List<DriverLicenceObject>)
-                        dataReady.Rows.Add(new object[3] { item.Series, item.Number, item.Date.ToDateTime().Date });
+                    foreach (var item in items as List<DriversLicenceReady>)
+                        dataReady.Rows.Add(new object[3] { item.Series, item.Number, item.Date.Date});
                     break;
                 case var cls when cls == typeof(DriversObject):
                     dataReady.Columns.Add("Фамилия");
@@ -506,7 +506,7 @@ namespace LogisticsClientsApp.Pages
                     foreach (var item in items as List<DriversObject>)
                         dataReady.Rows.Add(new object[5] { item.Surname, item.Name, item.Patronymic, item.Sanitation == true ? "Есть" : "Нет", $"{item.Licence.Series}/{item.Licence.Number}" });
                     break;
-                case var cls when cls == typeof(RequestsObject):
+                case var cls when cls == typeof(RequestsReady):
                     dataReady.Columns.Add("Номер");
                     dataReady.Columns.Add("Транспорт");
                     dataReady.Columns.Add("Водитель");
@@ -519,11 +519,11 @@ namespace LogisticsClientsApp.Pages
                     dataReady.Columns.Add("Масса груза");
                     dataReady.Columns.Add("Тип груза");
                     dataReady.Columns.Add("Статус");
-                    foreach (var item in items as List<RequestsObject>)
+                    foreach (var item in items as List<RequestsReady>)
                         dataReady.Rows.Add(new object[12] { item.Id, $"{item.Vehicle.Type.Name}, Тягач: {item.Vehicle.Number}, Прицеп: {item.Vehicle.TrailerNumber}",
                             $"{item.Driver.Surname} {item.Driver.Name} {item.Driver.Patronymic}",
                             item.Price,
-                            item.CreationDate.ToDateTime().Date,
+                            item.CreationDate.Date,
                             item.Documents == true ? "Да" : "Нет",
                             item.CustomerReq.Name,
                             item.TransporterReq.Name,
@@ -594,13 +594,13 @@ namespace LogisticsClientsApp.Pages
                                 ExcelProvider.GenerateExcel(ToDataTableReady((content as CargoTypesPage).CargoTypes), filename);
                                 break;
                             case DriverLicenceTablePage:
-                                ExcelProvider.GenerateExcel(ToDataTableReady((content as DriverLicenceTablePage).DriversLicence), filename);
+                                ExcelProvider.GenerateExcel(ToDataTableReady((content as DriverLicenceTablePage).DriversLicenceReadies), filename);
                                 break;
                             case DriversTablePage:
                                 ExcelProvider.GenerateExcel(ToDataTableReady((content as DriversTablePage).Drivers), filename);
                                 break;
                             case RequestsTablePage:
-                                ExcelProvider.GenerateExcel(ToDataTableReady((content as RequestsTablePage).Requests), filename);
+                                ExcelProvider.GenerateExcel(ToDataTableReady((content as RequestsTablePage).RequestsReadyObjects), filename);
                                 break;
                             case RequisitesTablePage:
                                 ExcelProvider.GenerateExcel(ToDataTableReady((content as RequisitesTablePage).Requisites), filename);
@@ -701,6 +701,9 @@ namespace LogisticsClientsApp.Pages
                         break;
                     case UsersTablePage:
                         (DataGridFrame.Content as UsersTablePage)!.FastSearch(text, SearchFilter.SelectedItem.ToString());
+                        break;
+                    case RouteActionsTablePage:
+                        (DataGridFrame.Content as RouteActionsTablePage)!.FastSearch(text, SearchFilter.SelectedItem.ToString());
                         break;
                 }
         }

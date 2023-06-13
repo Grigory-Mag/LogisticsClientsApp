@@ -226,9 +226,11 @@ namespace LogisticsClientsApp.Pages.Tables
         {
             var requestsReady = new List<RequestsReady>();
             Requests.ForEach(x => requestsReady.Add((RequestsReady)x));
-            RequestsReadyObjectsOriginal = requestsReady;
+            RequestsReadyObjectsOriginal = requestsReady.OrderByDescending(x=> x.CreationDate).ToList();
+            RequestsReadyObjects = RequestsReadyObjectsOriginal;
+
             dataGrid.ItemsSource = null;
-            dataGrid.ItemsSource = RequestsReadyObjectsOriginal.Skip(skipPages).Take(takePages);
+            dataGrid.ItemsSource = RequestsReadyObjects.Skip(skipPages).Take(takePages);
             PaginationTextBlock.Text = $"{skipPages + 10} из {RequestsReadyObjectsOriginal.Count}";
         }
 
@@ -244,20 +246,22 @@ namespace LogisticsClientsApp.Pages.Tables
                 var requestsReady = new List<RequestsReady>();
                 Requests.ForEach(val => requestsReady.Add((RequestsReady)val));
 
-                RequestsReadyObjects = requestsReady;
-                RequestsReadyObjectsOriginal = requestsReady;
+                RequestsReadyObjects = requestsReady.OrderByDescending(x => x.CreationDate).ToList();
+                RequestsReadyObjectsOriginal = RequestsReadyObjects;
                 requestsReady.ForEach(x =>
                 {
                     Drivers.Add(new DriversReady(x.Driver));
-                    Customers.Add(x.CustomerReq);
+                    //Customers.Add(x.CustomerReq);
                     Transporters.Add(x.TransporterReq);
+                    Transporters.Add(x.CustomerReq);
                     Cargo.Add(x.Cargo);
                 });
 
                 Cargo = Cargo.Distinct().ToList();
                 Drivers = Drivers.Distinct().ToList();
-                Customers = Customers.Distinct().ToList();
+                //Customers = Customers.Distinct().ToList();
                 Transporters = Transporters.Distinct().ToList();
+                Transporters = Transporters.OrderBy(x => x.Type).ToList();
                 VehiclesTypes = vehiclesTypes.VehiclesTypes.ToList();
 
                 dataGrid.ItemsSource = null;
@@ -272,7 +276,7 @@ namespace LogisticsClientsApp.Pages.Tables
                 {
                     case StatusCode.Unavailable:
                         startWindow.IsConnected = false;
-                        MessageBox.Show($"Возникли проблемы с соединением, обратитесь к администратору: {ex.StatusCode}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show($"Возникли проблемы с интернет-соединением, обратитесь к администратору: {ex.StatusCode}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
                         break;
                     case StatusCode.Unauthenticated:
                         break;
@@ -299,9 +303,11 @@ namespace LogisticsClientsApp.Pages.Tables
             {
                 var result = await startWindow.client.DeleteRequestAsync(new GetOrDeleteRequestObjRequest { Id = item.Id }, startWindow.headers);
                 RequestsReadyObjectsOriginal.Remove(item);
+                RequestsReadyObjects = RequestsReadyObjectsOriginal;
 
                 dataGrid.ItemsSource = null;
                 dataGrid.ItemsSource = RequestsReadyObjectsOriginal.Skip(skipPages).Take(takePages);
+                PaginationTextBlock.Text = $"{skipPages + 10} из {RequestsReadyObjectsOriginal.Count}";
             }
             catch (RpcException ex)
             {
@@ -349,14 +355,20 @@ namespace LogisticsClientsApp.Pages.Tables
                 }
             else
                 RequestsReadyObjects = RequestsReadyObjectsOriginal;
-            dataGrid.ItemsSource = null;
-            dataGrid.ItemsSource = RequestsReadyObjects;
+            if (RequestsReadyObjects != null)
+            {
+                skipPages = 0;
+                dataGrid.ItemsSource = null;
+                dataGrid.ItemsSource = RequestsReadyObjects;
+                PaginationTextBlock.Text = $"{skipPages + 10} из {RequestsReadyObjects.Count}";
+            }
+
         }
 
         private async void CreateAdvancedSearchFields()
         {
             tablePage.AdvancedSearch.Children.Clear();
-
+            SearchItemsList.Clear();
             // typeItemsSource.Add(new CargoTypesObject { Id = -1, Name = "Все типы" });
             foreach (var item in SearchFields)
             {
@@ -428,7 +440,7 @@ namespace LogisticsClientsApp.Pages.Tables
                         break;
                     case "Заказчик":
                         comboBox.DisplayMemberPath = @"Name";
-                        comboBox.ItemsSource = Customers;
+                        comboBox.ItemsSource = Transporters;
                         //comboBox.SelectedItem = typeItemsSource.First(x => x.Id == -1);
                         SearchItemsList.Add(comboBox);
                         tablePage.AdvancedSearch.Children.Add(comboBox);

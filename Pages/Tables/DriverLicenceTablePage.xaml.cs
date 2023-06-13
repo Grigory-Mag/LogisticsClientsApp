@@ -103,9 +103,10 @@ namespace LogisticsClientsApp.Pages.Tables
                 }
             else
                 DriversLicenceReadies = DriversLicenceOriginal;
+            skipPages = 0;
             dataGrid.ItemsSource = null;
             dataGrid.ItemsSource = DriversLicenceReadies.Skip(skipPages).Take(takePages);
-            PaginationTextBlock.Text = $"{skipPages + 10} из {DriversLicence.Count}";
+            PaginationTextBlock.Text = $"{skipPages + 10} из {DriversLicenceReadies.Count}";
         }
 
         public void ResizeDataGrid()
@@ -126,7 +127,7 @@ namespace LogisticsClientsApp.Pages.Tables
 
         private void NextTablePageButton_Click(object sender, RoutedEventArgs e)
         {
-            if (skipPages + 10 < DriversLicence.Count)
+            if (skipPages + 10 < DriversLicenceReadies.Count)
             {
                 skipPages += 10;
                 var skippedCargo = DriversLicenceReadies.Skip(skipPages).Take(takePages).ToList();
@@ -149,9 +150,11 @@ namespace LogisticsClientsApp.Pages.Tables
                     List<DriversLicenceReady> driversLicenceReadies = new List<DriversLicenceReady>();
                     DriversLicence.ForEach(license => driversLicenceReadies.Add(new DriversLicenceReady(license.Id, license.Series, license.Number, license.Date)));
                     DriversLicenceOriginal = driversLicenceReadies;
+                    DriversLicenceReadies = DriversLicenceOriginal;
 
                     dataGrid.ItemsSource = null;
-                    dataGrid.ItemsSource = driversLicenceReadies;
+                    dataGrid.ItemsSource = driversLicenceReadies.Skip(skipPages).Take(takePages);
+                    PaginationTextBlock.Text = $"{skipPages + 10} из {DriversLicenceOriginal.Count}";
                 }
                 catch (RpcException ex)
                 {
@@ -188,7 +191,7 @@ namespace LogisticsClientsApp.Pages.Tables
                 {
                     case StatusCode.Unavailable:
                         startWindow.IsConnected = false;
-                        MessageBox.Show($"Возникли проблемы с соединением, обратитесь к администратору: {ex.StatusCode}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show($"Возникли проблемы с интернет-соединением, обратитесь к администратору: {ex.StatusCode}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
                         break;
                     case StatusCode.Unauthenticated:
                         break;

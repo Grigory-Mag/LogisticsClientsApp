@@ -147,7 +147,10 @@ namespace LogisticsClientsApp.Pages.Modal
                     page.VehiclesOriginal[index] = reqResult;
                 }
                 if (mode == 1)
+                {
                     page.VehiclesOriginal.Add(reqResult);
+                    page.Vehicles = page.VehiclesOriginal;
+                }
 
                 page.dataGrid.ItemsSource = null;
                 page.dataGrid.ItemsSource = page.VehiclesOriginal.Skip(page.skipPages).Take(page.takePages);

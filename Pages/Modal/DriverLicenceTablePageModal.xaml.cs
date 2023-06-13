@@ -112,6 +112,7 @@ namespace LogisticsClientsApp.Pages.Modal
                 List<DriversLicenceReady> driversLicenceReadies = new List<DriversLicenceReady>();
                 page.DriversLicence.ForEach(license => driversLicenceReadies.Add(new DriversLicenceReady(license.Id, license.Series, license.Number, license.Date)));
                 page.DriversLicenceOriginal = driversLicenceReadies;
+                page.DriversLicenceReadies = page.DriversLicenceOriginal;
 
                 page.dataGrid.ItemsSource = null;
                 page.dataGrid.ItemsSource = page.DriversLicenceOriginal.Skip(page.skipPages).Take(page.takePages);

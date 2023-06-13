@@ -109,7 +109,10 @@ namespace LogisticsClientsApp.Pages.Modal
                     page.RequisitesTypesOriginal[index] = reqResult;
                 }
                 if (mode == 1)
+                {
                     page.RequisitesTypesOriginal.Add(reqResult);
+                    page.RequisitesTypes = page.RequisitesTypesOriginal;
+                }
 
                 page.dataGrid.ItemsSource = null;
                 page.dataGrid.ItemsSource = page.RequisitesTypesOriginal.Skip(page.skipPages).Take(page.takePages);

@@ -14,268 +14,270 @@
       FontSize="20"
       Background="Transparent"
       FontFamily="{DynamicResource MaterialDesignFont}"
-      MaxHeight="700"
-      Height="600"
+      
+      Height="Auto"
       Width="700"
       Loaded="SettingsPage_Loaded"
       Title="SettingsPage">
     <Grid>
         <materialDesign:Card UniformCornerRadius="25"
                              materialDesign:ElevationAssist.Elevation="Dp16">
-            <ScrollViewer Margin="20"
-                          Focusable="False"
-                          MaxHeight="700"
-                          VerticalScrollBarVisibility="Auto">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
+            <Grid>
+                <ScrollViewer Margin="20"
+                              Focusable="False"
+                              VerticalScrollBarVisibility="Auto">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
 
-                    <TextBlock Grid.Row="0"
-                               Grid.Column="0"
-                               Grid.ColumnSpan="2"
-                               Text="настройки"
-                               FontSize="22"
-                               HorizontalAlignment="Center"
-                               Typography.Capitals="SmallCaps"
-                               FontWeight="SemiBold" />
+                        <TextBlock Grid.Row="0"
+                                   Grid.Column="0"
+                                   Grid.ColumnSpan="2"
+                                   Text="настройки"
+                                   FontSize="22"
+                                   HorizontalAlignment="Center"
+                                   Typography.Capitals="SmallCaps"
+                                   FontWeight="SemiBold" />
 
-                    <TextBlock Grid.Row="1"
-                               Grid.Column="0"
-                               HorizontalAlignment="Left"
-                               Typography.Capitals="SmallCaps"
-                               Margin="0,30,0,0">
+                        <TextBlock Grid.Row="1"
+                                   Grid.Column="0"
+                                   HorizontalAlignment="Left"
+                                   Typography.Capitals="SmallCaps"
+                                   Margin="0,30,0,0">
                     <Run Text="тема"
-                         FontSize="22" />
+                            FontSize="22" />
                     <LineBreak />
                     <LineBreak />
                     <Run Text="Выбрать светлую или темную тему"
-                         Typography.Capitals="Normal"
-                         FontWeight="Normal"
-                         Foreground="{StaticResource LightGrayColor}"
-                         FontSize="16" />
-                    </TextBlock>
+                            Typography.Capitals="Normal"
+                            FontWeight="Normal"
+                            Foreground="{StaticResource LightGrayColor}"
+                            FontSize="16" />
+                        </TextBlock>
 
-                    <ToggleButton Name="ToggleDarkMode"
-                                  Grid.Row="1"
-                                  Grid.Column="1"
-                                  Width="40"
-                                  HorizontalAlignment="Center"
-                                  Margin="0,0,0,0"
-                                  Checked="ToggleDarkMode_Checked"
-                                  Unchecked="ToggleDarkMode_Unchecked">
-                        <WrapPanel>
-                            <materialDesign:PackIcon Kind="ThemeLightDark" />
-                        </WrapPanel>
-                    </ToggleButton>
+                        <ToggleButton Name="ToggleDarkMode"
+                                      Grid.Row="1"
+                                      Grid.Column="1"
+                                      Width="40"
+                                      HorizontalAlignment="Center"
+                                      Margin="0,0,0,0"
+                                      Checked="ToggleDarkMode_Checked"
+                                      Unchecked="ToggleDarkMode_Unchecked">
+                            <WrapPanel>
+                                <materialDesign:PackIcon Kind="ThemeLightDark" />
+                            </WrapPanel>
+                        </ToggleButton>
 
-                    <TextBlock Grid.Row="2"
-                               Grid.Column="0"
-                               HorizontalAlignment="Left"
-                               Typography.Capitals="SmallCaps"
-                               Margin="0,40,0,0">
+                        <TextBlock Grid.Row="2"
+                                   Grid.Column="0"
+                                   HorizontalAlignment="Left"
+                                   Typography.Capitals="SmallCaps"
+                                   Margin="0,40,0,0">
                     <Run Text="язык"
-                         FontSize="22" />
+                            FontSize="22" />
                     <LineBreak />
                     <LineBreak />
                     <Run Text="Выбрать язык приложения"
-                         Typography.Capitals="Normal"
-                         FontWeight="Normal"
-                         Foreground="{StaticResource LightGrayColor}"
-                         FontSize="16" />
+                            Typography.Capitals="Normal"
+                            FontWeight="Normal"
+                            Foreground="{StaticResource LightGrayColor}"
+                            FontSize="16" />
                         <LineBreak />
                                             <Run Text=" *недоступно на данный момент"
                                                  Typography.Capitals="Normal"
                                                  FontWeight="Normal"
                                                  Foreground="{StaticResource AccentCustomColor}"
                                                  FontSize="16" />
-                    </TextBlock>
+                        </TextBlock>
 
-                    <ComboBox Grid.Row="2"
-                              Grid.Column="1"
-                              MinWidth="250"
-                              FontSize="16"
-                              Height="60"
-                              IsEnabled="False"
-                              VerticalAlignment="Bottom"
-                              x:Name="LanguagesComboBox"
-                              Style="{StaticResource MaterialDesignFilledComboBox}"
-                              SelectedValue="Русский" />
+                        <ComboBox Grid.Row="2"
+                                  Grid.Column="1"
+                                  MinWidth="250"
+                                  FontSize="16"
+                                  Height="60"
+                                  IsEnabled="False"
+                                  VerticalAlignment="Bottom"
+                                  x:Name="LanguagesComboBox"
+                                  Style="{StaticResource MaterialDesignFilledComboBox}"
+                                  SelectedValue="Русский" />
 
-                    <TextBlock Grid.Row="3"
-                               Grid.Column="0"
-                               HorizontalAlignment="Left"
-                               TextWrapping="Wrap"
-                               Typography.Capitals="SmallCaps"
-                               Margin="0,40,0,0">
+                        <TextBlock Grid.Row="3"
+                                   Grid.Column="0"
+                                   HorizontalAlignment="Left"
+                                   TextWrapping="Wrap"
+                                   Typography.Capitals="SmallCaps"
+                                   Margin="0,40,0,0">
                     <Run Text="фон"
-                         FontSize="22" />
+                            FontSize="22" />
                     <LineBreak />
                     <LineBreak />
                     <Run Text="Выбрать фоновое изображение профиля"
-                         Typography.Capitals="Normal"
-                         FontWeight="Normal"
-                         Foreground="{StaticResource LightGrayColor}"
-                         FontSize="16" />
+                            Typography.Capitals="Normal"
+                            FontWeight="Normal"
+                            Foreground="{StaticResource LightGrayColor}"
+                            FontSize="16" />
                         <LineBreak />
-                    </TextBlock>
+                        </TextBlock>
 
 
-                    <Grid Grid.Row="3"
-                          Grid.Column="1"
-                          VerticalAlignment="Center"
-                          HorizontalAlignment="Stretch">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <TextBox MinWidth="250"
-                                 MaxWidth="250"
-                                 MaxLength="256"
-                                 TextWrapping="Wrap"
-                                 FontSize="16"
-                                 Grid.Row="1"
-                                 Grid.Column="0"
-                                 Name="FilePathTextBox"
-                                 Margin="0,0,0,0"
-                                 TextChanged="FilePathTextBox_TextChanged"
-                                 Grid.ColumnSpan="2"
-                                 materialDesign:HintAssist.Hint="Выбрать изображение"
-                                 Style="{StaticResource MaterialDesignFilledTextBox}">
-                        </TextBox>
-                        <Button Grid.Row="1"
-                                Grid.Column="1"
-                                Width="30"
-                                Height="30"
-                                Name="ChooseFileButton"
-                                Click="ChooseFileButton_Click"
-                                HorizontalAlignment="Right"
-                                Margin="0,0,0,0"
-                                Style="{StaticResource MaterialDesignIconButton}">
-                            <WrapPanel>
-                                <materialDesign:PackIcon Kind="File" />
-                            </WrapPanel>
-                        </Button>
+                        <Grid Grid.Row="3"
+                              Grid.Column="1"
+                              VerticalAlignment="Center"
+                              HorizontalAlignment="Stretch">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBox MinWidth="250"
+                                     MaxWidth="250"
+                                     MaxLength="256"
+                                     TextWrapping="Wrap"
+                                     FontSize="16"
+                                     Grid.Row="1"
+                                     Grid.Column="0"
+                                     Name="FilePathTextBox"
+                                     Margin="0,0,0,0"
+                                     TextChanged="FilePathTextBox_TextChanged"
+                                     Grid.ColumnSpan="2"
+                                     materialDesign:HintAssist.Hint="Выбрать изображение"
+                                     Style="{StaticResource MaterialDesignFilledTextBox}">
+                            </TextBox>
+                            <Button Grid.Row="1"
+                                    Grid.Column="1"
+                                    Width="30"
+                                    Height="30"
+                                    Name="ChooseFileButton"
+                                    Click="ChooseFileButton_Click"
+                                    HorizontalAlignment="Right"
+                                    Margin="0,0,0,0"
+                                    Style="{StaticResource MaterialDesignIconButton}">
+                                <WrapPanel>
+                                    <materialDesign:PackIcon Kind="File" />
+                                </WrapPanel>
+                            </Button>
 
-                        <Image Grid.Row="0"
-                               Grid.Column="0"
-                               Grid.ColumnSpan="2"
-                               Margin="0,20,0,0"
-                               Width="100"
-                               Height="100"
-                               Visibility="Collapsed"
-                               MouseDown="SelectedBackgroundImage_MouseDown"
-                               Name="SelectedBackgroundImage">
-                            <Image.Style>
-                                <Style TargetType="Image">
-                                    <Style.Triggers>
-                                        <Trigger Property="IsMouseOver"
-                                                 Value="True">
-                                            <Setter Property="Cursor"
-                                                    Value="Hand" />
-                                        </Trigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Image.Style>
-                        </Image>
-                    </Grid>
+                            <Image Grid.Row="0"
+                                   Grid.Column="0"
+                                   Grid.ColumnSpan="2"
+                                   Margin="0,20,0,0"
+                                   Width="100"
+                                   Height="100"
+                                   Visibility="Collapsed"
+                                   MouseDown="SelectedBackgroundImage_MouseDown"
+                                   Name="SelectedBackgroundImage">
+                                <Image.Style>
+                                    <Style TargetType="Image">
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver"
+                                                     Value="True">
+                                                <Setter Property="Cursor"
+                                                        Value="Hand" />
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Image.Style>
+                            </Image>
+                        </Grid>
 
 
-                    <TextBlock Grid.Row="4"
-                               Grid.Column="0"
-                               HorizontalAlignment="Left"
-                               Typography.Capitals="SmallCaps"
-                               Margin="0,40,0,0">
+                        <TextBlock Grid.Row="4"
+                                   Grid.Column="0"
+                                   HorizontalAlignment="Left"
+                                   Typography.Capitals="SmallCaps"
+                                   Margin="0,40,0,0">
                     <Run Text="профиль"
-                         FontSize="22" />
+                            FontSize="22" />
                     <LineBreak />
                     <LineBreak />
                     <Run Text="Выбрать изображение профиля"
-                         Typography.Capitals="Normal"
-                         FontWeight="Normal"
-                         Foreground="{StaticResource LightGrayColor}"
-                         FontSize="16" />
+                            Typography.Capitals="Normal"
+                            FontWeight="Normal"
+                            Foreground="{StaticResource LightGrayColor}"
+                            FontSize="16" />
                         <LineBreak />
-                    </TextBlock>
+                        </TextBlock>
 
-                    <Grid Grid.Row="4"
-                          Grid.Column="1"
-                          VerticalAlignment="Center"
-                          HorizontalAlignment="Stretch">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <TextBox MinWidth="250"
-                                 MaxWidth="250"
-                                 MaxLength="256"
-                                 TextWrapping="Wrap"
-                                 FontSize="16"
-                                 Grid.Row="1"
-                                 Grid.Column="0"
-                                 Name="MainFilePathTextBox"
-                                 Margin="0,0,0,0"
-                                 TextChanged="MainFilePathTextBox_TextChanged"
-                                 Grid.ColumnSpan="2"
-                                 materialDesign:HintAssist.Hint="Выбрать изображение"
-                                 Style="{StaticResource MaterialDesignFilledTextBox}">
-                        </TextBox>
-                        <Button Grid.Row="1"
-                                Grid.Column="1"
-                                Width="30"
-                                Height="30"
-                                Name="ChooseMainFileButton"
-                                Click="ChooseMainFileButton_Click"
-                                HorizontalAlignment="Right"
-                                Margin="0,0,0,0"
-                                Style="{StaticResource MaterialDesignIconButton}">
-                            <WrapPanel>
-                                <materialDesign:PackIcon Kind="File" />
-                            </WrapPanel>
-                        </Button>
+                        <Grid Grid.Row="4"
+                              Grid.Column="1"
+                              VerticalAlignment="Center"
+                              HorizontalAlignment="Stretch">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBox MinWidth="250"
+                                     MaxWidth="250"
+                                     MaxLength="256"
+                                     TextWrapping="Wrap"
+                                     FontSize="16"
+                                     Grid.Row="1"
+                                     Grid.Column="0"
+                                     Name="MainFilePathTextBox"
+                                     Margin="0,0,0,0"
+                                     TextChanged="MainFilePathTextBox_TextChanged"
+                                     Grid.ColumnSpan="2"
+                                     materialDesign:HintAssist.Hint="Выбрать изображение"
+                                     Style="{StaticResource MaterialDesignFilledTextBox}">
+                            </TextBox>
+                            <Button Grid.Row="1"
+                                    Grid.Column="1"
+                                    Width="30"
+                                    Height="30"
+                                    Name="ChooseMainFileButton"
+                                    Click="ChooseMainFileButton_Click"
+                                    HorizontalAlignment="Right"
+                                    Margin="0,0,0,0"
+                                    Style="{StaticResource MaterialDesignIconButton}">
+                                <WrapPanel>
+                                    <materialDesign:PackIcon Kind="File" />
+                                </WrapPanel>
+                            </Button>
 
-                        <Image Grid.Row="0"
-                               Grid.Column="0"
-                               Grid.ColumnSpan="2"
-                               Margin="0,20,0,0"
-                               Width="100"
-                               Height="100"
-                               Visibility="Collapsed"
-                               MouseDown="SelectedForegroundImage_MouseDown"
-                               Name="SelectedForegroundImage">
-                            <Image.Style>
-                                <Style TargetType="Image">
-                                    <Style.Triggers>
-                                        <Trigger Property="IsMouseOver"
-                                                 Value="True">
-                                            <Setter Property="Cursor"
-                                                    Value="Hand" />
-                                        </Trigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Image.Style>
-                        </Image>
+                            <Image Grid.Row="0"
+                                   Grid.Column="0"
+                                   Grid.ColumnSpan="2"
+                                   Margin="0,20,0,0"
+                                   Width="100"
+                                   Height="100"
+                                   Visibility="Collapsed"
+                                   MouseDown="SelectedForegroundImage_MouseDown"
+                                   Name="SelectedForegroundImage">
+                                <Image.Style>
+                                    <Style TargetType="Image">
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver"
+                                                     Value="True">
+                                                <Setter Property="Cursor"
+                                                        Value="Hand" />
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Image.Style>
+                            </Image>
+                        </Grid>
+
                     </Grid>
+                </ScrollViewer>
+            </Grid>
 
-                </Grid>
-            </ScrollViewer>
 
         </materialDesign:Card>
     </Grid>

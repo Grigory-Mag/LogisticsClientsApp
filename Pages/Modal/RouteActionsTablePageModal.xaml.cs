@@ -98,7 +98,10 @@ namespace LogisticsClientsApp.Pages.Modal
                     page.RouteActionsOriginal[index] = reqResult;
                 }
                 if (mode == 1)
+                {
                     page.RouteActionsOriginal.Add(reqResult);
+                    page.RouteActions = page.RouteActionsOriginal;
+                }
 
                 page.dataGrid.ItemsSource = null;
                 page.dataGrid.ItemsSource = page.RouteActionsOriginal.Skip(page.skipPages).Take(page.takePages);

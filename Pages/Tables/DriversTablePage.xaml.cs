@@ -103,6 +103,7 @@ namespace LogisticsClientsApp.Pages.Tables
                 }
             else
                 Drivers = DriversOriginal;
+            skipPages = 0;
             dataGrid.ItemsSource = null;
             dataGrid.ItemsSource = Drivers.Skip(skipPages).Take(takePages);
             PaginationTextBlock.Text = $"{skipPages + 10} из {Drivers.Count}";
@@ -145,9 +146,11 @@ namespace LogisticsClientsApp.Pages.Tables
                     var item = dataGrid.SelectedItem as DriversObject;
                     var resultLocal = await startWindow.client.DeleteDriverAsync(new GetOrDeleteDriversRequest { Id = (int)item.Id }, startWindow.headers);
                     DriversOriginal.Remove(item);
+                    Drivers = DriversOriginal;
 
                     dataGrid.ItemsSource = null;
                     dataGrid.ItemsSource = DriversOriginal.Skip(skipPages).Take(takePages);
+                    PaginationTextBlock.Text = $"{skipPages + 10} из {DriversOriginal.Count}";
                 }
                 catch (RpcException ex)
                 {
@@ -184,7 +187,7 @@ namespace LogisticsClientsApp.Pages.Tables
                 {
                     case StatusCode.Unavailable:
                         startWindow.IsConnected = false;
-                        MessageBox.Show($"Возникли проблемы с соединением, обратитесь к администратору: {ex.StatusCode}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show($"Возникли проблемы с интернет-соединением, обратитесь к администратору: {ex.StatusCode}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
                         break;
                     case StatusCode.Unauthenticated:
                         break;

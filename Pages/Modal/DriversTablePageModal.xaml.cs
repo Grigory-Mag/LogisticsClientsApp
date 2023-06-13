@@ -126,7 +126,10 @@ namespace LogisticsClientsApp.Pages.Modal
                     page.DriversOriginal[index] = reqResult;
                 }
                 if (mode == 1)
+                {
                     page.DriversOriginal.Add(reqResult);
+                    page.Drivers = page.DriversOriginal;
+                }
 
                 page.dataGrid.ItemsSource = null;
                 page.dataGrid.ItemsSource = page.DriversOriginal.Skip(page.skipPages).Take(page.takePages);

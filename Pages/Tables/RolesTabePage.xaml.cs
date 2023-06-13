@@ -75,6 +75,7 @@ namespace LogisticsClientsApp.Pages.Tables
                 }
             else
                 Roles = RolesOriginal;
+            skipPages = 0;
             dataGrid.ItemsSource = null;
             dataGrid.ItemsSource = Roles.Skip(skipPages).Take(takePages);
             PaginationTextBlock.Text = $"{skipPages + 10} из {Roles.Count}";
@@ -117,9 +118,11 @@ namespace LogisticsClientsApp.Pages.Tables
                     var item = dataGrid.SelectedItem as RolesObject;
                     var resultLocal = await startWindow.client.DeleteRoleAsync(new GetOrDeleteRoleRequest { Id = item.Id }, startWindow.headers);
                     RolesOriginal.Remove(item);
+                    Roles = RolesOriginal;
 
                     dataGrid.ItemsSource = null;
                     dataGrid.ItemsSource = RolesOriginal.Skip(skipPages).Take(takePages);
+                    PaginationTextBlock.Text = $"{skipPages + 10} из {RolesOriginal.Count}";
                 }
                 catch (RpcException ex)
                 {
@@ -154,7 +157,7 @@ namespace LogisticsClientsApp.Pages.Tables
                 {
                     case StatusCode.Unavailable:
                         startWindow.IsConnected = false;
-                        MessageBox.Show($"Возникли проблемы с соединением, обратитесь к администратору: {ex.StatusCode}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show($"Возникли проблемы с интернет-соединением, обратитесь к администратору: {ex.StatusCode}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
                         break;
                     case StatusCode.Unauthenticated:
                         break;

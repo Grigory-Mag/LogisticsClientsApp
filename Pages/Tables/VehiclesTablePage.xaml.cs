@@ -101,6 +101,7 @@ namespace LogisticsClientsApp.Pages.Tables
             if (Vehicles.Count == 0)
                 Vehicles = VehiclesOriginal;
 
+            skipPages = 0;
             dataGrid.ItemsSource = null;
             dataGrid.ItemsSource = Vehicles.Skip(skipPages).Take(takePages);
             PaginationTextBlock.Text = $"{skipPages + 10} из {Vehicles.Count}";
@@ -205,9 +206,11 @@ namespace LogisticsClientsApp.Pages.Tables
                     var item = dataGrid.SelectedItem as VehiclesObject;
                     var resultLocal = await startWindow.client.DeleteVehicleAsync(new GetOrDeleteVehiclesRequest { Id = item.Id }, startWindow.headers);
                     VehiclesOriginal.Remove(item);
+                    Vehicles = VehiclesOriginal;
 
                     dataGrid.ItemsSource = null;
                     dataGrid.ItemsSource = VehiclesOriginal.Skip(skipPages).Take(takePages);
+                    PaginationTextBlock.Text = $"{skipPages + 10} из {VehiclesOriginal.Count}";
                 }
                 catch (RpcException ex)
                 {

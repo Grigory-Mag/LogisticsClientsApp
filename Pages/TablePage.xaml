@@ -237,6 +237,7 @@
                             BorderBrush="#9CCC65"
                             materialDesign:RippleAssist.Feedback="LightGreen"
                             Margin="0,0,100,0"
+                            ToolTip="Экспортировать данные в лист Excel"
                             Click="ExportButton_Click">
                         <StackPanel>
                             <TextBlock Text="экспорт в excel"
@@ -250,7 +251,7 @@
                             Style="{StaticResource MaterialDesignRaisedButton}"
                             materialDesign:ColorZoneAssist.Mode="SecondaryDark"
                             Foreground="White"
-                            ToolTip=""
+                            ToolTip="Добавить новую запись"
                             Click="AddButton_Click">
                         <StackPanel>
                             <TextBlock Text="add new record"

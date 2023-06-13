@@ -116,7 +116,8 @@
                             HorizontalAlignment="Center">
                     <StackPanel Orientation="Horizontal"
                                 Name="ErrorStackPanel"
-                                Visibility="Hidden"
+                                Visibility="Visible"
+                                Margin="0,40,0,0"
                                 HorizontalAlignment="Center">
 
                         <materialDesign:PackIcon Kind="Warning"

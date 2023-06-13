@@ -14,7 +14,7 @@
              FontSize="20"
              Background="Transparent"
              FontFamily="{DynamicResource MaterialDesignFont}"
-             Height="800"
+             MaxHeight="680"
              Width="Auto"
              MaxWidth="1000"
              Name="ModalPageControl"
@@ -43,9 +43,9 @@
                Height="Auto"
                Margin="0,-120,0,0"
                VerticalAlignment="Top"
-               Panel.ZIndex="1"/>
+               Panel.ZIndex="1" />
         <!-- ### MODAL PAGE NOTIFICATION ### -->
-        
+
         <materialDesign:Card UniformCornerRadius="25"
                              Panel.ZIndex="0"
                              materialDesign:ElevationAssist.Elevation="Dp16">
@@ -192,6 +192,7 @@
                         <ComboBox FontSize="18"
                                   Name="VehicleComboBox"
                                   materialDesign:HintAssist.Hint="Транспорт"
+                                  IsEditable="True"
                                   DisplayMemberPath="NumberAndTrailer"
                                   Style="{StaticResource MaterialDesignFloatingHintComboBox}"
                                   SelectionChanged="LicenceComboBox_SelectionChanged"
@@ -199,6 +200,7 @@
                         <ComboBox FontSize="18"
                                   Name="TransporterComboBox"
                                   materialDesign:HintAssist.Hint="Перевозчик"
+                                  IsEditable="True"
                                   DisplayMemberPath="Name"
                                   Style="{StaticResource MaterialDesignFloatingHintComboBox}"
                                   SelectionChanged="LicenceComboBox_SelectionChanged"
@@ -206,6 +208,7 @@
                         <ComboBox FontSize="18"
                                   Name="DriverComboBox"
                                   materialDesign:HintAssist.Hint="Водитель"
+                                  IsEditable="True"
                                   DisplayMemberPath="FIO"
                                   Style="{StaticResource MaterialDesignFloatingHintComboBox}"
                                   SelectionChanged="LicenceComboBox_SelectionChanged"
@@ -231,6 +234,7 @@
                         <ComboBox FontSize="18"
                                   Name="CargoComboBox"
                                   materialDesign:HintAssist.Hint="Груз"
+                                  IsEditable="True"
                                   DisplayMemberPath="Name"
                                   Style="{StaticResource MaterialDesignFloatingHintComboBox}"
                                   SelectionChanged="LicenceComboBox_SelectionChanged"
@@ -238,6 +242,7 @@
                         <ComboBox FontSize="18"
                                   Name="CustomerComboBox"
                                   materialDesign:HintAssist.Hint="Заказчик"
+                                  IsEditable="True"
                                   DisplayMemberPath="Name"
                                   Style="{StaticResource MaterialDesignFloatingHintComboBox}"
                                   SelectionChanged="LicenceComboBox_SelectionChanged"
@@ -251,9 +256,9 @@
                           x:Name="RoutesDataGrid"
                           HorizontalAlignment="Center"
                           VerticalAlignment="Stretch"
-                          MaxHeight="200"
-                          Margin="20"
-                          
+                          Focusable="False"
+                          MaxHeight="100"
+                          Margin="20,10,20,0"
                           CanUserAddRows="True"
                           AutoGenerateColumns="False">
                     <DataGrid.Columns>
@@ -263,8 +268,8 @@
                         <DataGridComboBoxColumn Header="Событие"
                                                 Width="Auto"
                                                 x:Name="ActionsComboBox"
-                                                DisplayMemberPath="Action" 
-                                                SelectedItemBinding="{Binding Action}"/>
+                                                DisplayMemberPath="Action"
+                                                SelectedItemBinding="{Binding Action}" />
                         <DataGridTemplateColumn Header="Дата"
                                                 MinWidth="150">
                             <DataGridTemplateColumn.CellTemplate>
@@ -286,8 +291,8 @@
                                             Background="{StaticResource AccentCustomColor}"
                                             SnapsToDevicePixels="True">
                                         <WrapPanel Width="Auto"
-                                                    Height="Auto"
-                                                    Margin="-22,-5,-20,0">
+                                                   Height="Auto"
+                                                   Margin="-22,-5,-20,0">
                                             <ContentControl ContentTemplate="{StaticResource DeleteButton}"
                                                             Width="40"
                                                             Height="40" />
@@ -298,6 +303,7 @@
                         </DataGridTemplateColumn>
                     </DataGrid.Columns>
                 </DataGrid>
+
 
                 <Button Grid.Row="3"
                         Grid.ColumnSpan="4"
@@ -310,7 +316,7 @@
                         Style="{StaticResource MaterialDesignRaisedButton}"
                         Name="UpdateButton"
                         Click="UpdateButton_Click"
-                        Margin="0,20,0,40" />
+                        Margin="0,10,0,20" />
             </Grid>
         </materialDesign:Card>
     </Grid>

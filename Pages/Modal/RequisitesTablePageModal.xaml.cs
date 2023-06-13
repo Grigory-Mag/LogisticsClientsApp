@@ -125,7 +125,11 @@ namespace LogisticsClientsApp.Pages.Modal
                     page.RequisitesOriginal[index] = reqResult;
                 }
                 if (mode == 1)
+                {
                     page.RequisitesOriginal.Add(reqResult);
+                    page.Requisites = page.RequisitesOriginal;
+                }
+
                 page.dataGrid.ItemsSource = null;
                 page.dataGrid.ItemsSource = page.RequisitesOriginal.Skip(page.skipPages).Take(page.takePages);
                 page.PaginationTextBlock.Text = $"{page.skipPages + 10} из {page.RequisitesOriginal.Count}";

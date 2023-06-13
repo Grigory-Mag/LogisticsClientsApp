@@ -114,7 +114,10 @@ namespace LogisticsClientsApp.Pages.Modal
                     page.CargoObjects[index] = reqResult;
                 }
                 if (mode == 1)
+                {
                     page.CargoObjectsOriginal.Add(reqResult);
+                    page.CargoObjects = page.CargoObjectsOriginal;
+                }
 
                 page.dataGrid.ItemsSource = null;
                 page.dataGrid.ItemsSource = page.CargoObjectsOriginal.Skip(page.skipPages).Take(page.takePages).OrderBy(x=> x.Id);

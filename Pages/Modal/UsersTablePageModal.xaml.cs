@@ -115,7 +115,10 @@ namespace LogisticsClientsApp.Pages.Modal
                     page.UsersOriginal[index] = reqResult;
                 }
                 if (mode == 1)
+                {
                     page.UsersOriginal.Add(reqResult);
+                    page.Users = page.UsersOriginal;
+                }
 
                 page.dataGrid.ItemsSource = null;
                 page.dataGrid.ItemsSource = page.Users.Skip(page.skipPages).Take(page.takePages);

@@ -157,8 +157,12 @@ namespace LogisticsClientsApp.Pages.Modal
         {
             var item = RoutesDataGrid.SelectedItem as RouteObjectReady;
 #warning TODO
-            routeObjectsReady.Remove(item);
+
+            RoutesDataGrid.UnselectAllCells();
             RoutesDataGrid.ItemsSource = null;
+            if (routeObjectsReady.Count > 0)
+                routeObjectsReady.Remove(item);          
+
             RoutesDataGrid.ItemsSource = routeObjectsReady;
         }
 

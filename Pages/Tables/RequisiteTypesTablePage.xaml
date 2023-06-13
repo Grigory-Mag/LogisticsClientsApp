@@ -34,16 +34,16 @@
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel>
-                                        <Button Width="40"
+                                        <Button Width="30"
                                                 x:Name="OpenRowButton"
                                                 Click="OpenRowButton_Click"
-                                                Height="40">
+                                                Height="30">
                                             <StackPanel Width="Auto"
                                                         Height="Auto"
-                                                        Margin="-22,-5,-20,0">
+                                                        Margin="-22,0,-20,0">
                                                 <ContentControl ContentTemplate="{StaticResource OpenButton}"
-                                                                Width="40"
-                                                                Height="40" />
+                                                                Width="20"
+                                                                Height="20" />
                                             </StackPanel>
                                         </Button>
                                     </StackPanel>
@@ -54,8 +54,8 @@
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel>
-                                        <Button Width="40"
-                                                Height="40"
+                                        <Button Width="30"
+                                                Height="30"
                                                 x:Name="DeleteButton"
                                                 Click="DeleteButton_Click"
                                                 Style="{StaticResource MaterialDesignFlatSecondaryLightBgButton}"
@@ -63,10 +63,10 @@
                                                 SnapsToDevicePixels="True">
                                             <StackPanel Width="Auto"
                                                         Height="Auto"
-                                                        Margin="-22,-5,-20,0">
+                                                        Margin="-22,0,-20,0">
                                                 <ContentControl ContentTemplate="{StaticResource DeleteButton}"
-                                                                Width="40"
-                                                                Height="40" />
+                                                                Width="20"
+                                                                Height="20" />
                                             </StackPanel>
                                         </Button>
                                     </StackPanel>

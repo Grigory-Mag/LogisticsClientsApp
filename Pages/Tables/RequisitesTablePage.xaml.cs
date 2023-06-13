@@ -105,6 +105,7 @@ namespace LogisticsClientsApp.Pages.Tables
             if (Requisites.Count == 0)
                 Requisites = RequisitesOriginal;
 
+            skipPages = 0;
             dataGrid.ItemsSource = null;
             dataGrid.ItemsSource = Requisites.Skip(skipPages).Take(takePages);
             PaginationTextBlock.Text = $"{skipPages + 10} из {Requisites.Count}";
@@ -140,7 +141,7 @@ namespace LogisticsClientsApp.Pages.Tables
         private async void CreateAdvancedSearchFields()
         {
             tablePage.AdvancedSearch.Children.Clear();
-
+            SearchItemsList.Clear();
             // typeItemsSource.Add(new CargoTypesObject { Id = -1, Name = "Все типы" });
             foreach (var item in SearchFields)
             {
@@ -160,6 +161,7 @@ namespace LogisticsClientsApp.Pages.Tables
                 comboBox.Margin = new Thickness(0, 0, 20, 0);
                 comboBox.Style = comboBoxResource["MaterialDesignOutlinedComboBox"] as Style;
                 comboBox.MaxWidth = 180;
+                comboBox.MinWidth = 150;
                 comboBox.FontSize = 14;
                 comboBox.Height = 55;
                 comboBox.IsEditable = true;
@@ -293,9 +295,11 @@ namespace LogisticsClientsApp.Pages.Tables
                     var item = dataGrid.SelectedItem as RequisitesObject;
                     var resultLocal = await startWindow.client.DeleteRequisiteAsync(new GetOrDeleteRequisitesRequest { Id = item.Id }, startWindow.headers);
                     RequisitesOriginal.Remove(item);
+                    Requisites = RequisitesOriginal;
 
                     dataGrid.ItemsSource = null;
                     dataGrid.ItemsSource = RequisitesOriginal.Skip(skipPages).Take(takePages);
+                    PaginationTextBlock.Text = $"{skipPages + 10} из {RequisitesOriginal.Count}";
                 }
                 catch (RpcException ex)
                 {
@@ -340,7 +344,7 @@ namespace LogisticsClientsApp.Pages.Tables
                 {
                     case StatusCode.Unavailable:
                         startWindow.IsConnected = false;
-                        MessageBox.Show($"Возникли проблемы с соединением, обратитесь к администратору: {ex.StatusCode}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show($"Возникли проблемы с интернет-соединением, обратитесь к администратору: {ex.StatusCode}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
                         break;
                     case StatusCode.Unauthenticated:
                         break;

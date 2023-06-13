@@ -77,6 +77,7 @@ namespace LogisticsClientsApp.Pages.Tables
                 }
             else
                 CargoTypes = CargoTypesOriginal;
+            skipPages = 0;
             dataGrid.ItemsSource = null;
             dataGrid.ItemsSource = CargoTypes.Skip(skipPages).Take(takePages);
             PaginationTextBlock.Text = $"{skipPages + 10} из {CargoTypes.Count}";
@@ -119,9 +120,11 @@ namespace LogisticsClientsApp.Pages.Tables
                     var item = dataGrid.SelectedItem as CargoTypesObject;
                     var resultLocal = await startWindow.client.DeleteCargoTypeAsync(new GetOrDeleteCargoTypesRequest { Id = item.Id }, startWindow.headers);
                     CargoTypesOriginal.Remove(item);
+                    CargoTypes = CargoTypesOriginal;
 
                     dataGrid.ItemsSource = null;
-                    dataGrid.ItemsSource = CargoTypesOriginal;
+                    dataGrid.ItemsSource = CargoTypesOriginal.Skip(skipPages).Take(takePages);
+                    PaginationTextBlock.Text = $"{skipPages + 10} из {CargoTypesOriginal.Count}";
                 }
                 catch (RpcException ex)
                 {
@@ -156,7 +159,7 @@ namespace LogisticsClientsApp.Pages.Tables
                 {
                     case StatusCode.Unavailable:
                         startWindow.IsConnected = false;
-                        MessageBox.Show($"Возникли проблемы с соединением, обратитесь к администратору: {ex.StatusCode}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show($"Возникли проблемы с интернет-соединением, обратитесь к администратору: {ex.StatusCode}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
                         break;
                     case StatusCode.Unauthenticated:
                         break;

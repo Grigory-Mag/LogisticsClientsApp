@@ -116,6 +116,8 @@ namespace LogisticsClientsApp.Pages.Tables
             {
                 if (CargoObjects.Count == 0)
                     CargoObjects = CargoObjectsOriginal;
+
+                skipPages = 0;
                 dataGrid.ItemsSource = null;
                 dataGrid.ItemsSource = CargoObjects.Skip(skipPages).Take(takePages);
                 PaginationTextBlock.Text = $"{skipPages + 10} из {CargoObjects.Count}";
@@ -168,9 +170,11 @@ namespace LogisticsClientsApp.Pages.Tables
                     var item = dataGrid.SelectedItem as CargoObject;
                     var resultLocal = await startWindow.client.DeleteCargoAsync(new GetOrDeleteCargoRequest { Id = item.Id }, startWindow.headers);
                     CargoObjectsOriginal.Remove(item);
+                    CargoObjects = CargoObjectsOriginal;
 
                     dataGrid.ItemsSource = null;
                     dataGrid.ItemsSource = CargoObjectsOriginal.Skip(skipPages).Take(takePages);
+                    PaginationTextBlock.Text = $"{skipPages + 10} из {CargoObjectsOriginal.Count}";
                 }
                 catch (RpcException ex)
                 {
@@ -189,7 +193,9 @@ namespace LogisticsClientsApp.Pages.Tables
         /// </summary>
         private void CreateAdvancedSearchFields()
         {
+            
             tablePage.AdvancedSearch.Children.Clear();
+            SearchItemsList.Clear();
             var typeItemsSource = CargoTypes.CargoType;
             typeItemsSource.Add(new CargoTypesObject { Id = -1, Name = "Все типы" });
             foreach (var item in SearchFields)
@@ -367,7 +373,7 @@ namespace LogisticsClientsApp.Pages.Tables
                 {
                     case StatusCode.Unavailable:
                         startWindow.IsConnected = false;
-                        MessageBox.Show($"Возникли проблемы с соединением, обратитесь к администратору: {ex.StatusCode}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show($"Возникли проблемы с интернет-соединением, обратитесь к администратору: {ex.StatusCode}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
                         break;
                     case StatusCode.Unauthenticated:
                         break;

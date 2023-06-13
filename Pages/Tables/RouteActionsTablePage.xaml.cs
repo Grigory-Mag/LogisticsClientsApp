@@ -75,6 +75,7 @@ namespace LogisticsClientsApp.Pages.Tables
                 }
             else
                 RouteActions = RouteActionsOriginal;
+            skipPages = 0;
             dataGrid.ItemsSource = null;
             dataGrid.ItemsSource = RouteActions.Skip(skipPages).Take(takePages);
             PaginationTextBlock.Text = $"{skipPages + 10} из {RouteActions.Count}";
@@ -117,6 +118,7 @@ namespace LogisticsClientsApp.Pages.Tables
                     var item = dataGrid.SelectedItem as RouteActionsObject;
                     var resultLocal = await startWindow.client.DeleteRouteActionAsync(new GetOrDeleteRouteActionsRequest { Id = item.Id }, startWindow.headers);
                     RouteActionsOriginal.Remove(item);
+                    RouteActions = RouteActionsOriginal;
 
                     dataGrid.ItemsSource = null;
                     dataGrid.ItemsSource = RouteActionsOriginal.Skip(skipPages).Take(takePages);
@@ -155,7 +157,7 @@ namespace LogisticsClientsApp.Pages.Tables
                 {
                     case StatusCode.Unavailable:
                         startWindow.IsConnected = false;
-                        MessageBox.Show($"Возникли проблемы с соединением, обратитесь к администратору: {ex.StatusCode}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show($"Возникли проблемы с интернет-соединением, обратитесь к администратору: {ex.StatusCode}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
                         break;
                     case StatusCode.Unauthenticated:
                         break;

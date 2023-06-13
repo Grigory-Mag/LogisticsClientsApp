@@ -98,7 +98,10 @@ namespace LogisticsClientsApp.Pages.Modal
                     page.RolesOriginal[index] = reqResult;
                 }
                 if (mode == 1)
+                {
                     page.RolesOriginal.Add(reqResult);
+                    page.Roles = page.RolesOriginal;
+                }
 
                 page.dataGrid.ItemsSource = null;
                 page.dataGrid.ItemsSource = page.RolesOriginal.Skip(page.skipPages).Take(page.takePages);
