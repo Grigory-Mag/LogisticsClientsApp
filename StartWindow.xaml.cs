@@ -75,7 +75,6 @@ namespace LogisticsClientsApp
             LoginPage = new LoginPage(this);
             ChangePage(LoginPage);
             //DEBUG ONLY:
-            //Properties.Default.Address = "http://185.248.101.68:8008";
             //Properties.Default.Save();
 
             Uri path = new Uri(Directory.GetCurrentDirectory() + @"\Resources\Images\loginBackground.jpg");
