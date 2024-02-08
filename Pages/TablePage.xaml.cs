@@ -35,15 +35,14 @@ namespace LogisticsClientsApp.Pages
     public partial class TablePage : Page
     {
 
-        public PaletteHelper palette;
+        //public PaletteHelper palette;
         public Page selectedPage { get; set; }
         Locale locale;
         public CargoTablePage cargoTablePageInstance = CargoTablePage.CreateInstance();
-        ITheme theme = new PaletteHelper().GetTheme();
 
         public static TablePage PageInstance;
         static StartWindow startWindow;
-        Excel ExcelProvider = new Excel();
+        static Excel ExcelProvider = new Excel();
 
         public enum Messages
         {
@@ -79,14 +78,21 @@ namespace LogisticsClientsApp.Pages
                 PageInstance = new TablePage();
                 PageInstance.ChangeSelectedTable(page);
                 page = null;
-                PageInstance.SetData();
+                //PageInstance.SetData();
+            }
+            else
+                if (PageInstance.selectedPage != page)
+            {
+                PageInstance = new TablePage();
+                PageInstance.ChangeSelectedTable(page);
+                page = null;
             }
             return PageInstance;
         }
 
 
         private void InnerInit()
-        {            
+        {
             startWindow = (StartWindow)Window.GetWindow(this);
             //cargoTablePageInstance = new CargoTablePage();
 
@@ -98,7 +104,7 @@ namespace LogisticsClientsApp.Pages
             startWindow.MenuOpenBtn.Visibility = Visibility.Visible;
 
             //locale = new Locale(startWindow.selectedLocale);
-            palette = new PaletteHelper();
+            //palette = new PaletteHelper();
         }
 
         public void OuterInit()
@@ -398,6 +404,7 @@ namespace LogisticsClientsApp.Pages
                     break;
                 case RequestsTablePage:
                     var request = new RequestsTablePageModal();
+                    request.LoadModalPage();
                     ModalPageFrame.Content = request;
                     request.SetMode(mode);
                     if (mode == 0)
@@ -495,7 +502,7 @@ namespace LogisticsClientsApp.Pages
                     dataReady.Columns.Add("Номер");
                     dataReady.Columns.Add("Дата выдачи");
                     foreach (var item in items as List<DriversLicenceReady>)
-                        dataReady.Rows.Add(new object[3] { item.Series, item.Number, item.Date.Date});
+                        dataReady.Rows.Add(new object[3] { item.Series, item.Number, item.Date.Date });
                     break;
                 case var cls when cls == typeof(DriversObject):
                     dataReady.Columns.Add("Фамилия");
@@ -507,30 +514,30 @@ namespace LogisticsClientsApp.Pages
                         dataReady.Rows.Add(new object[5] { item.Surname, item.Name, item.Patronymic, item.Sanitation == true ? "Есть" : "Нет", $"{item.Licence.Series}/{item.Licence.Number}" });
                     break;
                 case var cls when cls == typeof(RequestsReady):
-                    dataReady.Columns.Add("Номер");
-                    dataReady.Columns.Add("Транспорт");
-                    dataReady.Columns.Add("Водитель");
-                    dataReady.Columns.Add("Цена");
-                    dataReady.Columns.Add("Дата создания");
-                    dataReady.Columns.Add("Оригинал документов");
-                    dataReady.Columns.Add("Заказчик");
-                    dataReady.Columns.Add("Перевозчик");
-                    dataReady.Columns.Add("Груз");
-                    dataReady.Columns.Add("Масса груза");
-                    dataReady.Columns.Add("Тип груза");
-                    dataReady.Columns.Add("Статус");
-                    foreach (var item in items as List<RequestsReady>)
-                        dataReady.Rows.Add(new object[12] { item.Id, $"{item.Vehicle.Type.Name}, Тягач: {item.Vehicle.Number}, Прицеп: {item.Vehicle.TrailerNumber}",
-                            $"{item.Driver.Surname} {item.Driver.Name} {item.Driver.Patronymic}",
-                            item.Price,
-                            item.CreationDate.Date,
-                            item.Documents == true ? "Да" : "Нет",
-                            item.CustomerReq.Name,
-                            item.TransporterReq.Name,
-                            item.Cargo.Name,
-                            item.Cargo.Weight,
-                            item.Cargo.CargoType.Name,
-                            item.IsFinished == true ? "Завершен" : "Не завершен"});
+                    //dataReady.Columns.Add("Номер");
+                    //dataReady.Columns.Add("Транспорт");
+                    //dataReady.Columns.Add("Водитель");
+                    //dataReady.Columns.Add("Цена");
+                    //dataReady.Columns.Add("Дата создания");
+                    //dataReady.Columns.Add("Оригинал документов");
+                    //dataReady.Columns.Add("Заказчик");
+                    //dataReady.Columns.Add("Перевозчик");
+                    //dataReady.Columns.Add("Груз");
+                    //dataReady.Columns.Add("Масса груза");
+                    //dataReady.Columns.Add("Тип груза");
+                    //dataReady.Columns.Add("Статус");
+                    //foreach (var item in items as List<RequestsReady>)
+                    //    dataReady.Rows.Add(new object[12] { item.Id, $"{item.Vehicle.Type.Name}, Тягач: {item.Vehicle.Number}, Прицеп: {item.Vehicle.TrailerNumber}",
+                    //        $"{item.Driver.Surname} {item.Driver.Name} {item.Driver.Patronymic}",
+                    //        item.Price,
+                    //        item.CreationDate.Date,
+                    //        item.Documents == true ? "Да" : "Нет",
+                    //        item.CustomerReq.Name,
+                    //        item.TransporterReq.Name,
+                    //        item.Cargo.Name,
+                    //        item.Cargo.Weight,
+                    //        item.Cargo.CargoType.Name,
+                    //        item.IsFinished == true ? "Завершен" : "Не завершен"});
                     break;
                 case var cls when cls == typeof(RequisitesObject):
                     dataReady.Columns.Add("Тип");
@@ -600,7 +607,7 @@ namespace LogisticsClientsApp.Pages
                                 ExcelProvider.GenerateExcel(ToDataTableReady((content as DriversTablePage).Drivers), filename);
                                 break;
                             case RequestsTablePage:
-                                ExcelProvider.GenerateExcel(ToDataTableReady((content as RequestsTablePage).RequestsReadyObjects), filename);
+                                //ExcelProvider.GenerateExcel(ToDataTableReady((content as RequestsTablePage).RequestsReadyObjects), filename);
                                 break;
                             case RequisitesTablePage:
                                 ExcelProvider.GenerateExcel(ToDataTableReady((content as RequisitesTablePage).Requisites), filename);
@@ -717,7 +724,7 @@ namespace LogisticsClientsApp.Pages
         {
             FastSearchCall();
         }
-        
+
     }
 
 }

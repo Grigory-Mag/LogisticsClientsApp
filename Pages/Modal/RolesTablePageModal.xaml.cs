@@ -87,9 +87,9 @@ namespace LogisticsClientsApp.Pages.Modal
             {
                 var reqResult = new RolesObject();
                 if (mode == 0)
-                    reqResult = await startWindow.client.UpdateRoleAsync(new CreateOrUpdateRoleRequest { RoleObject = data });
+                    reqResult = await startWindow.client.UpdateRoleAsync(new CreateOrUpdateRoleRequest { RoleObject = data }, startWindow.headers);
                 if (mode == 1)
-                    reqResult = await startWindow.client.CreateRoleAsync(new CreateOrUpdateRoleRequest { RoleObject = data });
+                    reqResult = await startWindow.client.CreateRoleAsync(new CreateOrUpdateRoleRequest { RoleObject = data }, startWindow.headers);
                 var tablePage = (TablePage)startWindow.MainFrameK.Content;
                 var page = tablePage.DataGridFrame.Content as RolesTablePage;
                 if (mode == 0)

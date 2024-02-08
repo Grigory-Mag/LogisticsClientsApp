@@ -46,7 +46,8 @@ namespace LogisticsClientsApp.Pages.Modal
         private Locale locale;
         public byte mode = 0;
         public string text = "Обновить";
-        StartWindow startWindow;
+        private StartWindow startWindow;
+        public static RequestsTablePageModal PageInstance;
 
         public class DriversObjectReady
         {
@@ -142,15 +143,31 @@ namespace LogisticsClientsApp.Pages.Modal
             InitializeComponent();
         }
 
+        public static RequestsTablePageModal CreateInstance()
+        {
+            if (PageInstance == null)
+                PageInstance = new RequestsTablePageModal();
+
+            return PageInstance;
+        }
+
         private void ModalPageControl_Loaded(object sender, RoutedEventArgs e)
         {
-            startWindow = (StartWindow)Window.GetWindow(this);
-            System.Threading.Thread.CurrentThread.CurrentUICulture = new CultureInfo("ru-RU");
-            System.Threading.Thread.CurrentThread.CurrentCulture = new CultureInfo("ru-RU");
-            Language = XmlLanguage.GetLanguage(CultureInfo.CurrentCulture.IetfLanguageTag);
-            SetLinkedData();
-            Locale locale = new Locale(startWindow.selectedLocale);
-            locale.SetLocale(this);
+            LoadModalPage();
+        }
+
+        public void LoadModalPage()
+        {
+            if (IsLoaded)
+            {
+                startWindow = (StartWindow)Window.GetWindow(this);
+                System.Threading.Thread.CurrentThread.CurrentUICulture = new CultureInfo("ru-RU");
+                System.Threading.Thread.CurrentThread.CurrentCulture = new CultureInfo("ru-RU");
+                Language = XmlLanguage.GetLanguage(CultureInfo.CurrentCulture.IetfLanguageTag);
+                SetLinkedData();
+                Locale locale = new Locale(startWindow.selectedLocale);
+                locale.SetLocale(this);
+            }
         }
 
         private void DeleteButton_Click(object sender, RoutedEventArgs e)

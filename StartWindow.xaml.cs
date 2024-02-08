@@ -30,6 +30,7 @@ using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 
@@ -72,6 +73,7 @@ namespace LogisticsClientsApp
             userSurname = "Surname";
             userPatronymic = "Patronymic";
             userRole = "Role";
+
 
             LoginPage = new LoginPage(this);
             ChangePage(LoginPage);
@@ -203,7 +205,7 @@ namespace LogisticsClientsApp
         {
             if (MainFrameK.Content != null)
             {
-                switch (MainFrameK.Content) 
+                switch (MainFrameK.Content)
                 {
                     case var cls when cls == typeof(CargoTablePage):
                         (MainFrameK.Content as CargoTablePage)!.Dispose();
@@ -235,7 +237,24 @@ namespace LogisticsClientsApp
                         break;
                 }
             }
+            //MainFrameK.RemoveBackEntry();
             MainFrameK.Content = null;
+
+
+
+            //if (this.MainFrameK.CanGoBack)
+            //{
+            //    var entry = this.MainFrameK.RemoveBackEntry();
+            //    while (entry != null)
+            //    {
+            //        entry = this.MainFrameK.RemoveBackEntry();
+            //    }
+
+            //    this.MainFrameK.Navigate(new PageFunction<string>() { RemoveFromJournal = true });
+            //    //MessageBox.Show("Cleared");
+            //}
+
+
             MainFrameK.Navigate(page);
             page = null;
 
@@ -411,11 +430,12 @@ namespace LogisticsClientsApp
             var page = MainFrameK.Content as TablePage;
             if (page == null)
             {
-                page = new TablePage(new RequestsTablePage());
+                page = TablePage.CreateInstance(RequestsTablePage.CreateInstance());
                 ChangePage(page);
             }
             else
-                ChangePage(new TablePage(new RequestsTablePage()));
+                ChangePage(TablePage.CreateInstance(RequestsTablePage.CreateInstance()));
+
 
         }
 
@@ -553,7 +573,7 @@ namespace LogisticsClientsApp
             var page = MainFrameK.Content as TablePage;
             if (page == null)
             {
-                page = new TablePage();
+                page = TablePage.CreateInstance();
                 await LoadAsyncPage();
                 page = MainFrameK.Content as TablePage;
             }

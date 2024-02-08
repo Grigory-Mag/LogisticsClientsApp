@@ -93,18 +93,21 @@ namespace LogisticsClientsApp.Pages.Tables
                         bool isNumber = int.TryParse(text, out number);
                         if (isNumber)
                             CargoObjects = CargoObjectsOriginal
+                                .AsParallel()
                                 .Where(x => x.Id == number)
                                 .ToList();
                         break;
                     case "Масса":
                         text = text.Trim();
                         CargoObjects = CargoObjectsOriginal
+                            .AsParallel()
                             .Where(x => x.Weight.ToString().Contains(text))
                             .ToList();
                         break;
                     case "Цена":
                         text = text.Trim();
                         CargoObjects = CargoObjectsOriginal
+                            .AsParallel()
                             .Where(x => x.Price.ToString().Contains(text))
                             .ToList();
                         break;
@@ -198,6 +201,8 @@ namespace LogisticsClientsApp.Pages.Tables
             SearchItemsList.Clear();
             var typeItemsSource = CargoTypes.CargoType;
             typeItemsSource.Add(new CargoTypesObject { Id = -1, Name = "Все типы" });
+            //string item = string.Empty;
+            //Parallel.ForEach<string>(SearchFields, item =>
             foreach (var item in SearchFields)
             {
                 var textBox = new TextBox();
@@ -322,6 +327,7 @@ namespace LogisticsClientsApp.Pages.Tables
                     {
                         return isPriceEmpty == false ? true : x.Price == price;
                     })
+                    .AsParallel()
                     .ToList();
                     if (CargoObjects.Count == 0)
                         CargoObjects = searchCargoObjects;
